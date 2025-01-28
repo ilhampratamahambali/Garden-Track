@@ -12,47 +12,57 @@ class Plants extends BaseController
         $this->logger = \Config\Services::logger(); // Initialize logger
     }
 
-    public function index(){
+    private function fetchPlantsData($filter = null, $currentPage = 1) {
         $client = \Config\Services::curlrequest();
 
-        // Ambil halaman saat ini dari parameter URL, default 1
-        $currentPage = (int) $this->request->getGet('page') ?? 1;
+        // Set maximum page limit
         if ($currentPage < 1) {
             $currentPage = 1;
         }
-        // Set maximum page limit
         if ($currentPage > 21863) {
             $currentPage = 21863;
         }
 
-        // API Endpoint untuk mengambil data tanaman sayuran
-        $response = $client->get("{$this->baseUrl}/plants", [
-            'query' => [
-                'filter[vegetable]' => 'true',
-                'token' => $this->apiToken,
-                'page' => $currentPage
-            ]
-        ]);
+        // Prepare query parameters
+        $query = [
+            'token' => $this->apiToken,
+            'page' => $currentPage
+        ];
+        if ($filter) {
+            $query['filter[vegetable]'] = 'true';
+        }
+
+        // API Endpoint for fetching plant data
+        $response = $client->get("{$this->baseUrl}/plants", ['query' => $query]);
 
         if ($response->getStatusCode() === 200) {
-            $this->logger->info('Data retrieved successfully', ['currentPage' => $currentPage, 'totalPages' => $data['meta']['last_page'] ?? 1]); // Log successful retrieval
-
             $data = json_decode($response->getBody(), true);
-            return view('plants', [
+            return [
                 'plants' => $data['data'],
                 'currentPage' => $currentPage,
-                'totalPages' => $data['meta']['last_page'] ?? 1 // Pastikan ini sesuai dengan respons API
-            ]);
+                'totalPages' => $data['meta']['last_page'] ?? 1
+            ];
         } else {
-            $this->logger->error('Failed to retrieve data from Trefle API', ['response' => $response->getBody()]); // Log error
-
+            $this->logger->error('Failed to retrieve data from Trefle API', ['response' => $response->getBody()]);
             log_message('error', 'Gagal mengambil data dari Trefle API: ' . $response->getBody());
-            return view('plants', [
+            return [
                 'plants' => [],
                 'currentPage' => $currentPage,
                 'totalPages' => 1,
                 'error' => 'Gagal mengambil data dari Trefle API. Silakan coba lagi nanti.'
-            ]);
+            ];
         }
+    }
+
+    public function index(){
+        $currentPage = (int) $this->request->getGet('page') ?? 1;
+        $data = $this->fetchPlantsData(null, $currentPage);
+        return view('plants', $data);
+    }
+
+    public function vegetable(){
+        $currentPage = (int) $this->request->getGet('page') ?? 1;
+        $data = $this->fetchPlantsData(true, $currentPage);
+        return view('plants', $data);
     }
 }

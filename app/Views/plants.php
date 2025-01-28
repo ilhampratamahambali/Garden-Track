@@ -13,6 +13,11 @@
     <!-- Plants Data -->
     <div class="row g-4">
         <?php if (!empty($plants)): ?>
+        <?php 
+            // dd($plants);
+            // die;
+        ?>
+
         <div class="row">
             <?php foreach ($plants as $plant): ?>
                 <div class="col-md-4">
@@ -21,7 +26,7 @@
                         <div class="card-body">
                             <h5 class="card-title"><?= $plant['common_name'] ?? 'Nama Tidak Tersedia' ?></h5>
                             <p class="card-text">
-                                <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?><br>
+                                <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?? 'Tidak Tersedia'?><br>
                                 <strong>Kategori:</strong> <?= $plant['family'] ?? 'Tidak Tersedia' ?><br>
                                 <strong>Deskripsi:</strong> <?= $plant['description'] ?? 'Tidak Tersedia' ?><br>
                             </p>
@@ -36,8 +41,8 @@
     </div>
     <!-- Pagination Buttons -->
     <div class="d-flex justify-content-between">
-        <a href="<?= base_url('plants?page=' . ($currentPage - 1)) ?>" id="prevButton" class="btn btn-primary" <?= $currentPage <= 1 ? 'disabled' : '' ?>>Previous</a>
-        <a href="<?= base_url('plants?page=' . ($currentPage + 1)) ?>" id="nextButton" class="btn btn-primary" <?= $currentPage >= $totalPages || $currentPage >= 21863 ? 'disabled' : '' ?>>Next</a>
+        <a href="<?= base_url('plants?page=' . ($currentPage - 1)) ?>" id="prevButton" class="btn btn-primary" <?= $currentPage < 0 ? 'disabled' : '' ?>>Previous</a>
+        <a href="<?= base_url('plants?page=' . ($currentPage + 1)) ?>" id="nextButton" class="btn btn-primary" <?= $currentPage > $totalPages || $currentPage >= 21863 ? 'disabled' : '' ?>>Next</a>
     </div>
 </div>
 <script>
@@ -68,7 +73,7 @@
 
     // Tambahkan event listener untuk tombol "Next"
     document.getElementById('nextButton').addEventListener('click', () => {
-        if (currentPage < totalPages && currentPage < 21863) {
+        if (currentPage < totalPages && currentPage <= 21863) {
             currentPage++; // Halaman bertambah
             goToPage(currentPage); // Arahkan ke halaman berikutnya
         }
