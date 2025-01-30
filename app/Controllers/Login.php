@@ -36,10 +36,10 @@ class Login extends BaseController
         if (!isset($token['error'])) {
             $this->googleClient->setAccessToken($token['access_token']);
             session()->set('access_token', $token['access_token']);
-        
+    
             $googleService = new \Google_Service_Oauth2($this->googleClient);
             $data = $googleService->userinfo->get();
-        
+    
             // Simpan data ke dalam array sesi
             $row = [
                 'id_user'     => $data['id'],
@@ -49,30 +49,30 @@ class Login extends BaseController
                 'logged_in'   => true,
             ];
             session()->set($row);
-
+    
             $userExists = $this->users->where('id_user', $data['id'])->first();
             if (!$userExists) {
                 $this->users->save($row);
             }
-        
-            return view('user_page');
+    
+            return redirect()->to('user_page.php');
         }
-
+    
         return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
     }
-
+    
 
     public function logout(){
-        if (session()->get('access_token')) {
-            $this->googleClient->revokeToken(session()->get('access_token'));
-            session()->remove('access_token');
-        }
+    if (session()->get('access_token')) {
+        $this->googleClient->revokeToken(session()->get('access_token'));
+        session()->remove('access_token');
+    }
 
-        // Destroy session
-        session()->destroy();
+    // Destroy session
+    session()->destroy();
 
-        // Redirect to home or login page
-        return redirect()->to('/');
+    // Redirect to home or login page
+    return redirect()->to('/');
     }
 
     public function auth(){
@@ -81,37 +81,40 @@ class Login extends BaseController
             'nama_users' => 'required',
             'password' => 'required'
         ];
-
+    
         if(!$this->validate($rules)){
-            session()->setFlashdata('errors',$this->validator->getErrors());
+            session()->setFlashdata('errors', $this->validator->getErrors());
             return view("login_page");
         }
-
+    
         // Ambil inputan
         $username = $this->request->getPost('nama_users');
         $password = $this->request->getPost('password');
-
+    
         //cek username
         $user = $this->users->get_user_username($username);
-
+    
         // Jika username tidak ditemukan
         if (!$user) {
             session()->setFlashdata('error', 'Username tidak ditemukan');
             return redirect()->to('/login')->withInput();
         }
-
+    
         // Verifikasi password
         if (!password_verify($password, $user->password)) {
             session()->setFlashdata('error', 'Password salah');
             return redirect()->to('/login')->withInput();
         }
-
+    
         // Set session
         session()->set([
             'id_user' => $user->id_user,
             'nama_users' => $user->nama_users,
             'logged_in' => true
         ]);
-        return redirect()->to('user_page');
+        
+        // Tampilkan pesan sukses
+        session()->setFlashdata('success', 'Login berhasil!');
+        return redirect()->to('user_page.php');
     }
 }

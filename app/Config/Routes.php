@@ -31,3 +31,16 @@ $routes->get('logout', 'Login::logout');
 
 //user page
 $routes->get('user_page', 'User_page_controller::index');
+
+//tambah kebun
+$routes->get('buat_kebun.php', 'TambahKebunController::index');
+$routes->get('/kebun', 'TambahKebunController::index');
+$routes->post('/buat', 'TambahKebunController::buat');
+
+//kelola kebun
+$routes->get('kelola_kebun.php', 'KelolaKebunController::index');
+$routes->get('/kebun/detail/(:num)', 'KelolaKebunController::detail/$1');
+
+// tanaman
+$routes->get('/tanaman/tambah/(:num)', 'TanamanController::formTambah/$1'); // Form tambah tanaman
+$routes->post('/tanaman/tambah', 'TanamanController::tambah'); // Proses tambah tanaman

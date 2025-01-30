@@ -43,8 +43,6 @@ html {
         margin-bottom: 20px; /* Penyesuaian jarak pada layar lebih kecil */
     }
 }
-
-
 </style>
 <script>
     // Sesuaikan tinggi navbar di bawah ini

@@ -160,6 +160,20 @@
         </div>
         <div class="login-section">
             <h2>Login</h2>
+
+            <!-- Menampilkan Pesan Error atau Sukses -->
+            <?php if(session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger" role="alert">
+                    <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if(session()->getFlashdata('success')): ?>
+                <div class="alert alert-success" role="alert">
+                    <?= session()->getFlashdata('success') ?>
+                </div>
+            <?php endif; ?>
+
             <form action="<?= base_url('login/auth') ?>" method="POST">
                 <div class="form-group">
                     <input type="text" name="nama_users" placeholder="Username" required>
@@ -186,6 +200,7 @@
     <script>
         // Cek apakah ada session flashdata 
         const successMessage = "<?= session()->getFlashdata('success') ?>";
+        const errorMessage = "<?= session()->getFlashdata('error') ?>";
 
         if (successMessage) {
             const Toast = Swal.mixin({
@@ -205,6 +220,28 @@
                 title: successMessage // Tampilkan pesan dari session flashdata
             });
         }
+
+        if (errorMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",  // Pastikan posisinya top
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
+                }
+            });
+
+            Toast.fire({
+                icon: "error",
+                title: errorMessage // Tampilkan pesan error
+            });
+            }
     </script>
 </body>
 </html>
