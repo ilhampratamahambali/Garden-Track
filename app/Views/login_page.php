@@ -191,11 +191,12 @@
             <div class="social-login">
                 <p>or login with social platforms</p>
                 <div class="social-icons">
-                    <a href="<?=$link; ?>" i class="fab fa-google"></i></a>
+                    <a href="<?=$link; ?>"><i class="fab fa-google"></i></a>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Script untuk menampilkan SweetAlert dari session flashdata -->
     <script>
         // Cek apakah ada session flashdata 
@@ -205,13 +206,16 @@
         if (successMessage) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end",
+                position: "top",  // Pastikan posisinya top
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
                 }
             });
 
@@ -241,7 +245,9 @@
                 icon: "error",
                 title: errorMessage // Tampilkan pesan error
             });
-            }
+        }
     </script>
+
+
 </body>
 </html>

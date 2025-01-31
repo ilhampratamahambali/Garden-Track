@@ -85,12 +85,12 @@
                 <!-- <a href="#" class="nav-item nav-link">Projects</a> -->
             </div>
             <?php if (session()->get('logged_in')): ?>
-                <a href="logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
+                <a href="/logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
                     Logout
                     <i class="fa fa-arrow-right ms-3"></i>
                 </a>
             <?php else: ?>
-                <a href="login" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
+                <a href="/login" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
                     Login
                     <i class="fa fa-arrow-right ms-3"></i>
                 </a>

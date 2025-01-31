@@ -5,41 +5,49 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
-$routes->get('/services', 'Home::services');
+// --=========================================|| USER ||================================================--
+// YANG DI NAVBAR
+$routes->get('/', 'User::dashboard');
+$routes->get('/services', 'User::services');
+
+//register google
+$routes->get('register', 'User::index_regis');
+$routes->get('register/proses', 'User::proses_regis');
+
+// register biasa
+$routes->post('register/auth', 'User::regis_auth');
+// $routes->get('/trefle', 'plant::index');
+
+//login
+$routes->get('login', 'User::index_login');
+$routes->get('login/proses', 'User::proses_login');
+$routes->post('login/auth', 'User::auth');
+
+//LOGOUT
+$routes->get('login/logout', 'User::logout_google');
+$routes->get('register/logout', 'User::logout');
+$routes->get('logout', 'User::logout');
+
+//user page
+$routes->get('user_page', 'User::home');
+
+// --=========================================|| TANAMAN ||================================================--
 
 //tanaman
 $routes->get('/plants', 'Plants::index');
 $routes->get('plants/search', 'Plants::search');
 
-//register google
-$routes->get('register', 'Register::index');
-$routes->get('register/proses', 'Register::proses');
-$routes->get('register_page.php', 'Register::index');
-// register biasa
-$routes->post('register/auth', 'Register::regis_auth');
-// $routes->get('/trefle', 'plant::index');
+// tanaman
+$routes->get('/tanaman/tambah/(:num)', 'Plants::formTambah/$1'); // Form tambah tanaman
+$routes->post('/tanaman/tambah', 'Plants::tambah'); // Proses tambah tanaman
 
-//login
-$routes->get('login', 'Login::index');
-$routes->get('login/proses', 'Login::proses');
-$routes->post('login/auth', 'Login::auth');
-$routes->get('login/logout', 'Login::logout');
-$routes->get('register/logout', 'Register::logout');
-$routes->get('logout', 'Login::logout');
-
-//user page
-$routes->get('user_page', 'User_page_controller::index');
+// --=========================================|| KEBUN ||================================================--
 
 //tambah kebun
-$routes->get('buat_kebun.php', 'TambahKebunController::index');
-$routes->get('/kebun', 'TambahKebunController::index');
-$routes->post('/buat', 'TambahKebunController::buat');
+$routes->get('buat_kebun', 'Kebun::index');
+$routes->get('/kebun', 'Kebun::index');
+$routes->post('/buat', 'Kebun::buat');
 
 //kelola kebun
-$routes->get('kelola_kebun.php', 'KelolaKebunController::index');
-$routes->get('/kebun/detail/(:num)', 'KelolaKebunController::detail/$1');
-
-// tanaman
-$routes->get('/tanaman/tambah/(:num)', 'TanamanController::formTambah/$1'); // Form tambah tanaman
-$routes->post('/tanaman/tambah', 'TanamanController::tambah'); // Proses tambah tanaman
+$routes->get('kelola_kebun', 'Kebun::index_kelola');
+$routes->get('/kebun/detail/(:num)', 'Kebun::detail/$1');

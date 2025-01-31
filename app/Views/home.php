@@ -45,7 +45,7 @@ html {
 }
 </style>
 <script>
-    // Sesuaikan tinggi navbar di bawah ini
+    // // Sesuaikan tinggi navbar di bawah ini
     const navbarHeight = 100; // Misal tinggi navbar Anda adalah 70px
 
     // Ambil semua tautan yang memiliki kelas "scroll-link"
@@ -57,18 +57,18 @@ html {
         const targetId = this.getAttribute('href').substring(1);
         const targetElement = document.getElementById(targetId);
 
-        if (targetElement) {
-            // Hitung posisi scroll dengan mengurangi tinggi navbar
-            const offsetTop = targetElement.offsetTop - navbarHeight;
+            if (targetElement) {
+                // Hitung posisi scroll dengan mengurangi tinggi navbar
+                const offsetTop = targetElement.offsetTop - navbarHeight;
 
-            // Scroll ke posisi tersebut
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
+                // Scroll ke posisi tersebut
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-});
 </script>
     <!-- Carousel Start -->
     <div class="container-fluid p-0 wow fadeIn" data-wow-delay="0.1s">
@@ -117,55 +117,6 @@ html {
             </button>
         </div>
     <!-- Carousel End -->
-
-
-    <!-- Top Feature Start -->
-    <!-- <div class="container-fluid top-feature py-5 pt-lg-0">
-        <div class="container py-5 pt-lg-0">
-            <div class="row gx-0">
-                <div class="col-lg-4 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="bg-white shadow d-flex align-items-center h-100 px-5" style="min-height: 160px;">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0 btn-lg-square rounded-circle bg-light">
-                                <i class="fa fa-times text-primary"></i>
-                            </div>
-                            <div class="ps-3">
-                                <h4>No Hidden Cost</h4>
-                                <span>Clita erat ipsum lorem sit sed stet duo justo</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 wow fadeIn" data-wow-delay="0.3s">
-                    <div class="bg-white shadow d-flex align-items-center h-100 px-5" style="min-height: 160px;">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0 btn-lg-square rounded-circle bg-light">
-                                <i class="fa fa-users text-primary"></i>
-                            </div>
-                            <div class="ps-3">
-                                <h4>Dedicated Team</h4>
-                                <span>Clita erat ipsum lorem sit sed stet duo justo</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 wow fadeIn" data-wow-delay="0.5s">
-                    <div class="bg-white shadow d-flex align-items-center h-100 px-5" style="min-height: 160px;">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0 btn-lg-square rounded-circle bg-light">
-                                <i class="fa fa-phone text-primary"></i>
-                            </div>
-                            <div class="ps-3">
-                                <h4>24/7 Available</h4>
-                                <span>Clita erat ipsum lorem sit sed stet duo justo</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Top Feature End -->
 
 <!-- About Start -->
 <div class="container-xxl py-5">
@@ -238,7 +189,7 @@ html {
                             </div>
                             <h4 class="mb-3">Buat Kebun Anda</h4>
                             <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
-                            <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Buat Kebun</a>
+                            <a class="btn btn-sm" href="buat_kebun"><i class="fa fa-plus text-primary me-2"></i>Buat Kebun</a>
                         </div>
                     </div>
                 </div>
@@ -253,7 +204,7 @@ html {
                             </div>
                             <h4 class="mb-3">Kelola Kebun Anda</h4>
                             <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
-                            <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
+                            <a class="btn btn-sm" href="kelola_kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
                         </div>
                     </div>
                 </div>
