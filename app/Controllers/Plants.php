@@ -63,12 +63,67 @@ class Plants extends BaseController
         return view('plants', $data);
     }
 
-    public function vegetable(){
-        $currentPage = (int) $this->request->getGet('page') ?? 1;
-        $data = $this->Tanaman(true, $currentPage);
-        return view('plants', $data);
-    }
 
+// --=========================================|| VEGETABLE ||================================================--
+    public function vegetable(){
+        // $currentPage = (int) $this->request->getGet('page') ?? 1;
+        // $data = $this->Tanaman(true, $currentPage);
+        // return view('plants', $data);
+        // Tentukan path file JSON
+        $jsonPath = FCPATH . 'tanaman/json/sayuran.json'; // FCPATH mengarah ke folder public
+
+        // Cek apakah file JSON ada
+        if (!file_exists($jsonPath)) {
+            throw new \RuntimeException("File JSON tidak ditemukan: $jsonPath");
+        }
+
+        // Baca file JSON
+        $jsonData = file_get_contents($jsonPath);
+
+        // Decode JSON ke array
+        $plants = json_decode($jsonData, true);
+
+        // Siapkan data untuk dikirim ke view
+        $data = [
+            'plants' => $plants
+        ];
+
+        // Load view dan kirim data
+        return view('vegetable', $data);
+    }
+// ------------------------------------------------++BARENG++-----------------------------------------------
+    // public function vegetable()
+    // {
+    //     // Load data pertama kali (30 data pertama)
+    //     $data['plants'] = $this->getPlants(0, 30); // Ambil 30 data pertama
+    //     return view('vegetable', $data);
+    // }
+
+    // public function loadMore($offset)
+    // {
+    //     // Ambil 30 data berikutnya berdasarkan offset
+    //     $plants = $this->getPlants($offset, 30);
+
+    //     // Jika tidak ada data lagi, kembalikan array kosong
+    //     if (empty($plants)) {
+    //         return $this->response->setJSON([]);
+    //     }
+
+    //     // Kirim data dalam format JSON
+    //     return $this->response->setJSON($plants);
+    // }
+
+    // private function getPlants($offset, $limit)
+    // {
+    //     // Load file JSON
+    //     $jsonPath = FCPATH . 'tanaman/json/sayuran.json';
+    //     $jsonData = file_get_contents($jsonPath);
+    //     $allPlants = json_decode($jsonData, true);
+
+    //     // Ambil data sesuai offset dan limit
+    //     return array_slice($allPlants, $offset, $limit);
+    // }
+// ------------------------------------------------++Bareng++---------------------------------------------------
     // public function index(){
     //     $client = \Config\Services::curlrequest();
     //     $plantModel = new PlantModel();
@@ -142,21 +197,92 @@ class Plants extends BaseController
                 'dataTanaman' => $dataTanaman,
             ]);
         }
-
     public function tambah()
     {
         $TanamanKebunModel = new TanamanKebunModel(); // Model untuk menghubungkan tanaman dan kebun
-        
+
+        // Validasi input
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'id_kebun' => 'required|numeric',
+            'id_tanaman' => 'required|numeric',
+            'benih' => 'required|numeric',
+            'cara_menanam' => 'required',
+            'kondisi_tanah' => 'required',
+            'tanggal_mulai' => 'required|valid_date',
+            'tanggal_selesai' => 'required|valid_date',
+            'deskripsi' => 'required',
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Ambil data dari form
         $data = [
             'id_kebun' => $this->request->getPost('id_kebun'), // ID Kebun yang sudah ada
             'id_tanaman' => $this->request->getPost('id_tanaman'), // ID Tanaman yang dipilih
+            'benih' => $this->request->getPost('benih'), // Jumlah benih
+            'cara_menanam' => $this->request->getPost('cara_menanam'), // Cara menanam
+            'kondisi_tanah' => $this->request->getPost('kondisi_tanah'), // Kondisi tanah
+            'tanggal_mulai' => $this->request->getPost('tanggal_mulai'), // Tanggal mulai
+            'tanggal_selesai' => $this->request->getPost('tanggal_selesai'), // Tanggal selesai
+            'deskripsi' => $this->request->getPost('deskripsi'), // Deskripsi
             'id_user' => session()->get('id_user'), // Ambil ID User dari session
         ];
 
+        // Simpan data ke database
         if ($TanamanKebunModel->insert($data)) {
             return redirect()->to('/kebun/detail/' . $data['id_kebun'])->with('success', 'Tanaman berhasil ditambahkan.');
         }
 
         return redirect()->back()->with('error', 'Gagal menambahkan tanaman.');
+    }
+    
+    // Method untuk menampilkan detail tanaman
+    public function detail($id)
+    {
+        $tanamanKebunModel = new \App\Models\TanamanKebunModel();
+        $PlantModel = new \App\Models\PlantModel();
+
+        // Cari data tanaman kebun berdasarkan id
+        $data['tanaman'] = $tanamanKebunModel
+        ->select('tanaman_kebun.id, tanaman.common_name, tanaman.scientific_name')
+        ->join('gardentrack.tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
+        ->where('tanaman_kebun.id_kebun', $id)
+        ->findAll();
+        // Jika tanaman tidak ditemukan
+        if (!$data['tanaman']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
+        }
+
+        // Tampilkan halaman detail tanaman
+        return view('detail_tanaman.php', $data);
+    }
+
+    // Method untuk menghapus tanaman dari kebun
+    public function delete($id)
+    {
+        $TanamanKebunModel = new \App\Models\TanamanKebunModel();
+
+        // Cek apakah tanaman dalam kebun ada berdasarkan ID
+        $tanamanKebun = $TanamanKebunModel->find($id);
+
+        if (!$tanamanKebun) {
+            // Jika data tanaman tidak ditemukan, redirect dengan pesan error
+            return redirect()->back()->with('error', 'Data tanaman tidak ditemukan.');
+        }
+
+        // Simpan ID kebun untuk redirect setelah hapus
+        $id_kebun = $tanamanKebun['id_kebun'];
+
+        // Hapus tanaman dari tabel tanaman_kebun berdasarkan ID
+        if ($TanamanKebunModel->delete($id)) {
+            // Redirect ke halaman kebun setelah tanaman berhasil dihapus
+            return redirect()->to('/kebun/detail/' . $id_kebun)->with('success', 'Tanaman berhasil dihapus.');
+        }
+
+        // Jika gagal menghapus tanaman, redirect kembali dengan pesan error
+        return redirect()->back()->with('error', 'Gagal menghapus tanaman.');
     }
 }

@@ -24,8 +24,6 @@ $routes->get('login/proses', 'User::proses_login');
 $routes->post('login/auth', 'User::auth');
 
 //LOGOUT
-$routes->get('login/logout', 'User::logout_google');
-$routes->get('register/logout', 'User::logout');
 $routes->get('logout', 'User::logout');
 
 //user page
@@ -37,9 +35,15 @@ $routes->get('user_page', 'User::home');
 $routes->get('/plants', 'Plants::index');
 $routes->get('plants/search', 'Plants::search');
 
+//VEGETABLE
+$routes->get('/vegetable', 'Plants::vegetable');
+$routes->get('vegetable/loadMore/(:num)', 'Plants::loadMore/$1');
 // tanaman
 $routes->get('/tanaman/tambah/(:num)', 'Plants::formTambah/$1'); // Form tambah tanaman
 $routes->post('/tanaman/tambah', 'Plants::tambah'); // Proses tambah tanaman
+$routes->get('/tanaman/detail/(:num)', 'Plants::detail/$1');
+$routes->get('/tanaman/delete/(:num)', 'Plants::delete/$1');
+$routes->get('/tanaman/search', 'Plants::search');
 
 // --=========================================|| KEBUN ||================================================--
 
@@ -51,3 +55,6 @@ $routes->post('/buat', 'Kebun::buat');
 //kelola kebun
 $routes->get('kelola_kebun', 'Kebun::index_kelola');
 $routes->get('/kebun/detail/(:num)', 'Kebun::detail/$1');
+$routes->get('/kebun/edit/(:num)', 'Kebun::edit/$1');
+$routes->post('/kebun/update/(:num)', 'Kebun::update/$1');
+$routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');

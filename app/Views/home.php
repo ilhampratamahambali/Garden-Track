@@ -308,5 +308,4 @@ html {
         </div>
     </div>
     <!-- Quote End -->
-
 <?php echo $this->endSection()?>

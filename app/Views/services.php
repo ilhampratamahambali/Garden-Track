@@ -28,7 +28,7 @@
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-3.png" alt="Icon">
                             </div>
                             <h4 class="mb-3">All Plants</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <p class="mb-4">Lihat Berbagai Jenis Tanaman Disini, Dan cari Informasinya</p>
                             <a class="btn btn-sm" href="/plants"><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>
@@ -42,9 +42,9 @@
                             <div class="btn-square rounded-circle mx-auto mb-3">
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-6.png" alt="Icon">
                             </div>
-                            <h4 class="mb-3">Pruning plants</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
-                            <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Read More</a>
+                            <h4 class="mb-3">Vegetable plants</h4>
+                            <p class="mb-4">Lihat Jenis Tanaman Yang Tergolong Sayuran atau Buah-Buahan Disini</p>
+                            <a class="btn btn-sm" href="/vegetable"><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>
                 </div>

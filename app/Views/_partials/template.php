@@ -79,9 +79,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="/" class="nav-item nav-link active">Home</a>
+                <?php if (session()->get('logged_in')) : ?>
+                    <a href="/user_page" class="nav-item nav-link active">Home</a>
+                <?php else: ?>
+                    <a href="/" class="nav-item nav-link active">Home</a>
+                <?php endif; ?>
                 <!-- <a href="#" class="nav-item nav-link">About</a> -->
                 <a href="/services" class="nav-item nav-link">Layanan</a>
+                <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>
+                    <a href="" class="nav-item nav-link">
+                        <?php
+                        // Cek apakah session 'nama_users' atau 'email' ada
+                        if (session()->has('nama_users')) {
+                            echo session('nama_users'); 
+                        } elseif (session()->has('email')) {
+                            echo session('email'); 
+                        } else {
+                            echo "Profile"; 
+                        }
+                        ?>
+                    </a>
+                <?php endif; ?>
+                
                 <!-- <a href="#" class="nav-item nav-link">Projects</a> -->
             </div>
             <?php if (session()->get('logged_in')): ?>

@@ -160,20 +160,6 @@
         </div>
         <div class="login-section">
             <h2>Login</h2>
-
-            <!-- Menampilkan Pesan Error atau Sukses -->
-            <?php if(session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger" role="alert">
-                    <?= session()->getFlashdata('error') ?>
-                </div>
-            <?php endif; ?>
-
-            <?php if(session()->getFlashdata('success')): ?>
-                <div class="alert alert-success" role="alert">
-                    <?= session()->getFlashdata('success') ?>
-                </div>
-            <?php endif; ?>
-
             <form action="<?= base_url('login/auth') ?>" method="POST">
                 <div class="form-group">
                     <input type="text" name="nama_users" placeholder="Username" required>
@@ -247,7 +233,5 @@
             });
         }
     </script>
-
-
 </body>
 </html>

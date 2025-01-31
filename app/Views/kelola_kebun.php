@@ -112,34 +112,9 @@
 
     <!-- Tombol Tambah Kebun -->
     <div class="container mt-4 text-center">
-    <a href="buat_kebun.php" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
+    <a href="buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
         <i class="bi bi-plus-circle"></i> Tambah Kebun
     </a>
-    </div>
-
-    <!-- Alert Section -->
-    <div class="container mt-4">
-        <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert-success">
-                <?= session()->getFlashdata('success') ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger">
-                <?= session()->getFlashdata('error') ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session()->getFlashdata('errors')): ?>
-            <div class="alert alert-danger">
-                <ul>
-                    <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
     </div>
 
     <!-- Catalog Section -->
@@ -162,7 +137,54 @@
       </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </body>
-    </html>
-    <?php echo $this->endSection()?>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    // Cek apakah ada session flashdata 
+    const successMessage = "<?= session()->getFlashdata('success') ?>";
+    const errorMessage = "<?= session()->getFlashdata('error') ?>";
+
+    if (successMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",  // Pastikan posisinya top
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
+
+        Toast.fire({
+            icon: "success",
+            title: successMessage // Tampilkan pesan dari session flashdata
+        });
+    }
+
+    if (errorMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",  // Pastikan posisinya top
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
+
+        Toast.fire({
+            icon: "error",
+            title: errorMessage // Tampilkan pesan error
+        });
+    }
+</script>
+<?php echo $this->endSection()?>

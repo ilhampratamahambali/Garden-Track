@@ -57,7 +57,7 @@ class Kebun extends BaseController
     
             // Set flashdata sukses
             session()->setFlashdata('success', 'Kebun berhasil dibuat!');
-            return redirect()->to('kelola_kebun.php');
+            return redirect()->to('kelola_kebun');
         }
     
         // Jika upload gagal
@@ -74,7 +74,7 @@ class Kebun extends BaseController
         $kebunModel = new KebunModel();
         $idUser = session()->get('id_user'); // Ambil id_user dari session yang sedang login
         $data['kebun'] = $kebunModel->where('id_user', $idUser)->findAll();
-        return view('kelola_kebun.php', $data); // Panggil view dengan data
+        return view('kelola_kebun', $data); // Panggil view dengan data
     }
     public function detail($id)
     {
@@ -97,7 +97,94 @@ class Kebun extends BaseController
             ->findAll();
     
         // Panggil view untuk menampilkan detail kebun
-        return view('tanaman.php', $data);
+        return view('tanaman', $data);
+    }
+    public function edit($id)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $kebunModel = new KebunModel();
+        $data['kebun'] = $kebunModel->find($id);
+
+        if (!$data['kebun']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
+        }
+
+        return view('update_kebun', $data);
     }
 
+    public function update($id)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $kebunModel = new KebunModel();
+        $kebun = $kebunModel->find($id);
+
+        if (!$kebun) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
+        }
+
+        $rules = [
+            'nama_kebun' => 'required|min_length[3]|max_length[255]',
+            'poto_kebun' => 'if_exist|max_size[poto_kebun,2048]|is_image[poto_kebun]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $data = [
+            'nama_kebun' => $this->request->getPost('nama_kebun'),
+        ];
+
+        // Ambil file dari request
+        $file = $this->request->getFile('poto_kebun');
+
+        // Pastikan file ada, valid, dan belum dipindahkan
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName(); // Generate nama file baru
+            $file->move(ROOTPATH . 'public/uploads', $newName); // Simpan ke folder 'public/uploads'
+            $data['poto_kebun'] = $newName; // Simpan nama file baru di database
+
+            // Debugging: Log nama file yang diunggah
+            log_message('debug', 'File uploaded: ' . $newName);
+
+            // Hapus file lama jika ada
+            if ($kebun['poto_kebun'] && file_exists(ROOTPATH . 'public/uploads/' . $kebun['poto_kebun'])) {
+                unlink(ROOTPATH . 'public/uploads/' . $kebun['poto_kebun']);
+            }
+        }
+
+        $kebunModel->update($id, $data);
+
+        return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil diperbarui.');
+    }
+
+    public function delete($id)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        $kebunModel = new KebunModel();
+        $kebun = $kebunModel->find($id);
+
+        if (!$kebun) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
+        }
+
+        // Hapus file gambar jika ada
+        if ($kebun['poto_kebun'] && file_exists(WRITEPATH . 'uploads/' . $kebun['poto_kebun'])) {
+            unlink(WRITEPATH . 'uploads/' . $kebun['poto_kebun']);
+        }
+
+        $kebunModel->delete($id);
+
+        return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
+    }
 }
+

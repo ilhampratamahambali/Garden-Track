@@ -3,77 +3,74 @@
 
 <style>
     html {
-  scroll-behavior: smooth;
-}
-  .carousel-bg {
-      height: 100vh; /* Menyesuaikan tinggi layar perangkat */
-      object-fit: cover; /* Memastikan gambar tidak terdistorsi */
-  }
-
-.service-section {
-    background-color: #e8f5e9; /* Warna hijau muda */
-    width: 100%;
-    padding: 150px 0;
-    margin: 0;
-}
-
-.service-item {
-    margin-bottom: 30px;
-    background-color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.service-item:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-}
-.text-justify {
-    text-align: justify;
-    display: block;
-}
-@media (max-width: 1200px) {
+        scroll-behavior: smooth;
+    }
     .carousel-bg {
-        height: 80vh; /* Untuk layar lebih kecil dari 1200px */
+        height: 100vh; /* Menyesuaikan tinggi layar perangkat */
+        object-fit: cover; /* Memastikan gambar tidak terdistorsi */
     }
-}
-@media (max-width: 992px) {
+
+    .service-section {
+        background-color: #e8f5e9; /* Warna hijau muda */
+        width: 100%;
+        padding: 150px 0;
+        margin: 0;
+    }
+
     .service-item {
-        margin-bottom: 20px; /* Penyesuaian jarak pada layar lebih kecil */
+        margin-bottom: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
     }
-}
-script#services {
-    scroll-margin-top: 100px; /* Menambahkan jarak agar tidak terlalu dekat dengan navbar */
-}
-.service-section {
-    background-color: #ffffff; /* Latar belakang putih */
-}
-</style>
 
-<script>
-document.querySelectorAll('.scroll-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault(); // Mencegah aksi default
-
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start' // Menyelaraskan bagian atas elemen ke bagian atas viewport
-            });
-
-            // Setelah scroll, sedikit geser untuk memberikan jarak
-            window.scrollBy(0, -80); // Geser sedikit ke atas
+    .service-item:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+    .text-justify {
+        text-align: justify;
+        display: block;
+    }
+    @media (max-width: 1200px) {
+        .carousel-bg {
+            height: 80vh; /* Untuk layar lebih kecil dari 1200px */
         }
-    });
-});
+    }
+    @media (max-width: 992px) {
+        .service-item {
+            margin-bottom: 20px; /* Penyesuaian jarak pada layar lebih kecil */
+        }
+    }
+    script#services {
+        scroll-margin-top: 100px; /* Menambahkan jarak agar tidak terlalu dekat dengan navbar */
+    }
+    .service-section {
+        background-color: #ffffff; /* Latar belakang putih */
+    }
+</style>
+<script>
+    document.querySelectorAll('.scroll-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Mencegah aksi default
 
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start' // Menyelaraskan bagian atas elemen ke bagian atas viewport
+                });
+
+                // Setelah scroll, sedikit geser untuk memberikan jarak
+                window.scrollBy(0, -80); // Geser sedikit ke atas
+            }
+        });
+    });
 </script>
 <!-- Carousel Start -->
-
 <div class="container-fluid p-0 wow fadeIn" data-wow-delay="0.1s">
     <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -180,7 +177,6 @@ document.querySelectorAll('.scroll-link').forEach(link => {
         </div>
     </div>
 </div>
-
 
     <!-- Quote Start -->
     <div class="container-fluid quote my-5 py-5" data-parallax="scroll" data-image-src="img/carousel-2.jpg">

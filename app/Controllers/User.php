@@ -5,7 +5,7 @@ use Google_Client;
 
 class User extends BaseController
 {
-    protected $googleClient;
+    private $googleClient;
     protected $users;
 
     public function __construct()
@@ -13,8 +13,8 @@ class User extends BaseController
         $this->googleClient = new Google_Client();
         $this->users = new UsersModel();
 
-        $this->googleClient->setClientId('30366827025-fddjqoeop0kfuibv7egj8abj8efbo6lj.apps.googleusercontent.com');
-        $this->googleClient->setClientSecret('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');
+        $this->googleClient->setClientId(env('Clientid'));
+        $this->googleClient->setClientSecret(env('ClientSecret'));
         $this->googleClient->setRedirectUri('http://localhost:8080/login/proses');
         $this->googleClient->setRedirectUri('http://localhost:8080/register/proses');
         $this->googleClient->addScope('email');
@@ -23,7 +23,7 @@ class User extends BaseController
 
 // --=========================================|| LOGIN ||================================================--
 
-    // LOGIN DISINI
+    // LOGIN GOOGLE
     public function index_login(){
         if (session()->get('access_token')) {
             $this->googleClient->revokeToken(session()->get('access_token'));
@@ -58,13 +58,14 @@ class User extends BaseController
             if (!$userExists) {
                 $this->users->save($row);
             }
-    
+            
             return redirect()->to('/user_page');
         }
     
         return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
     }
 
+    //LOGIN BIASA
     public function auth(){
         // Validasi input
         $rules = [
@@ -108,7 +109,7 @@ class User extends BaseController
         return redirect()->to('/user_page');
     }
 
-    // untuk yang user_page ini
+    // -----------------------------------++USER_PAGE++----------------------------------------
     public function home()
     {
         // Validasi apakah pengguna telah login
@@ -136,6 +137,7 @@ class User extends BaseController
         return view('register_page', $data);
     }
 
+    //REGIS GOOGLE
     public function proses_regis()
     {
         $token = $this->googleClient->fetchAccessTokenWithAuthCode($this->request->getvar('code'));
@@ -152,10 +154,13 @@ class User extends BaseController
             $this->users->save($row);
 
             session()->set($row);
-            return view('/user_page');
+            session()->set('logged_in', true);
+            session()->setFlashdata('success', 'Login berhasil!');
+            return redirect()->to('user_page');
         }   
     }
 
+    //REGIS BIASA
     public function regis_auth(){
         // Aturan validasi untuk form registrasi
         $rules = [
@@ -229,22 +234,16 @@ class User extends BaseController
     }
 // --=========================================|| LOGOUT ||================================================--
     // LOGOUT DISINI
-    public function logout_google(){
-    if (session()->get('access_token')) {
-        $this->googleClient->revokeToken(session()->get('access_token'));
-        session()->remove('access_token');
-    }
-
-    // Destroy session
-    session()->destroy();
-
-    // Redirect to home or login page
-    return redirect()->to('/');
-    }
-
     public function logout()
     {
+        if (session()->get('access_token')) {
+            $this->googleClient->revokeToken(session()->get('access_token'));
+            session()->remove('access_token');
+        }
+        session()->setFlashdata('error', 'Anda Berhasil Logout..');
         session()->destroy();
+        // dd(session());
+        // die;
         return redirect()->to('/');
     }
 

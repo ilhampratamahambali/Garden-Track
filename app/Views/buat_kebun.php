@@ -1,9 +1,6 @@
 <?php echo $this->extend('_partials/template_user2')?>
 <?php echo $this->section('isi')?>
 
-<html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<body>
 <style>
 @media (max-width: 1200px) {
     .carousel-bg {
@@ -55,8 +52,6 @@ body {
 .btn-secondary:hover {
     background-color: #6c757d;
 }
-
-
 </style>
 <script>
     // Sesuaikan tinggi navbar di bawah ini
@@ -141,10 +136,3 @@ body {
 </body>
 </html>
 <?php echo $this->endSection()?>
-
-
-
-
-
-    
-  
