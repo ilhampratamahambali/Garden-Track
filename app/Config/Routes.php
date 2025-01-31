@@ -9,7 +9,6 @@ $routes->get('/', 'Home::index');
 $routes->get('/services', 'Home::services');
 
 //tanaman
-$routes->get('plants.php', 'Plants::index');
 $routes->get('/plants', 'Plants::index');
 $routes->get('plants/search', 'Plants::search');
 

@@ -55,7 +55,7 @@ class Login extends BaseController
                 $this->users->save($row);
             }
     
-            return redirect()->to('user_page.php');
+            return redirect()->to('user_page');
         }
     
         return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
@@ -115,6 +115,6 @@ class Login extends BaseController
         
         // Tampilkan pesan sukses
         session()->setFlashdata('success', 'Login berhasil!');
-        return redirect()->to('user_page.php');
+        return redirect()->to('user_page');
     }
 }

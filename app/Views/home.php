@@ -179,7 +179,7 @@ html {
                 <p class="text-primary mb-4"></p>
                 <h1 class="display-5 mb-4">Hidup Hijau, Dimulai dari Rumah.</h1>
                 <p class="mb-4">Buat dan kelola kebun digital Anda sendiri! Tambahkan tanaman, catat perkembangan mereka, dan atur jadwal perawatan semua dalam satu aplikasi yang mudah digunakan. Bawa kebun Anda ke level berikutnya, tanpa kesulitan!</p>
-                <a class="btn btn-primary py-3 px-4" href="/services">Jelajahi</a>
+                <a class="btn btn-primary py-3 px-4" href="#services">Jelajahi</a>
                 <section id="services">
             </div>
             <div class="col-lg-3 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
@@ -223,7 +223,7 @@ html {
                         </div>
                         <h4 class="mb-3">Cari Tanaman</h4>
                         <p class="mb-4">Lihat Berbagai Jenis Tanaman Disini, Dan cari Informasinya</p>
-                        <a class="btn btn-sm" href="plants.php"><i class="fa fa-plus text-primary me-2"></i>Cari Tanaman</a>
+                        <a class="btn btn-sm" href="plants"><i class="fa fa-plus text-primary me-2"></i>Cari Tanaman</a>
                     </div>
                 </div>
             </div>
