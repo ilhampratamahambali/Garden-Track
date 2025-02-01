@@ -1,13 +1,11 @@
 <?php echo $this->extend('_partials/template')?>
 <?php echo $this->section('isi')?>
-
 <div class="container mt-5">
     <h1 class="text-center mb-3">Data Tanaman</h1>
-
     <!-- Search bar -->
     <div class="container my-4">
-        <form action="<?= base_url('plants/search') ?>" method="get" class="d-flex">
-            <input type="text" name="search" class="form-control me-2" placeholder="Cari tanaman..." aria-label="Search">
+        <form action="<?= base_url('/plants/search') ?>" method="get" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Cari tanaman..." aria-label="Search" value="<?= isset($searchQuery) ? esc($searchQuery) : '' ?>">
             <button class="btn btn-outline-success" type="submit">Cari</button>
         </form>
     </div>
@@ -40,10 +38,20 @@
             <p class="text-danger">Tidak ada data tanaman yang sesuai dengan pencarian.</p>
         <?php endif; ?>
     </div>
-    <!-- Pagination Buttons -->
+    
+    <!-- Pagination -->
     <div class="d-flex justify-content-between">
-        <a href="<?= base_url('plants?page=' . ($currentPage - 1)) ?>" id="prevButton" class="btn btn-primary" <?= $currentPage < 0 ? 'disabled' : '' ?>>Previous</a>
-        <a href="<?= base_url('plants?page=' . ($currentPage + 1)) ?>" id="nextButton" class="btn btn-primary" <?= $currentPage > $totalPages || $currentPage >= 21863 ? 'disabled' : '' ?>>Next</a>
+        <?php if (isset($pagination['prev'])) : ?>
+            <a href="<?= base_url('/plants?search=' . urlencode($searchQuery) . '&page=' . ($currentPage - 1)) ?>" class="btn btn-primary">Previous</a>
+        <?php else : ?>
+            <button class="btn btn-primary" disabled>Previous</button>
+        <?php endif; ?>
+
+        <?php if (isset($pagination['next'])) : ?>
+            <a href="<?= base_url('/plants?search=' . urlencode($searchQuery) . '&page=' . ($currentPage + 1)) ?>" class="btn btn-primary">Next</a>
+        <?php else : ?>
+            <button class="btn btn-primary" disabled>Next</button>
+        <?php endif; ?>
     </div>
 </div>
 <script>
@@ -83,5 +91,4 @@
     // Update status tombol saat halaman dimuat
     updatePaginationButtons();
 </script>
-
 <?php echo $this->endSection()?>

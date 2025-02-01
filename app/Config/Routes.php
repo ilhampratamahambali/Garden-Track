@@ -33,14 +33,13 @@ $routes->get('user_page', 'Pengguna::home');
 
 //tanaman
 $routes->get('/plants', 'Tanaman::index');
-$routes->get('plants/search', 'Tanaman::search');
+$routes->get('/plants/search', 'Tanaman::search');
 
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
 $routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
 // tanaman
 // TAMBAH 
-// $routes->get('/tanaman/tambah/(:num)', 'Tanaman::formTambah/$1');
 $routes->get('/tanaman/tambah/(:num)', 'Tanaman::tambah/$1');
 $routes->post('/tanaman/tambah', 'Tanaman::simpanTanaman'); 
 

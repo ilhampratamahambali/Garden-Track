@@ -8,7 +8,7 @@ use App\Models\KebunModel;
 class Tanaman extends BaseController
 {
     private $apiToken;
-    private $baseUrl = 'https://trefle.io/api/v1';
+    private $baseUrl;
     protected $logger;
     protected $PlantModel;
     protected $TanamanKebunModel;
@@ -20,6 +20,7 @@ class Tanaman extends BaseController
         $this->kebunModel = new KebunModel();
         $this->apiToken = env('TOKEN');
         $this->logger = \Config\Services::logger(); 
+        $this->baseUrl = 'https://trefle.io/api/v1/plants';
     }
 
     private function Tanaman($filter = null, $currentPage = 1) {
@@ -43,7 +44,7 @@ class Tanaman extends BaseController
         }
 
         // API Endpoint for fetching plant data
-        $response = $client->get("{$this->baseUrl}/plants", ['query' => $query]);
+        $response = $client->get("{$this->baseUrl}", ['query' => $query]);
 
         if ($response->getStatusCode() === 200) {
             $data = json_decode($response->getBody(), true);
@@ -70,14 +71,40 @@ class Tanaman extends BaseController
         return view('plants', $data);
     }
 
+    public function search()
+    {
+        $page = $this->request->getGet('page') ?? 1;
+        $searchQuery = $this->request->getGet('search'); // Ambil parameter pencarian
+
+        // Tentukan URL API berdasarkan apakah ada pencarian atau tidak
+        if ($searchQuery) {
+            $url = "https://trefle.io/api/v1/plants?token={$this->apiToken}&q=" . urlencode($searchQuery) . "&page={$page}";
+        } else {
+            $url = "{$this->baseUrl}?token={$this->apiToken}&page={$page}";
+        }
+
+        // Panggil API Trefle
+        $client = \Config\Services::curlrequest();
+        $response = $client->get($url);
+        $data = json_decode($response->getBody(), true);
+
+        // Pastikan data ada
+        if (!isset($data['data'])) {
+            return redirect()->back()->with('error', 'Tanaman tidak ditemukan.');
+        }
+
+        return view('plants', [
+            'plants' => $data['data'],
+            'pagination' => $data['links'] ?? [],
+            'searchQuery' => $searchQuery,
+            'currentPage' => $page
+        ]);
+    }
 
 // --=========================================|| VEGETABLE ||================================================--
-    public function vegetable(){
-        // $currentPage = (int) $this->request->getGet('page') ?? 1;
-        // $data = $this->Tanaman(true, $currentPage);
-        // return view('plants', $data);
-        // Tentukan path file JSON
-        $jsonPath = FCPATH . 'tanaman/json/sayuran.json'; 
+    public function vegetable()
+    {
+        $jsonPath = FCPATH . 'tanaman/json/sayuran.json';
 
         // Cek apakah file JSON ada
         if (!file_exists($jsonPath)) {
@@ -90,14 +117,37 @@ class Tanaman extends BaseController
         // Decode JSON ke array
         $plants = json_decode($jsonData, true);
 
-        // Siapkan data untuk dikirim ke view
-        $data = [
-            'plants' => $plants
-        ];
+        // Ambil halaman dari parameter GET
+        $page = (int) ($this->request->getGet('page') ?? 1);
+        $perPage = 9; // Jumlah data per halaman setelah scroll
+        $start = ($page - 1) * $perPage;
 
-        // Load view dan kirim data
-        return view('vegetable', $data);
+        // Total data dalam JSON
+        $totalData = count($plants);
+
+        // Ambil data berdasarkan halaman
+        $plantsPaginated = array_slice($plants, $start, $perPage);
+
+        // Jika permintaan berasal dari AJAX (untuk load lebih banyak data)
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'plants' => $plantsPaginated,
+                'hasMore' => ($start + $perPage) < $totalData, // Cek apakah masih ada data yang tersisa
+            ]);
+        }else {
+            // **Cek apakah halaman awal mendapatkan data**
+            // dd(array_slice($plants, 0, 30)); 
+
+            return view('vegetable', [
+                'plants' => array_slice($plants, 0, 30), // Data awal
+                'totalData' => $totalData
+            ]);
+        }
+
+        // Load view dengan 30 data pertama
     }
+
+
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
     // {
@@ -248,7 +298,7 @@ class Tanaman extends BaseController
         // Update status kebun menjadi "selesai"
         $this->kebunModel->update($dataTanaman['id_kebun'], ['status' => 'selesai']);
 
-        return redirect()->to('/kelola_kebun')->with('success', 'Tanaman berhasil ditambahkan.');
+        return redirect()->to('/kebun/detail/'. $dataTanaman['id_kebun'])->with('success', 'Tanaman berhasil ditambahkan.');
     }
     
     // Method untuk menampilkan detail tanaman

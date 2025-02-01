@@ -1,7 +1,7 @@
 <?php echo $this->extend('_partials/template')?>
 <?php echo $this->section('isi')?>
 <div class="container mt-5">
-    <h1 class="text-center mb-3">Data Tanaman</h1>
+    <h1 class="text-center mb-3">Data Sayuran</h1>
     <!-- Search bar -->
     <div class="container my-4">
         <form action="<?= base_url('plants/search') ?>" method="get" class="d-flex">
@@ -11,101 +11,84 @@
     </div>
     <br><br>
     <!-- Plants Data -->
-    <div class="row g-4" id="plants-container">
-        <?php if (!empty($plants)): ?>
-            <?php foreach ($plants as $plant): ?>
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <img 
-                            src="<?= $plant['image_url'] ?: base_url('assets/images/default-image.jpg') ?>" 
-                            class="card-img-top" 
-                            alt="<?= $plant['common_name'] ?>" 
-                            style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= $plant['common_name'] ?? 'Nama Tidak Tersedia' ?></h5>
-                            <p class="card-text">
-                                <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?? 'Tidak Tersedia' ?><br>
-                                <strong>Keluarga:</strong> <?= $plant['family'] ?? 'Tidak Tersedia' ?><br>
-                                <strong>Genus:</strong> <?= $plant['genus'] ?? 'Tidak Tersedia' ?><br>
-                            </p>
-                        </div>
+    <div class="container mt-5">
+    <div class="row g-4" id="plantContainer">
+        <?php foreach ($plants as $plant) : ?>
+            <div class="col-md-4 plant-item">
+                <div class="card mb-4">
+                    <img 
+                        src="<?= $plant['image_url'] ?? base_url('assets/images/default-image.jpg') ?>" 
+                        class="card-img-top" 
+                        alt="<?= $plant['common_name'] ?>" 
+                        style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $plant['common_name'] ?? 'Nama Tidak Tersedia' ?></h5>
+                        <p class="card-text">
+                            <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?? 'Tidak Tersedia' ?><br>
+                        </p>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="text-danger">Tidak ada data tanaman yang sesuai dengan pencarian.</p>
-        <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
     </div>
-    <!-- Loading Spinner -->
-    <div id="loading" class="text-center my-4" style="display: none;">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+
+    <!-- Loader -->
+    <div id="loading" class="text-center my-3" style="display: none;">
+        <p>Loading...</p>
     </div>
 </div>
-
+</div>
 <script>
-    let offset = 30; // Offset awal (30 data pertama sudah dimuat)
-    let isLoading = false; // Flag untuk menghindari multiple request
+    let currentPage = 4; // Mulai dari halaman 4 karena 30 data awal sudah ditampilkan
+    let loading = false; // Status loading
+    let hasMoreData = true; // Status apakah masih ada data
 
-    // Fungsi untuk memuat data tambahan
-    function loadMorePlants() {
-        if (isLoading) return; // Hindari multiple request
-        isLoading = true;
+    // Fungsi untuk mengambil data dengan AJAX
+    async function fetchVegetables() {
+    if (loading || !hasMoreData) return;
+    loading = true;
+    document.getElementById('loading').style.display = 'block';
 
-        // Tampilkan loading spinner
-        document.getElementById('loading').style.display = 'block';
+    try {
+        let response = await fetch("<?= base_url('/vegetable') ?>?page=" + currentPage);
+        let data = await response.json();
 
-        // Kirim request AJAX ke server
-        fetch(`<?= base_url('plants/loadMore') ?>/${offset}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.length > 0) {
-                    // Tambahkan data baru ke container
-                    const plantsContainer = document.getElementById('plants-container');
-                    data.forEach(plant => {
-                        plantsContainer.innerHTML += `
-                            <div class="col-md-4">
-                                <div class="card mb-4">
-                                    <img 
-                                        src="${plant.image_url || '<?= base_url('assets/images/default-image.jpg') ?>'}" 
-                                        class="card-img-top" 
-                                        alt="${plant.common_name}" 
-                                        style="height: 200px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${plant.common_name || 'Nama Tidak Tersedia'}</h5>
-                                        <p class="card-text">
-                                            <strong>Nama Ilmiah:</strong> ${plant.scientific_name || 'Tidak Tersedia'}<br>
-                                            <strong>Keluarga:</strong> ${plant.family || 'Tidak Tersedia'}<br>
-                                            <strong>Genus:</strong> ${plant.genus || 'Tidak Tersedia'}<br>
-                                        </p>
-                                    </div>
-                                </div>
+        console.log("Data fetched:", data); // **Cek apakah data benar-benar masuk**
+
+        if (data.plants.length > 0) {
+            let container = document.getElementById('vegetableContainer');
+            data.plants.forEach(plant => {
+                console.log("Adding plant:", plant); // **Pastikan data ditambahkan ke halaman**
+                let plantHtml = `
+                    <div class="col-md-4 plant-item">
+                        <div class="card mb-4">
+                            <img src="${plant.image_url ?? '<?= base_url('assets/images/default-image.jpg') ?>'}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">${plant.common_name ?? 'Nama Tidak Tersedia'}</h5>
+                                <p class="card-text">
+                                    <strong>Nama Ilmiah:</strong> ${plant.scientific_name ?? 'Tidak Tersedia'}<br>
+                                </p>
                             </div>
-                        `;
-                    });
-
-                    offset += 30; // Update offset untuk request berikutnya
-                } else {
-                    // Tidak ada data lagi, hentikan infinite scroll
-                    window.removeEventListener('scroll', onScroll);
-                }
-            })
-            .catch(error => console.error('Error:', error))
-            .finally(() => {
-                isLoading = false;
-                document.getElementById('loading').style.display = 'none'; // Sembunyikan loading spinner
+                        </div>
+                    </div>`;
+                container.insertAdjacentHTML('beforeend', plantHtml);
             });
-    }
-
-    // Fungsi untuk menangani event scroll
-    function onScroll() {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-            loadMorePlants();
         }
-    }
 
-    // Tambahkan event listener untuk scroll
-    window.addEventListener('scroll', onScroll);
+        hasMoreData = data.hasMore;
+        currentPage++;
+        } catch (error) {
+            console.error("Error loading data:", error);
+        }
+
+        document.getElementById('loading').style.display = 'none';
+        loading = false;
+    }
+    // Event listener untuk mendeteksi scroll
+    window.addEventListener('scroll', () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+            fetchVegetables();
+        }
+    });
 </script>
 <?php echo $this->endSection()?>

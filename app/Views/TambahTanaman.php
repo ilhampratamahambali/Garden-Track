@@ -86,7 +86,13 @@
             <!-- Deskripsi -->
             <div class="mb-3">
                 <label class="form-label">Deskripsi</label>
-                <textarea class="form-control" name="deskripsi" rows="3" required></textarea>
+                <textarea 
+                    class="form-control" 
+                    name="deskripsi" 
+                    rows="3" 
+                    placeholder="Ceritakan tentang taman ini - di mana lokasinya? Seperti apa tampangnya? Apakah Anda memiliki tautan ke foto? Apakah Anda mengalami irigasi? Apa rencanamu?" 
+                    required>
+                </textarea>
             </div>
             <!-- Tombol Submit -->
                 <div class="mb-3">

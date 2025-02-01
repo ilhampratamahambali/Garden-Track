@@ -79,9 +79,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="user_page.php" class="nav-item nav-link active">Home</a>
+                <a href="/user_page" class="nav-item nav-link active">Home</a>
                 <!-- <a href="#" class="nav-item nav-link">About</a> -->
-                <a href="#services" class="nav-item nav-link">Layanan</a>
+                <a href="/services" class="nav-item nav-link">Layanan</a>
                 <!-- <a href="#" class="nav-item nav-link">Projects</a> -->
             </div>
             <a href="/logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">Logout<i class="fa fa-arrow-right ms-3"></i></a>
