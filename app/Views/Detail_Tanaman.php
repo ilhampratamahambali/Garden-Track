@@ -86,9 +86,6 @@
                         </svg>
                     </button>
                 </a>
-
-
-
 </body>
 <script>
     document.getElementById('deleteButton').addEventListener('click', function(event) {

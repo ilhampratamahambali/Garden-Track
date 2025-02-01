@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class register_model extends Model
 {
-    protected $table = 'users';
+    protected $table = 'pengguna';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
 

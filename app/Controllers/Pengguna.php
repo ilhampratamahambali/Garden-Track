@@ -3,7 +3,7 @@ namespace App\Controllers;
 use App\Models\UsersModel;
 use Google_Client;
 
-class User extends BaseController
+class Pengguna extends BaseController
 {
     private $googleClient;
     protected $users;
@@ -61,7 +61,6 @@ class User extends BaseController
             
             return redirect()->to('/user_page');
         }
-    
         return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
     }
 
@@ -69,7 +68,7 @@ class User extends BaseController
     public function auth(){
         // Validasi input
         $rules = [
-            'nama_users' => 'required',
+            'email' => 'required',
             'password' => 'required'
         ];
     
@@ -79,15 +78,15 @@ class User extends BaseController
         }
     
         // Ambil inputan
-        $username = $this->request->getPost('nama_users');
+        $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
     
-        //cek username
-        $user = $this->users->get_user_username($username);
+        //cek email
+        $user = $this->users->get_user_email($email);
     
-        // Jika username tidak ditemukan
+        // Jika email tidak ditemukan
         if (!$user) {
-            session()->setFlashdata('error', 'Username tidak ditemukan');
+            session()->setFlashdata('error', 'Email tidak ditemukan');
             return redirect()->to('/login')->withInput();
         }
     
@@ -100,7 +99,7 @@ class User extends BaseController
         // Set session
         session()->set([
             'id_user' => $user->id_user,
-            'nama_users' => $user->nama_users,
+            'email' => $user->email,
             'logged_in' => true
         ]);
         

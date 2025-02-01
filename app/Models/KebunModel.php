@@ -8,5 +8,11 @@ class KebunModel extends Model
 {
     protected $table = 'kebun';
     protected $primaryKey = 'id_kebun';
-    protected $allowedFields = ['id_user','id_tanaman','nama_kebun', 'poto_kebun'];
+    protected $allowedFields = [
+        'id_user',
+        'id_tanaman',
+        'nama_kebun', 
+        'poto_kebun', 
+        'status'
+    ];
 }

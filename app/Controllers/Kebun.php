@@ -2,15 +2,17 @@
 namespace App\Controllers;
 
 use App\Models\KebunModel;
-use CodeIgniter\Controller;
 use App\Models\TanamanKebunModel;
 
 class Kebun extends BaseController
 {
     protected $kebunModel;
+    protected $tanamanKebunModel;
+
 
     public function __construct()
     {
+        $this->tanamanKebunModel = new TanamanKebunModel();
         $this->kebunModel = new KebunModel();
     }
 
@@ -25,45 +27,46 @@ class Kebun extends BaseController
     public function buat()
     {
         // Validasi input form
-        $validationRules = [
-            'nama_kebun' => 'required',
+        $rules = [
+            'nama_kebun' => 'required|max_length[255]',
             'poto_kebun' => 'uploaded[poto_kebun]|is_image[poto_kebun]|max_size[poto_kebun,2048]',
         ];
-    
-        if (!$this->validate($validationRules)) {
-            // Simpan pesan error ke session
-            session()->setFlashdata('errors', $this->validator->getErrors());
-            return redirect()->to('kelola_kebun')->withInput();
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('error', 'Input tidak valid');
         }
-    
-        // Ambil data dari input
+
+        // Ambil data dari request
         $namaKebun = $this->request->getPost('nama_kebun');
         $file = $this->request->getFile('poto_kebun');
-    
-        // Ambil id_user dari session
-        $idUser = session()->get('id_user'); // Pastikan session 'id_user' sudah ada
-    
+        $idUser = session()->get('id_user');
+
+        if (!$idUser) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
         if ($file->isValid() && !$file->hasMoved()) {
-            // Simpan file ke folder public/uploads
             $fileName = $file->getRandomName();
             $file->move('uploads', $fileName);
-    
-            // Simpan data ke database dengan menambahkan id_user
-            $this->kebunModel->save([
-                'id_user' => $idUser, // Menyimpan id_user yang sedang login
-                'nama_kebun' => $namaKebun,
-                'poto_kebun' => $fileName,
-            ]);
-    
-            // Set flashdata sukses
-            session()->setFlashdata('success', 'Kebun berhasil dibuat!');
-            return redirect()->to('kelola_kebun');
+        } else {
+            return redirect()->back()->with('error', 'Gagal mengunggah gambar.');
         }
-    
-        // Jika upload gagal
-        session()->setFlashdata('error', 'Gagal mengunggah gambar');
-        return redirect()->to('kelola_kebun')->withInput();
-    }    
+
+        // Simpan ke database
+        $dataKebun = [
+            'id_user' => $idUser,
+            'nama_kebun' => $namaKebun,
+            'poto_kebun' => $fileName,
+            'status' => 'belum', // Default status
+        ];
+
+        $this->kebunModel->insert($dataKebun);
+        $kebunId = $this->kebunModel->insertID(); // Ambil ID kebun yang baru dibuat
+
+        // Redirect ke halaman tambah tanaman dengan membawa ID kebun
+        return redirect()->to('/tanaman/tambah/' . $kebunId);
+    }
+
 
 // --=========================================|| KELOLA KEBUN ||================================================--
     public function index_kelola()
@@ -71,18 +74,14 @@ class Kebun extends BaseController
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
-        $kebunModel = new KebunModel();
-        $idUser = session()->get('id_user'); // Ambil id_user dari session yang sedang login
-        $data['kebun'] = $kebunModel->where('id_user', $idUser)->findAll();
-        return view('kelola_kebun', $data); // Panggil view dengan data
+        $idUser = session()->get('id_user'); 
+        $data['kebun'] = $this->kebunModel->where('id_user', $idUser)->findAll();
+        return view('kelola_kebun', $data); 
     }
     public function detail($id)
     {
-        $kebunModel = new KebunModel();
-        $tanamanKebunModel = new \App\Models\TanamanKebunModel(); // Model untuk tabel hubungan kebun dan tanaman
-    
         // Cari data kebun berdasarkan ID
-        $data['kebun'] = $kebunModel->find($id);
+        $data['kebun'] = $this->kebunModel->find($id);
     
         // Jika data kebun tidak ditemukan
         if (!$data['kebun']) {
@@ -90,23 +89,22 @@ class Kebun extends BaseController
         }
     
         // Ambil daftar tanaman terkait dengan kebun ini
-        $data['tanaman'] = $tanamanKebunModel
-            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name') // Sesuaikan nama field
-            ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') // Join dengan tabel tanaman
-            ->where('tanaman_kebun.id_kebun', $id) // Filter berdasarkan id_kebun
+        $data['tanaman'] = $this->tanamanKebunModel
+            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name') 
+            ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
+            ->where('tanaman_kebun.id_kebun', $id) 
             ->findAll();
     
         // Panggil view untuk menampilkan detail kebun
         return view('tanaman', $data);
     }
+
     public function edit($id)
     {
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
-
-        $kebunModel = new KebunModel();
-        $data['kebun'] = $kebunModel->find($id);
+        $data['kebun'] = $this->kebunModel->find($id);
 
         if (!$data['kebun']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
@@ -121,8 +119,7 @@ class Kebun extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $kebunModel = new KebunModel();
-        $kebun = $kebunModel->find($id);
+        $kebun = $this->kebunModel->find($id);
 
         if (!$kebun) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
@@ -146,9 +143,9 @@ class Kebun extends BaseController
 
         // Pastikan file ada, valid, dan belum dipindahkan
         if ($file && $file->isValid() && !$file->hasMoved()) {
-            $newName = $file->getRandomName(); // Generate nama file baru
-            $file->move(ROOTPATH . 'public/uploads', $newName); // Simpan ke folder 'public/uploads'
-            $data['poto_kebun'] = $newName; // Simpan nama file baru di database
+            $newName = $file->getRandomName(); 
+            $file->move(ROOTPATH . 'public/uploads', $newName); 
+            $data['poto_kebun'] = $newName; 
 
             // Debugging: Log nama file yang diunggah
             log_message('debug', 'File uploaded: ' . $newName);
@@ -159,7 +156,7 @@ class Kebun extends BaseController
             }
         }
 
-        $kebunModel->update($id, $data);
+        $this->kebunModel->update($id, $data);
 
         return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil diperbarui.');
     }
@@ -170,8 +167,7 @@ class Kebun extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        $kebunModel = new KebunModel();
-        $kebun = $kebunModel->find($id);
+        $kebun = $this->kebunModel->find($id);
 
         if (!$kebun) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
@@ -182,7 +178,7 @@ class Kebun extends BaseController
             unlink(WRITEPATH . 'uploads/' . $kebun['poto_kebun']);
         }
 
-        $kebunModel->delete($id);
+        $this->kebunModel->delete($id);
 
         return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
     }

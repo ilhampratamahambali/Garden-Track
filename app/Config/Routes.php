@@ -7,48 +7,51 @@ use CodeIgniter\Router\RouteCollection;
  */
 // --=========================================|| USER ||================================================--
 // YANG DI NAVBAR
-$routes->get('/', 'User::dashboard');
-$routes->get('/services', 'User::services');
+$routes->get('/', 'Pengguna::dashboard');
+$routes->get('/services', 'Pengguna::services');
 
 //register google
-$routes->get('register', 'User::index_regis');
-$routes->get('register/proses', 'User::proses_regis');
+$routes->get('register', 'Pengguna::index_regis');
+$routes->get('register/proses', 'Pengguna::proses_regis');
 
 // register biasa
-$routes->post('register/auth', 'User::regis_auth');
+$routes->post('register/auth', 'Pengguna::regis_auth');
 // $routes->get('/trefle', 'plant::index');
 
 //login
-$routes->get('login', 'User::index_login');
-$routes->get('login/proses', 'User::proses_login');
-$routes->post('login/auth', 'User::auth');
+$routes->get('login', 'Pengguna::index_login');
+$routes->get('login/proses', 'Pengguna::proses_login');
+$routes->post('login/auth', 'Pengguna::auth');
 
 //LOGOUT
-$routes->get('logout', 'User::logout');
+$routes->get('logout', 'Pengguna::logout');
 
 //user page
-$routes->get('user_page', 'User::home');
+$routes->get('user_page', 'Pengguna::home');
 
 // --=========================================|| TANAMAN ||================================================--
 
 //tanaman
-$routes->get('/plants', 'Plants::index');
-$routes->get('plants/search', 'Plants::search');
+$routes->get('/plants', 'Tanaman::index');
+$routes->get('plants/search', 'Tanaman::search');
 
 //VEGETABLE
-$routes->get('/vegetable', 'Plants::vegetable');
-$routes->get('vegetable/loadMore/(:num)', 'Plants::loadMore/$1');
+$routes->get('/vegetable', 'Tanaman::vegetable');
+$routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
 // tanaman
-$routes->get('/tanaman/tambah/(:num)', 'Plants::formTambah/$1'); // Form tambah tanaman
-$routes->post('/tanaman/tambah', 'Plants::tambah'); // Proses tambah tanaman
-$routes->get('/tanaman/detail/(:num)', 'Plants::detail/$1');
-$routes->get('/tanaman/delete/(:num)', 'Plants::delete/$1');
-$routes->get('/tanaman/search', 'Plants::search');
+// TAMBAH 
+// $routes->get('/tanaman/tambah/(:num)', 'Tanaman::formTambah/$1');
+$routes->get('/tanaman/tambah/(:num)', 'Tanaman::tambah/$1');
+$routes->post('/tanaman/tambah', 'Tanaman::simpanTanaman'); 
+
+$routes->get('/tanaman/detail/(:num)', 'Tanaman::detail/$1');
+$routes->get('/tanaman/delete/(:num)', 'Tanaman::delete/$1');
+$routes->get('/tanaman/search', 'Tanaman::search');
 
 // --=========================================|| KEBUN ||================================================--
 
 //tambah kebun
-$routes->get('buat_kebun', 'Kebun::index');
+$routes->get('/buat_kebun', 'Kebun::index');
 $routes->get('/kebun', 'Kebun::index');
 $routes->post('/buat', 'Kebun::buat');
 

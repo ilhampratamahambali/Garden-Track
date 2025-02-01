@@ -2,7 +2,7 @@
 namespace App\Models;
 use CodeIgniter\Model;
 class UsersModel extends Model{
-    protected $table            = 'users';
+    protected $table            = 'pengguna';
     protected $primaryKey       = 'id_user';
     protected $useAutoIncrement = false;
     protected $returnType       = 'object';
@@ -37,6 +37,11 @@ class UsersModel extends Model{
 
     public function get_user_username($username){
         $result = $this->where('nama_users', $username)->first();
+        return $result;
+    }
+
+    public function get_user_email($email){
+        $result = $this->where('email', $email)->first();
         return $result;
     }
 

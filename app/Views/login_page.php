@@ -162,8 +162,8 @@
             <h2>Login</h2>
             <form action="<?= base_url('login/auth') ?>" method="POST">
                 <div class="form-group">
-                    <input type="text" name="nama_users" placeholder="Username" required>
-                    <i class="fas fa-user"></i>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <i class="fas fa-envelope"></i>
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" placeholder="Password" required>

@@ -6,15 +6,17 @@ use CodeIgniter\Model;
 
 class TanamanKebunModel extends Model{
     protected $table = 'tanaman_kebun';
-    protected $primaryKey = 'id_tanaman';
+    protected $primaryKey = 'id';
     protected $allowedFields = [
-        'nama_tanaman',
-        'benih', 
+        'id_tanaman',
+        'id_kebun',
+        'id_user',
+        'benih',
         'cara_menanam',
-        'kondisi_tanah',
+        'kondisi_matahari',
         'tanggal_mulai',
         'tanggal_selesai',
-        'deskripsi'
+        'deskripsi',
     ];
 
     public function search($keyword)

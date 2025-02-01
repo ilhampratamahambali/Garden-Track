@@ -59,31 +59,30 @@ body {
 
     // Ambil semua tautan yang memiliki kelas "scroll-link"
     document.querySelectorAll('.scroll-link').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault(); // Mencegah aksi default
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Mencegah aksi default
 
-        // Ambil target dari atribut href
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
+            // Ambil target dari atribut href
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
 
-        if (targetElement) {
-          // Hitung posisi scroll dengan mengurangi tinggi navbar
-          const offsetTop = targetElement.offsetTop - navbarHeight;
+            if (targetElement) {
+            // Hitung posisi scroll dengan mengurangi tinggi navbar
+            const offsetTop = targetElement.offsetTop - navbarHeight;
 
-          // Scroll ke posisi tersebut
-          window.scrollTo({
-            top: offsetTop,
-            behavior: 'smooth'
-          });
-        }
-      });
+            // Scroll ke posisi tersebut
+            window.scrollTo({
+                top: offsetTop,
+                behavior: 'smooth'
+            });
+            }
+        });
     });
-  </script>
+</script>
 
 <div class="container">
         <div class="form-container">
             <h1 class="form-title">Buat Kebun Anda</h1>
-            
             <form id="catalogForm" action="/buat" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="nama_kebun" class="form-label">Nama Kebun</label>
@@ -103,6 +102,53 @@ body {
     </div>
 
     <script>
+        // Cek apakah ada session flashdata 
+        const successMessage = "<?= session()->getFlashdata('success') ?>";
+        const errorMessage = "<?= session()->getFlashdata('error') ?>";
+
+        if (successMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",  // Pastikan posisinya top
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
+                }
+            });
+
+            Toast.fire({
+                icon: "success",
+                title: successMessage // Tampilkan pesan dari session flashdata
+            });
+        }
+
+        if (errorMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",  // Pastikan posisinya top
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
+                }
+            });
+
+            Toast.fire({
+                icon: "error",
+                title: errorMessage // Tampilkan pesan error
+            });
+        }
         function previewImage(event) {
             const input = event.target;
             const preview = document.getElementById('preview');

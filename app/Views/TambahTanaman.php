@@ -21,23 +21,24 @@
 <body>
     <div class="container">
         <h2 class="mb-4">Form Tambah Tanaman</h2>
-        <form action="<?= base_url('/tanaman/tambah') ?>" method="post">
-    <!-- Pilih Tanaman -->
-    <div class="mb-3">
-        <label class="form-label">Pilih Tanaman</label>
-        <select class="form-select" name="id_tanaman" required>
-            <option value="">-- Pilih Tanaman --</option>
-            <?php foreach ($dataTanaman as $tanaman) : ?>
-                <option value="<?= $tanaman['id_tanaman'] ?>">
-                    <?= $tanaman['common_name'] ?> (<?= $tanaman['scientific_name'] ?>)
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+        <form action="<?= base_url('/tanaman/tambah')?>" method="post">
+            <!-- Pilih Tanaman -->
+            <div class="mb-3">
+                <label class="form-label">Pilih Tanaman</label>
+                <select class="form-select" name="id_tanaman" required>
+                    <option value="">-- Pilih Tanaman --</option>
+                    <?php foreach ($dataTanaman as $tanaman) : ?>
+                        <option value="<?= $tanaman['id_tanaman'] ?>">
+                            <?= $tanaman['common_name'] ?> (<?= $tanaman['scientific_name'] ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <!-- Jumlah Benih -->
             <div class="mb-3">
                 <label class="form-label">Jumlah Benih</label>
                 <input type="number" class="form-control" name="benih" required>
+                <input type="hidden" name="id_kebun" value="<?= $id_kebun ?>">
             </div>
 
             <!-- Cara Menanam -->
@@ -62,7 +63,7 @@
             <!-- Kondisi Tanah -->
             <div class="mb-3">
                 <label class="form-label">Kondisi Tanah</label>
-                <select class="form-select" name="kondisi_tanah" required>
+                <select class="form-select" name="kondisi_matahari" required>
                     <option value="">Pilih Kondisi</option>
                     <option value="matahari penuh">Matahari Penuh</option>
                     <option value="setengah teduh">Setengah Teduh</option>
@@ -87,8 +88,8 @@
                 <label class="form-label">Deskripsi</label>
                 <textarea class="form-control" name="deskripsi" rows="3" required></textarea>
             </div>
-                        <!-- Tombol Submit -->
-                        <div class="mb-3">
+            <!-- Tombol Submit -->
+                <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
         </form>
@@ -97,6 +98,53 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        // Cek apakah ada session flashdata 
+    const successMessage = "<?= session()->getFlashdata('success') ?>";
+    const errorMessage = "<?= session()->getFlashdata('error') ?>";
+
+    if (successMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",  // Pastikan posisinya top
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
+
+        Toast.fire({
+            icon: "success",
+            title: successMessage // Tampilkan pesan dari session flashdata
+        });
+    }
+
+    if (errorMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",  // Pastikan posisinya top
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
+
+        Toast.fire({
+            icon: "error",
+            title: errorMessage // Tampilkan pesan error
+        });
+    }
     $(document).ready(function() {
         $('#search').select2({
             placeholder: 'Cari tanaman...',

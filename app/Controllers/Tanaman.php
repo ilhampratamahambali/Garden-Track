@@ -3,16 +3,23 @@ namespace App\Controllers;
 
 use App\Models\PlantModel;
 use App\Models\TanamanKebunModel;
+use App\Models\KebunModel;
 
-class Plants extends BaseController
+class Tanaman extends BaseController
 {
     private $apiToken;
     private $baseUrl = 'https://trefle.io/api/v1';
     protected $logger;
+    protected $PlantModel;
+    protected $TanamanKebunModel;
+    protected $kebunModel;
 
     public function __construct(){
+        $this->PlantModel = new PlantModel();
+        $this->TanamanKebunModel = new TanamanKebunModel();
+        $this->kebunModel = new KebunModel();
         $this->apiToken = env('TOKEN');
-        $this->logger = \Config\Services::logger(); // Initialize logger
+        $this->logger = \Config\Services::logger(); 
     }
 
     private function Tanaman($filter = null, $currentPage = 1) {
@@ -70,7 +77,7 @@ class Plants extends BaseController
         // $data = $this->Tanaman(true, $currentPage);
         // return view('plants', $data);
         // Tentukan path file JSON
-        $jsonPath = FCPATH . 'tanaman/json/sayuran.json'; // FCPATH mengarah ke folder public
+        $jsonPath = FCPATH . 'tanaman/json/sayuran.json'; 
 
         // Cek apakah file JSON ada
         if (!file_exists($jsonPath)) {
@@ -181,92 +188,92 @@ class Plants extends BaseController
     //         ]);
     //     }
     // }
-
-
 // --=========================================|| TANAMAN-KEBUN ||================================================--
 
     public function formTambah($id_kebun)
-        {
-            $PlantModel = new PlantModel();
-
-            // Ambil data tanaman dari tabel master tanaman
-            $dataTanaman = $PlantModel->findAll();
-
-            return view('TambahTanaman.php', [
-                'id_kebun' => $id_kebun,
-                'dataTanaman' => $dataTanaman,
-            ]);
-        }
-    public function tambah()
     {
-        $TanamanKebunModel = new TanamanKebunModel(); // Model untuk menghubungkan tanaman dan kebun
+        // Ambil data tanaman dari tabel master tanaman
+        $dataTanaman = $this->PlantModel->findAll();
+        return view('TambahTanaman', [
+            'id_kebun' => $id_kebun,
+            'dataTanaman' => $dataTanaman,
+        ]);
+    }
+    
+    public function tambah($kebunId)
+    {
+        $dataTanaman = $this->PlantModel->findAll();
+        $data = [
+            'id_kebun' => $kebunId,
+            'dataTanaman' => $dataTanaman,
+        ];
+        // dd($data); die;
+        return view('TambahTanaman', $data);
+    }
 
-        // Validasi input
-        $validation = \Config\Services::validation();
-        $validation->setRules([
-            'id_kebun' => 'required|numeric',
-            'id_tanaman' => 'required|numeric',
+    public function simpanTanaman()
+    {
+        // Validasi input tanaman
+        $rules = [
+            'id_tanaman' => 'required',
+            'id_kebun' => 'required',
             'benih' => 'required|numeric',
             'cara_menanam' => 'required',
-            'kondisi_tanah' => 'required',
+            'kondisi_matahari' => 'required',
             'tanggal_mulai' => 'required|valid_date',
             'tanggal_selesai' => 'required|valid_date',
             'deskripsi' => 'required',
-        ]);
-
-        if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-        }
-
-        // Ambil data dari form
-        $data = [
-            'id_kebun' => $this->request->getPost('id_kebun'), // ID Kebun yang sudah ada
-            'id_tanaman' => $this->request->getPost('id_tanaman'), // ID Tanaman yang dipilih
-            'benih' => $this->request->getPost('benih'), // Jumlah benih
-            'cara_menanam' => $this->request->getPost('cara_menanam'), // Cara menanam
-            'kondisi_tanah' => $this->request->getPost('kondisi_tanah'), // Kondisi tanah
-            'tanggal_mulai' => $this->request->getPost('tanggal_mulai'), // Tanggal mulai
-            'tanggal_selesai' => $this->request->getPost('tanggal_selesai'), // Tanggal selesai
-            'deskripsi' => $this->request->getPost('deskripsi'), // Deskripsi
-            'id_user' => session()->get('id_user'), // Ambil ID User dari session
         ];
-
-        // Simpan data ke database
-        if ($TanamanKebunModel->insert($data)) {
-            return redirect()->to('/kebun/detail/' . $data['id_kebun'])->with('success', 'Tanaman berhasil ditambahkan.');
+        
+        if (!$this->validate($rules)) {
+            $validation = \Config\Services::validation();
+            return redirect()->back()->withInput()->with('error', 'Input tidak valid')->with('validation_errors', $validation->getErrors());
         }
 
-        return redirect()->back()->with('error', 'Gagal menambahkan tanaman.');
+        // Ambil data tanaman
+        $dataTanaman = [
+            'id_tanaman' => $this->request->getPost('id_tanaman'),
+            'id_kebun' => $this->request->getPost('id_kebun'),
+            'id_user' => session()->get('id_user'),
+            'benih' => $this->request->getPost('benih'),
+            'cara_menanam' => $this->request->getPost('cara_menanam'),
+            'kondisi_matahari' => $this->request->getPost('kondisi_matahari'),
+            'tanggal_mulai' => $this->request->getPost('tanggal_mulai'),
+            'tanggal_selesai' => $this->request->getPost('tanggal_selesai'),
+            'deskripsi' => $this->request->getPost('deskripsi'),
+        ];
+        // Simpan tanaman ke kebun
+        $this->TanamanKebunModel->insert($dataTanaman);
+
+        // Update status kebun menjadi "selesai"
+        $this->kebunModel->update($dataTanaman['id_kebun'], ['status' => 'selesai']);
+
+        return redirect()->to('/kelola_kebun')->with('success', 'Tanaman berhasil ditambahkan.');
     }
     
     // Method untuk menampilkan detail tanaman
     public function detail($id)
     {
-        $tanamanKebunModel = new \App\Models\TanamanKebunModel();
-        $PlantModel = new \App\Models\PlantModel();
-
         // Cari data tanaman kebun berdasarkan id
-        $data['tanaman'] = $tanamanKebunModel
-        ->select('tanaman_kebun.id, tanaman.common_name, tanaman.scientific_name')
-        ->join('gardentrack.tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
-        ->where('tanaman_kebun.id_kebun', $id)
-        ->findAll();
+        $data['tanaman'] = $this->TanamanKebunModel
+                ->select('tanaman_kebun.id, tanaman.common_name, tanaman.scientific_name')
+                ->join('gardentrack.tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
+                ->where('tanaman_kebun.id_kebun', $id)
+                ->findAll();
         // Jika tanaman tidak ditemukan
         if (!$data['tanaman']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
 
         // Tampilkan halaman detail tanaman
-        return view('detail_tanaman.php', $data);
+        return view('detail_tanaman', $data);
     }
 
     // Method untuk menghapus tanaman dari kebun
     public function delete($id)
     {
-        $TanamanKebunModel = new \App\Models\TanamanKebunModel();
-
         // Cek apakah tanaman dalam kebun ada berdasarkan ID
-        $tanamanKebun = $TanamanKebunModel->find($id);
+        $tanamanKebun = $this->TanamanKebunModel->find($id);
 
         if (!$tanamanKebun) {
             // Jika data tanaman tidak ditemukan, redirect dengan pesan error
@@ -277,7 +284,7 @@ class Plants extends BaseController
         $id_kebun = $tanamanKebun['id_kebun'];
 
         // Hapus tanaman dari tabel tanaman_kebun berdasarkan ID
-        if ($TanamanKebunModel->delete($id)) {
+        if ($this->TanamanKebunModel->delete($id)) {
             // Redirect ke halaman kebun setelah tanaman berhasil dihapus
             return redirect()->to('/kebun/detail/' . $id_kebun)->with('success', 'Tanaman berhasil dihapus.');
         }
