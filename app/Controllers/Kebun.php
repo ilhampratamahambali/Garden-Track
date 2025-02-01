@@ -21,7 +21,7 @@ class Kebun extends BaseController
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
-        return view('buat_kebun'); 
+        return view('kebun/buat_kebun',['title' => 'Buat Kebun']); 
     }
 
     public function buat()
@@ -75,28 +75,33 @@ class Kebun extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
         $idUser = session()->get('id_user'); 
-        $data['kebun'] = $this->kebunModel->where('id_user', $idUser)->findAll();
-        return view('kelola_kebun', $data); 
+        $data = [
+            'title' => 'Kebun Saya',
+            'kebun' => $this->kebunModel->where('id_user', $idUser)->findAll(),
+        ] ;
+        return view('kebun/kelola_kebun', $data); 
     }
+
     public function detail($id)
     {
-        // Cari data kebun berdasarkan ID
-        $data['kebun'] = $this->kebunModel->find($id);
-    
+        $kebun = $this->kebunModel->find($id);
         // Jika data kebun tidak ditemukan
-        if (!$data['kebun']) {
+        if (!$kebun) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
         }
-    
         // Ambil daftar tanaman terkait dengan kebun ini
-        $data['tanaman'] = $this->tanamanKebunModel
+        $tanaman = $this->tanamanKebunModel
             ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name') 
             ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
             ->where('tanaman_kebun.id_kebun', $id) 
             ->findAll();
-    
-        // Panggil view untuk menampilkan detail kebun
-        return view('tanaman', $data);
+        $data = [
+            'title' => 'Detail Kebun',
+            'kebun' => $kebun,
+            'tanaman' => $tanaman
+        ];
+
+        return view('kebun/tanaman', $data);
     }
 
     public function edit($id)
@@ -110,7 +115,7 @@ class Kebun extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
         }
 
-        return view('update_kebun', $data);
+        return view('kebun/update_kebun', $data, ['title' => 'Edit Kebun']);
     }
 
     public function update($id)

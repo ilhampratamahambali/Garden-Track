@@ -1,4 +1,4 @@
-<?php echo $this->extend('_partials/template_user2') ?>
+<?php echo $this->extend('_partials/template') ?>
 <?php echo $this->section('isi') ?>
 
 <!-- SweetAlert2 CSS -->

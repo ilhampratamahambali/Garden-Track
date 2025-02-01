@@ -31,7 +31,7 @@ class Pengguna extends BaseController
         }
         
         $data['link'] = $this->googleClient->createAuthUrl();
-        return view('login_page', $data);
+        return view('pengguna/login_page', $data, ['title' => 'Login']);
     }
 
     public function proses_login()
@@ -74,7 +74,7 @@ class Pengguna extends BaseController
     
         if(!$this->validate($rules)){
             session()->setFlashdata('errors', $this->validator->getErrors());
-            return view("login_page");
+            return view("pengguna/login_page");
         }
     
         // Ambil inputan
@@ -83,7 +83,7 @@ class Pengguna extends BaseController
     
         //cek email
         $user = $this->users->get_user_email($email);
-    
+
         // Jika email tidak ditemukan
         if (!$user) {
             session()->setFlashdata('error', 'Email tidak ditemukan');
@@ -99,6 +99,7 @@ class Pengguna extends BaseController
         // Set session
         session()->set([
             'id_user' => $user->id_user,
+            'nama_users' =>$user->nama_users,
             'email' => $user->email,
             'logged_in' => true
         ]);
@@ -118,13 +119,14 @@ class Pengguna extends BaseController
 
         // Ambil data dari sesi untuk ditampilkan di view
         $data = [
+            'title' => 'Dashboard',
             'nama_users' => session()->get('nama_users'),
             'profile'    => session()->get('profile'),
             'email'      => session()->get('email'),
         ];
 
         // Tampilkan halaman user dengan data pengguna
-        return view('/user_page', $data);
+        return view('pengguna/user_page', $data);
     }
 
 // --=========================================|| REGISTER ||================================================--
@@ -133,7 +135,7 @@ class Pengguna extends BaseController
     public function index_regis()
     {
         $data['link']=$this->googleClient->CreateAuthUrl();
-        return view('register_page', $data);
+        return view('pengguna/register_page', $data, ['title' => 'Registrasi']);
     }
 
     //REGIS GOOGLE
@@ -155,7 +157,7 @@ class Pengguna extends BaseController
             session()->set($row);
             session()->set('logged_in', true);
             session()->setFlashdata('success', 'Login berhasil!');
-            return redirect()->to('user_page');
+            return redirect()->to('/user_page');
         }   
     }
 
@@ -250,11 +252,11 @@ class Pengguna extends BaseController
 // --=========================================|| PANEL ||================================================--
     public function dashboard(): string
     {
-        return view('home');
+        return view('home',['title' => 'Home Page']);
     }
     
     public function services(): string
     {
-        return view('services');
+        return view('services',['title' => 'Layanan']);
     }
 }

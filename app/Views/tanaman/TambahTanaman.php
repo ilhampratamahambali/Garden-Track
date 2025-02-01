@@ -1,12 +1,5 @@
-<?php echo $this->extend('_partials/template_user2') ?>
+<?php echo $this->extend('_partials/template') ?>
 <?php echo $this->section('isi') ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Tanaman</title>
     <style>
         .container {
             max-width: 800px;
@@ -17,8 +10,6 @@
             padding: 5px;
         }
     </style>
-</head>
-<body>
     <div class="container">
         <h2 class="mb-4">Form Tambah Tanaman</h2>
         <form action="<?= base_url('/tanaman/tambah')?>" method="post">
@@ -91,8 +82,7 @@
                     name="deskripsi" 
                     rows="3" 
                     placeholder="Ceritakan tentang taman ini - di mana lokasinya? Seperti apa tampangnya? Apakah Anda memiliki tautan ke foto? Apakah Anda mengalami irigasi? Apa rencanamu?" 
-                    required>
-                </textarea>
+                    required></textarea>
             </div>
             <!-- Tombol Submit -->
                 <div class="mb-3">

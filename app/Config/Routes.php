@@ -60,3 +60,7 @@ $routes->get('/kebun/detail/(:num)', 'Kebun::detail/$1');
 $routes->get('/kebun/edit/(:num)', 'Kebun::edit/$1');
 $routes->post('/kebun/update/(:num)', 'Kebun::update/$1');
 $routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');
+
+
+$routes->get('/growstuff', 'Growstuff::index');
+$routes->get('/growstuff/search', 'Growstuff::search');

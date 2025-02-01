@@ -68,7 +68,7 @@ class Tanaman extends BaseController
     public function index(){
         $currentPage = (int) $this->request->getGet('page') ?? 1;
         $data = $this->Tanaman(null, $currentPage);
-        return view('plants', $data);
+        return view('tanaman/plants', $data, ['title' => 'Tanaman']);
     }
 
     public function search()
@@ -93,7 +93,8 @@ class Tanaman extends BaseController
             return redirect()->back()->with('error', 'Tanaman tidak ditemukan.');
         }
 
-        return view('plants', [
+        return view('tanaman/plants', [
+            'title' => 'Tanaman',
             'plants' => $data['data'],
             'pagination' => $data['links'] ?? [],
             'searchQuery' => $searchQuery,
@@ -135,19 +136,13 @@ class Tanaman extends BaseController
                 'hasMore' => ($start + $perPage) < $totalData, // Cek apakah masih ada data yang tersisa
             ]);
         }else {
-            // **Cek apakah halaman awal mendapatkan data**
-            // dd(array_slice($plants, 0, 30)); 
-
-            return view('vegetable', [
-                'plants' => array_slice($plants, 0, 30), // Data awal
+            return view('tanaman/vegetable', [
+                'title' => 'Sayuran',
+                'plants' => array_slice($plants, 0, 30), 
                 'totalData' => $totalData
             ]);
         }
-
-        // Load view dengan 30 data pertama
     }
-
-
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
     // {
@@ -244,7 +239,8 @@ class Tanaman extends BaseController
     {
         // Ambil data tanaman dari tabel master tanaman
         $dataTanaman = $this->PlantModel->findAll();
-        return view('TambahTanaman', [
+        return view('tanaman/TambahTanaman', [
+            'title' => 'Form Tambah',
             'id_kebun' => $id_kebun,
             'dataTanaman' => $dataTanaman,
         ]);
@@ -254,11 +250,11 @@ class Tanaman extends BaseController
     {
         $dataTanaman = $this->PlantModel->findAll();
         $data = [
+            'title' => 'Tambah Tanaman',
             'id_kebun' => $kebunId,
             'dataTanaman' => $dataTanaman,
         ];
-        // dd($data); die;
-        return view('TambahTanaman', $data);
+        return view('tanaman/TambahTanaman', $data);
     }
 
     public function simpanTanaman()
@@ -316,7 +312,7 @@ class Tanaman extends BaseController
         }
 
         // Tampilkan halaman detail tanaman
-        return view('detail_tanaman', $data);
+        return view('tanaman/Detail_Tanaman', $data, ['title' => 'Detail Tanaman']);
     }
 
     // Method untuk menghapus tanaman dari kebun

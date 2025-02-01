@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Garden Track</title>
+    <title><?= esc($title ?? 'Garden Track') ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -21,7 +21,11 @@
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    
     <!-- Libraries Stylesheet -->
     <link href="<?php echo base_url('tanaman/'); ?>lib/animate/animate.min.css" rel="stylesheet">
     <link href="<?php echo base_url('tanaman/'); ?>lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
@@ -40,8 +44,6 @@
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
     <!-- Spinner End -->
-
-
     <!-- Topbar Start -->
     <!-- <div class="container-fluid bg-dark text-light px-0 py-2">
         <div class="row gx-0 d-none d-lg-flex">
@@ -67,8 +69,7 @@
         </div>
     </div> -->
     <!-- Topbar End -->
-
-
+    
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
         <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -81,27 +82,34 @@
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <?php if (session()->get('logged_in')) : ?>
                     <a href="/user_page" class="nav-item nav-link active">Home</a>
+                    <a href="/services" class="nav-item nav-link">Layanan</a>
+                    <a href="/kelola_kebun" class="nav-item nav-link">Kebun</a>
+                    <a href="/plants" class="nav-item nav-link">Tanaman</a>
                 <?php else: ?>
                     <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/services" class="nav-item nav-link">Layanan</a>
                 <?php endif; ?>
-                <!-- <a href="#" class="nav-item nav-link">About</a> -->
-                <a href="/services" class="nav-item nav-link">Layanan</a>
                 <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>
-                    <a href="" class="nav-item nav-link">
-                        <?php
-                        // Cek apakah session 'nama_users' atau 'email' ada
-                        if (session()->has('nama_users')) {
-                            echo session('nama_users'); 
-                        } elseif (session()->has('email')) {
-                            echo session('email'); 
-                        } else {
-                            echo "Profile"; 
-                        }
-                        ?>
-                    </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <?php
+                            if (session()->has('nama_users')) {
+                                echo session('nama_users'); 
+                            } elseif (session()->has('email')) {
+                                echo session('email'); 
+                            } else {
+                                echo "Profile"; 
+                            }
+                            ?>
+                        </a>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                    </li>
                 <?php endif; ?>
-                
-                <!-- <a href="#" class="nav-item nav-link">Projects</a> -->
             </div>
             <?php if (session()->get('logged_in')): ?>
                 <a href="/logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
