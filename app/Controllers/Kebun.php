@@ -21,7 +21,11 @@ class Kebun extends BaseController
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
-        return view('kebun/buat_kebun',['title' => 'Buat Kebun']); 
+        $data = [
+            'noFooter' => true,
+            'title' => 'Buat Kebun'
+        ];
+        return view('kebun/buat_kebun', $data); 
     }
 
     public function buat()
@@ -97,6 +101,7 @@ class Kebun extends BaseController
             ->findAll();
         $data = [
             'title' => 'Detail Kebun',
+            'noFooter' => true,
             'kebun' => $kebun,
             'tanaman' => $tanaman
         ];
@@ -109,13 +114,18 @@ class Kebun extends BaseController
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
-        $data['kebun'] = $this->kebunModel->find($id);
+        $kebun = $this->kebunModel->find($id);
 
-        if (!$data['kebun']) {
+        if (!$kebun) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
         }
 
-        return view('kebun/update_kebun', $data, ['title' => 'Edit Kebun']);
+        $data = [
+            'kebun' => $kebun,
+            'noFooter' => true,
+            'title' => 'Edit Kebun'
+        ];
+        return view('kebun/update_kebun', $data);
     }
 
     public function update($id)

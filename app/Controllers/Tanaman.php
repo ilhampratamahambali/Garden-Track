@@ -251,6 +251,7 @@ class Tanaman extends BaseController
         $dataTanaman = $this->PlantModel->findAll();
         $data = [
             'title' => 'Tambah Tanaman',
+            'noFooter' => true,
             'id_kebun' => $kebunId,
             'dataTanaman' => $dataTanaman,
         ];
@@ -298,19 +299,14 @@ class Tanaman extends BaseController
     }
     
     // Method untuk menampilkan detail tanaman
-    public function detail($id)
+    public function detail($id_tanaman_kebun)
     {
-        // Cari data tanaman kebun berdasarkan id
-        $data['tanaman'] = $this->TanamanKebunModel
-                ->select('tanaman_kebun.id, tanaman.common_name, tanaman.scientific_name')
-                ->join('gardentrack.tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
-                ->where('tanaman_kebun.id_kebun', $id)
-                ->findAll();
+        $data['tanaman'] = $this->TanamanKebunModel->getDetailTanaman($id_tanaman_kebun);
+
         // Jika tanaman tidak ditemukan
         if (!$data['tanaman']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
-
         // Tampilkan halaman detail tanaman
         return view('tanaman/Detail_Tanaman', $data, ['title' => 'Detail Tanaman']);
     }

@@ -78,20 +78,27 @@
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <?php 
+            $uri = service('uri');
+        ?>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto p-4 p-lg-0">
                 <?php if (session()->get('logged_in')) : ?>
-                    <a href="/user_page" class="nav-item nav-link active">Home</a>
-                    <a href="/services" class="nav-item nav-link">Layanan</a>
-                    <a href="/kelola_kebun" class="nav-item nav-link">Kebun</a>
-                    <a href="/plants" class="nav-item nav-link">Tanaman</a>
+                    <a href="/user_page" class="nav-item nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
+                    <a href="/services" class="nav-item nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
+                    <a href="/kelola_kebun" class="nav-item nav-link <?= ($uri->getSegment(1) == 'kelola_kebun') ? 'active' : '' ?>">Kebun</a>
+                    <a href="/plants" class="nav-item nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
                 <?php else: ?>
-                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/" class="nav-item nav-link">Home</a>
                     <a href="/services" class="nav-item nav-link">Layanan</a>
                 <?php endif; ?>
-                <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>
+                <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>    
+                    <?php
+                        $profile = session()->get('profile') ?? 'https://secure.gravatar.com/avatar/1f2525efc55f484f31ac16a2c3ed0444?size=50&amp;default=identicon';
+                    ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img alt="Avatar of current member" height="30" width="30" aria-hidden="true" src="<?= esc($profile) ?>">
                             <?php
                             if (session()->has('nama_users')) {
                                 echo session('nama_users'); 
@@ -103,11 +110,11 @@
                             ?>
                         </a>
                         <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
+                            <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
                     </li>
                 <?php endif; ?>
             </div>
@@ -129,45 +136,44 @@
 
     <?php echo $this->renderSection('isi')?>
 
-
-        <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-4">Layanan</h4>
-                    <a class="btn btn-link" href="">Cari Tanaman</a>
-                    <a class="btn btn-link" href="">Buat Taman Anda</a>
-                    <a class="btn btn-link" href="">Kelola Taman Anda</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-4">Newsletter</h4>
-                    <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                    <div class="position-relative w-100">
-                        <input class="form-control bg-light border-light w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+    <!-- Footer Start -->
+    <?php if (!isset($noFooter) || !$noFooter): ?>
+        <div class="container-fluid bg-dark text-light footer mt-5 py-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-3 col-md-6">
+                        <h4 class="text-white mb-4">Layanan</h4>
+                        <a class="btn btn-link" href="">Cari Tanaman</a>
+                        <a class="btn btn-link" href="">Buat Taman Anda</a>
+                        <a class="btn btn-link" href="">Kelola Taman Anda</a>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h4 class="text-white mb-4">Newsletter</h4>
+                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+                        <div class="position-relative w-100">
+                            <input class="form-control bg-light border-light w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
+                            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Footer End -->
-
-
-    <!-- Copyright Start -->
-    <div class="container-fluid copyright py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="#">Garden Track</a>, All Right Reserved.
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                    Designed By <a class="border-bottom" href="#">ZHINK</a> Distributed By <a href="#">Elon Musk</a>
+        <!-- Footer End -->
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">Garden Track</a>, All Right Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                        Designed By <a class="border-bottom" href="#">ZHINK</a> Distributed By <a href="#">Elon Musk</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
     <!-- Copyright End -->
 
 

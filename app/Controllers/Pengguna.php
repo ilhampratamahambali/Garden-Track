@@ -101,6 +101,7 @@ class Pengguna extends BaseController
             'id_user' => $user->id_user,
             'nama_users' =>$user->nama_users,
             'email' => $user->email,
+            'profile' => $user->profile,
             'logged_in' => true
         ]);
         
@@ -166,7 +167,7 @@ class Pengguna extends BaseController
         // Aturan validasi untuk form registrasi
         $rules = [
             'nama_users' => 'required',
-            'email' => 'required|valid_email|is_unique[users.email]', 
+            'email' => 'required|valid_email|is_unique[pengguna.email]', 
             'password' => 'required',
             'confirm_password' => 'required|matches[password]',
         ];
