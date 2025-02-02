@@ -225,7 +225,7 @@
 <div class="container mt-4">
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a href="/home">Home</a> <span>></span>
+        <a href="/Pengguna/home">Home</a> <span>></span>
         <a href="/kebun/detail">Kebun</a> <span>></span>
         <a href="/kebun/detail/<?= esc($tanaman['id_kebun']) ?>">Tanaman</a> <span>></span>
         <span><?= esc($tanaman['common_name'] ?? 'Plant') ?></span>
@@ -284,7 +284,7 @@
 
         <div class="info-card">
             <div class="info-card-title">Grown from</div>
-            <div class="info-card-value">seed</div>
+            <b><div class="info-card-subtext"><?= esc($tanaman['cara_menanam']) ?></div></b>
         </div>
 
         <div class="info-card">

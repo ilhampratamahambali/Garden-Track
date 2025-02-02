@@ -260,4 +260,105 @@ class Pengguna extends BaseController
     {
         return view('services',['title' => 'Layanan']);
     }
+
+
+
+// --======================================|| PROFILE ||==================================================--
+public function profile()
+{
+    $id_user = session()->get('id_user');
+    $user = $this->users->find($id_user);
+
+    if (!$user) {
+        return redirect()->to('/login')->with('error', 'Pengguna tidak ditemukan. Silakan login kembali.');
+    }
+
+    return view('pengguna/profile_page', [
+        'title' => 'Profile',
+        'user' => $user
+    ]);
+}
+
+public function editProfile($id_user)
+{
+    if (!session()->get('logged_in')) {
+        return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+
+    $user = $this->users->find($id_user);
+
+    if (!$user) {
+        return redirect()->to('/profile')->with('error', 'Pengguna tidak ditemukan.');
+    }
+
+    return view('pengguna/update_profile', [
+        'title' => 'Edit Profil',
+        'user' => $user
+    ]);
+}
+
+public function updateProfile($id_user)
+{
+    $rules = [
+        'nama_users' => 'required|max_length[50]',
+        'email' => 'required|valid_email',
+        'profile' => 'is_image[profile]|mime_in[profile,image/jpg,image/jpeg,image/png]|max_size[profile,2048]',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
+    }
+
+    $data = [
+        'nama_users' => $this->request->getPost('nama_users'),
+        'email' => $this->request->getPost('email'),
+    ];
+    
+
+    // Handle file upload
+    $file = $this->request->getFile('profile');
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $newName = $file->getRandomName();
+        $file->move('uploads/profile', $newName);
+
+        // Set path file in database
+        $data['profile'] = 'uploads/profile/' . $newName;
+
+    }
+
+    // Update user data
+    $this->users->update($id_user, $data);
+
+    // Update session
+    if (session()->get('id_user') == $id_user) {
+        session()->set($data);
+    }
+
+    return redirect()->to('/profile')->with('success', 'Profil berhasil diperbarui.');
+}
+
+public function deleteProfile($id_user)
+{
+    if (!session()->get('logged_in')) {
+        return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+    }
+
+    $user = $this->users->find($id_user);
+
+    if (!$user) {
+        return redirect()->to('/profile')->with('error', 'Pengguna tidak ditemukan.');
+    }
+
+    // Remove profile image if exists
+    if (!empty($user['profile']) && $user['profile'] != 'uploads/profile/default.jpg' && file_exists($user['profile'])) {
+        unlink($user['profile']);
+    }
+
+    $this->users->delete($id_user);
+
+    if (session()->get('id_user') == $id_user) {
+        session()->destroy();
+        return redirect()->to('/login')->with('success', 'Akun Anda berhasil dihapus.');
+    }
+}
 }

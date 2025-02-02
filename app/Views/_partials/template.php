@@ -81,43 +81,61 @@
         <?php 
             $uri = service('uri');
         ?>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <?php if (session()->get('logged_in')) : ?>
-                    <a href="/user_page" class="nav-item nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
-                    <a href="/services" class="nav-item nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
-                    <a href="/kelola_kebun" class="nav-item nav-link <?= ($uri->getSegment(1) == 'kelola_kebun') ? 'active' : '' ?>">Kebun</a>
-                    <a href="/plants" class="nav-item nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
-                <?php else: ?>
-                    <a href="/" class="nav-item nav-link">Home</a>
-                    <a href="/services" class="nav-item nav-link">Layanan</a>
-                <?php endif; ?>
-                <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>    
-                    <?php
-                        $profile = session()->get('profile') ?? 'https://secure.gravatar.com/avatar/1f2525efc55f484f31ac16a2c3ed0444?size=50&amp;default=identicon';
-                    ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img alt="Avatar of current member" height="30" width="30" aria-hidden="true" src="<?= esc($profile) ?>">
-                            <?php
-                            if (session()->has('nama_users')) {
-                                echo session('nama_users'); 
-                            } elseif (session()->has('email')) {
-                                echo session('email'); 
-                            } else {
-                                echo "Profile"; 
-                            }
-                            ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
-            </div>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav ms-auto align-items-center">
+        <?php if (session()->get('logged_in')) : ?>
+            <li class="nav-item">
+                <a href="/user_page" class="nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/services" class="nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
+            </li>
+            <li class="nav-item">
+                <a href="/kelola_kebun" class="nav-link <?= ($uri->getSegment(1) == 'kelola_kebun') ? 'active' : '' ?>">Kebun</a>
+            </li>
+            <li class="nav-item">
+                <a href="/plants" class="nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
+            </li>
+        <?php else : ?>
+            <li class="nav-item">
+                <a href="/" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/services" class="nav-link">Layanan</a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Dropdown Profile -->
+        <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>
+            <?php
+            $userModel = new \App\Models\UsersModel();
+            $userId = session()->get('id_user');
+            $user = $userModel->find($userId);
+            $profile = $user->profile ?? 'uploads/profile/default_profile.jpg'; // Gambar default jika profil kosong
+            ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="<?= base_url($profile) ?>" alt="Profile Picture" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                    <span>
+                        <?php
+                        if (session()->has('nama_users')) {
+                            echo session('nama_users');
+                        } elseif (session()->has('email')) {
+                            echo session('email');
+                        } else {
+                            echo "Profile";
+                        }
+                        ?>
+                    </span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                </ul>
+            </li>
+        <?php endif; ?>
+    </ul>
+</div>
+
             <?php if (session()->get('logged_in')): ?>
                 <a href="/logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
                     Logout

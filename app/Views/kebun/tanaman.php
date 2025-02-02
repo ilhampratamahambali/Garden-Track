@@ -138,9 +138,30 @@
         transform: translateY(0px);
         transition-duration: 0.3s;
     }
+    .breadcrumb {
+        padding: 10px 0;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb a {
+        color: #4a7140;
+        text-decoration: none;
+    }
+
+    .breadcrumb span {
+        color: #666;
+        margin: 0 5px;
+    }
 </style>
 </head>
 <body>
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="user_page.php">Home</a> <span>></span>
+        <a href="/kebun/detail">Kebun</a> <span>></span>
+        <span><?= esc($kebun['nama_kebun']) ?></span>
+    </div>
     <!-- Kartu Detail Kebun -->
     <div class="card">
         <img src="<?= base_url('uploads/' . $kebun['poto_kebun']) ?>" alt="<?= htmlspecialchars($kebun['nama_kebun']) ?>">
