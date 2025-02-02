@@ -138,9 +138,30 @@
         transform: translateY(0px);
         transition-duration: 0.3s;
     }
+    .breadcrumb {
+        padding: 10px 0;
+        margin-bottom: 20px;
+    }
+    .breadcrumb a {
+        color: #4a7140;
+        text-decoration: none;
+    }
+    .breadcrumb span {
+        color: #666;
+        margin: 0 5px;
+    }
 </style>
 </head>
 <body>
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/user_page">Home</a></li>
+        <li class="breadcrumb-item"><a href="/kebun/detail">Kebun</a></li>
+        <li class="breadcrumb-item active"><?= esc($kebun['nama_kebun']) ?></li>
+    </ol>
+</nav>
+<div class="container mt-4">
     <!-- Kartu Detail Kebun -->
     <div class="card">
         <img src="<?= base_url('uploads/' . $kebun['poto_kebun']) ?>" alt="<?= htmlspecialchars($kebun['nama_kebun']) ?>">
@@ -167,28 +188,28 @@
             </div>
         </div>
     </div>
-    <section class="container mt-4">
-    <!-- Tombol Tambah Tanaman -->
-    <center><a href="/tanaman/tambah/<?= $kebun['id_kebun'] ?>" class="btn btn-success">Tambah Tanaman</a></center>
-
-    <!-- Daftar Tanaman -->
-    <?php if (empty($tanaman)): ?>
-        <div class="alert alert-info text-center">
-            Anda belum memiliki tanaman di kebun ini.
-            <br>
-        </div>
-    <?php else: ?>
-        <div class="alert alert-info text-center">
-            Berikut adalah daftar tanaman Anda:
-        </div>
-        <div class="list-group">
-            <?php foreach ($tanaman as $item): ?>
-                <a href="/tanaman/detail/<?= $item['id'] ?>" class="list-group-item list-group-item-action">
-                    <?= htmlspecialchars($item['common_name']) ?> - <?= htmlspecialchars($item['scientific_name']) ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+</div>
+<section class="container mt-4">
+<!-- Tombol Tambah Tanaman -->
+<center><a href="/tanaman/tambah/<?= $kebun['id_kebun'] ?>" class="btn btn-success">Tambah Tanaman</a></center>
+<!-- Daftar Tanaman -->
+<?php if (empty($tanaman)): ?>
+    <div class="alert alert-info text-center">
+        Anda belum memiliki tanaman di kebun ini.
+        <br>
+    </div>
+<?php else: ?>
+    <div class="alert alert-info text-center">
+        Berikut adalah daftar tanaman Anda:
+    </div>
+    <div class="list-group">
+        <?php foreach ($tanaman as $item): ?>
+            <a href="/tanaman/detail/<?= $item['id'] ?>" class="list-group-item list-group-item-action">
+                <?= htmlspecialchars($item['common_name']) ?> - <?= htmlspecialchars($item['scientific_name']) ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 </section>
 <script>
     // Cek apakah ada session flashdata 

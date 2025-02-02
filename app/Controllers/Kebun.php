@@ -9,7 +9,6 @@ class Kebun extends BaseController
     protected $kebunModel;
     protected $tanamanKebunModel;
 
-
     public function __construct()
     {
         $this->tanamanKebunModel = new TanamanKebunModel();
@@ -70,8 +69,6 @@ class Kebun extends BaseController
         // Redirect ke halaman tambah tanaman dengan membawa ID kebun
         return redirect()->to('/tanaman/tambah/' . $kebunId);
     }
-
-
 // --=========================================|| KELOLA KEBUN ||================================================--
     public function index_kelola()
     {

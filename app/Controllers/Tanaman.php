@@ -320,7 +320,7 @@ class Tanaman extends BaseController
         if (!$tanaman) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
-
+        // dd($tanaman);
         return view('tanaman/update_tanaman', [
             'title' => 'Form Edit Tanaman',
             'tanaman' => $tanaman,

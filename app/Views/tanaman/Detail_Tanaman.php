@@ -221,15 +221,16 @@
 }
 
 </style>
-
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/user_page">Home</a></li>
+        <li class="breadcrumb-item"><a href="/kebun/detail">Kebun</a></li>
+        <li class="breadcrumb-item"><a href="/kebun/detail/<?= esc($tanaman['id_kebun']) ?>">Tanaman</a></li>
+        <li class="breadcrumb-item active"><?= esc($tanaman['common_name'] ?? 'Plant') ?></li>
+    </ol>
+</nav>
 <div class="container mt-4">
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="/home">Home</a> <span>></span>
-        <a href="/kebun/detail">Kebun</a> <span>></span>
-        <a href="/kebun/detail/<?= esc($tanaman['id_kebun']) ?>">Tanaman</a> <span>></span>
-        <span><?= esc($tanaman['common_name'] ?? 'Plant') ?></span>
-    </div>
     <div class="plant-header">
     <h1 class="plant-title">
         <?= esc($tanaman['common_name'] ?? 'Plant') ?>

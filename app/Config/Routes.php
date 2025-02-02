@@ -29,6 +29,12 @@ $routes->get('logout', 'Pengguna::logout');
 //user page
 $routes->get('user_page', 'Pengguna::home');
 
+//PROFILE
+$routes->get('/profile', 'Pengguna::profile');
+$routes->get('/Pengguna/editProfile/(:num)', 'Pengguna::editProfile/$1');
+$routes->post('/Pengguna/updateProfile/(:num)', 'Pengguna::updateProfile/$1');
+$routes->get('/Pengguna/deleteProfile/(:num)', 'Pengguna::deleteProfile/$1'); 
+
 // --=========================================|| TANAMAN ||================================================--
 
 //tanaman

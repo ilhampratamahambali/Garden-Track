@@ -94,7 +94,7 @@
                 <?php endif; ?>
                 <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>    
                     <?php
-                        $profile = session()->get('profile') ?? 'https://secure.gravatar.com/avatar/1f2525efc55f484f31ac16a2c3ed0444?size=50&amp;default=identicon';
+                        $profile = session()->get('profile') ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
                     ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
