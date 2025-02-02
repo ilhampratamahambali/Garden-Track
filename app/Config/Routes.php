@@ -49,8 +49,8 @@ $routes->get('/tanaman/delete/(:num)', 'Tanaman::delete/$1');
 $routes->get('/tanaman/search', 'Tanaman::search');
 
 //update delete tanaman
-$routes->get('tanaman/edit/(:num)', 'Tanaman::edit/$1');
-$routes->post('tanaman/edit/(:num)', 'Tanaman::edit/$1');
+$routes->get('/tanaman/edit/(:num)', 'Tanaman::edit/$1');
+$routes->post('/tanaman/update/(:num)', 'Tanaman::update/$1');
 
 $routes->post('tanaman/update/(:num)', 'Tanaman::update/$1');
 // --=========================================|| KEBUN ||================================================--

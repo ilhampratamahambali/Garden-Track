@@ -284,7 +284,7 @@
 
         <div class="info-card">
             <div class="info-card-title">Grown from</div>
-            <div class="info-card-value">seed</div>
+            <div class="info-card-value"><?= esc($tanaman['cara_menanam'] ?? 'seed') ?></div>
         </div>
 
         <div class="info-card">
