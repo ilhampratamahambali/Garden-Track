@@ -310,13 +310,67 @@ class Tanaman extends BaseController
         // Tampilkan halaman detail tanaman
         return view('tanaman/Detail_Tanaman', $data, ['title' => 'Detail Tanaman']);
     }
+    
+    public function edit($id)
+    {
+        // Ambil data tanaman dari kebun
+        $tanaman = $this->TanamanKebunModel->findAll();
+
+         return view('tanaman/update_Tanaman', [
+             'title' => 'Form Tambah',
+             'tanaman' => $tanaman,
+         ]);
+        if (!$data['tanaman']) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");                                                                 
+        }
+
+        return view('tanaman/', $data);
+    }
+        
+    public function update($id)
+    {
+        $validationRules = [
+            'id_tanaman' => 'required',
+            'id_kebun' => 'required',
+            'benih' => 'required|numeric',
+            'cara_menanam' => 'required',
+            'kondisi_matahari' => 'required',
+            'tanggal_mulai' => 'required|valid_date',
+            'tanggal_selesai' => 'required|valid_date',
+            'deskripsi' => 'required',
+
+        ];
+
+        $tanaman = [
+            'id_tanaman' => $this->request->getPost('id_tanaman'),
+            'benih' => $this->request->getPost('benih'),
+            'cara_menanam' => $this->request->getPost('cara_menanam'),
+            'kondisi_matahari' => $this->request->getPost('kondisi_matahari'),
+            'tanggal_mulai' => $this->request->getPost('tanggal_mulai'),
+            'tanggal_selesai' => $this->request->getPost('tanggal_selesai'),
+            'deskripsi' => $this->request->getPost('deskripsi')
+        ];
+    
+        try {
+            $PlantModel->update($id, $data);
+            session()->setFlashdata('success', 'Data tanaman berhasil diperbarui!');
+            return redirect()->to('/kebun/detail/' . $this->request->getPost('id_kebun'));  
+        } catch (\Exception $e) {
+            session()->setFlashdata('error', 'Gagal memperbarui data tanaman!');
+            return redirect()->back()->withInput();
+        }
+    }
 
     // Method untuk menghapus tanaman dari kebun
     public function delete($id)
     {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
         // Cek apakah tanaman dalam kebun ada berdasarkan ID
         $tanamanKebun = $this->TanamanKebunModel->find($id);
-
+                                                                            
         if (!$tanamanKebun) {
             // Jika data tanaman tidak ditemukan, redirect dengan pesan error
             return redirect()->back()->with('error', 'Data tanaman tidak ditemukan.');

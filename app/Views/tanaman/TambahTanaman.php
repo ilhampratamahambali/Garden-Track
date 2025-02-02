@@ -12,7 +12,7 @@
     </style>
     <div class="container">
         <h2 class="mb-4">Form Tambah Tanaman</h2>
-        <form action="<?= base_url('/tanaman/tambah')?>" method="post">
+        <form action="<?= base_url('/tanaman/tambah') ?>" method="post" enctype="multipart/form-data">
             <!-- Pilih Tanaman -->
             <div class="mb-3">
                 <label class="form-label">Pilih Tanaman</label>

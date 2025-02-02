@@ -56,8 +56,8 @@
             <h1 class="form-title">Update Kebun</h1>
             <form id="updateForm" action="/kebun/update/<?= $kebun['id_kebun']; ?>" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="nama_kebun" class="form-label">Nama Kebun</label>
-                    <input type="text" id="nama_kebun" name="nama_kebun" class="form-control" value="<?= htmlspecialchars($kebun['nama_kebun']); ?>" required>
+                        <label for="nama_kebun" class="form-label">Nama Kebun</label>
+                        <input type="text" id="nama_kebun" name="nama_kebun" class="form-control" value="<?= htmlspecialchars($kebun['nama_kebun']); ?>" required>
                 </div>
                 <div class="mb-4">
                     <label for="poto_kebun" class="form-label">Gambar Kebun</label>

@@ -35,6 +35,7 @@ $routes->get('user_page', 'Pengguna::home');
 $routes->get('/plants', 'Tanaman::index');
 $routes->get('/plants/search', 'Tanaman::search');
 
+
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
 $routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
@@ -42,17 +43,26 @@ $routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
 // TAMBAH 
 $routes->get('/tanaman/tambah/(:num)', 'Tanaman::tambah/$1');
 $routes->post('/tanaman/tambah', 'Tanaman::simpanTanaman'); 
+$routes->post('/tanaman/detail', 'Tanaman::detail'); 
 
 $routes->get('/tanaman/detail/(:num)', 'Tanaman::detail/$1');
 $routes->get('/tanaman/delete/(:num)', 'Tanaman::delete/$1');
 $routes->get('/tanaman/search', 'Tanaman::search');
 
+//update delete tanaman
+$routes->get('tanaman/edit/(:num)', 'Tanaman::edit/$1');
+$routes->post('tanaman/edit/(:num)', 'Tanaman::edit/$1');
+
+$routes->post('tanaman/update/(:num)', 'Tanaman::update/$1');
 // --=========================================|| KEBUN ||================================================--
 
 //tambah kebun
 $routes->get('/buat_kebun', 'Kebun::index');
 $routes->get('/kebun', 'Kebun::index');
 $routes->post('/buat', 'Kebun::buat');
+$routes->get('/kebun/detail', 'Kebun::index_kelola');
+
+
 
 //kelola kebun
 $routes->get('kelola_kebun', 'Kebun::index_kelola');
