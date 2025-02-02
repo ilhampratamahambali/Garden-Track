@@ -35,7 +35,6 @@ $routes->get('user_page', 'Pengguna::home');
 $routes->get('/plants', 'Tanaman::index');
 $routes->get('/plants/search', 'Tanaman::search');
 
-
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
 $routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
@@ -62,15 +61,9 @@ $routes->get('/kebun', 'Kebun::index');
 $routes->post('/buat', 'Kebun::buat');
 $routes->get('/kebun/detail', 'Kebun::index_kelola');
 
-
-
 //kelola kebun
 $routes->get('kelola_kebun', 'Kebun::index_kelola');
 $routes->get('/kebun/detail/(:num)', 'Kebun::detail/$1');
 $routes->get('/kebun/edit/(:num)', 'Kebun::edit/$1');
 $routes->post('/kebun/update/(:num)', 'Kebun::update/$1');
 $routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');
-
-
-$routes->get('/growstuff', 'Growstuff::index');
-$routes->get('/growstuff/search', 'Growstuff::search');
