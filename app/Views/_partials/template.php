@@ -21,6 +21,7 @@
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- SweetAlert2 JS -->
@@ -95,10 +96,16 @@
                 <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>    
                     <?php
                         $profile = session()->get('profile') ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+                        if (!filter_var($profile, FILTER_VALIDATE_URL)) {
+                            $profile = base_url('uploads/profile/' . $profile);
+                        }
+                        $user = session()->get('id_user');
+                        // dd($user,$profile); 
+                        // die;
                     ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img alt="Avatar of current member" height="30" width="30" aria-hidden="true" src="<?= esc($profile) ?>">
+                            <img alt="" height="30" width="30" aria-hidden="true" src="<?= esc($profile) ?>">
                             <?php
                             if (session()->has('nama_users')) {
                                 echo session('nama_users'); 
@@ -110,8 +117,8 @@
                             ?>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="/Pengguna/editProfile/<?php echo $user; ?>">Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Kebun Saya</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
@@ -132,7 +139,6 @@
         </div>
     </nav>
     <!-- Navbar End -->
-
 
     <?php echo $this->renderSection('isi')?>
 
@@ -175,12 +181,8 @@
         </div>
     <?php endif; ?>
     <!-- Copyright End -->
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -192,7 +194,6 @@
     <script src="<?php echo base_url('tanaman/'); ?>lib/parallax/parallax.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/isotope/isotope.pkgd.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/lightbox/js/lightbox.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="<?php echo base_url('tanaman/'); ?>js/main.js"></script>
 </body>

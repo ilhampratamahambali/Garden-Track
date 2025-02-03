@@ -151,8 +151,6 @@
         margin: 0 5px;
     }
 </style>
-</head>
-<body>
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
     <ol class="breadcrumb">
@@ -265,7 +263,6 @@
     });
 
     function confirmDelete(idKebun) {
-        // Tampilkan dialog SweetAlert2
         Swal.fire({
             title: 'Apakah Anda yakin?',
             text: "Data ini tidak dapat dikembalikan setelah dihapus!",
@@ -284,6 +281,4 @@
         });
     }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <?php echo $this->endSection() ?>

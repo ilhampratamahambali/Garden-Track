@@ -51,9 +51,9 @@
                 </select>
             </div>
 
-            <!-- Kondisi Tanah -->
+            <!-- Kondisi Matahari -->
             <div class="mb-3">
-                <label class="form-label">Kondisi Tanah</label>
+                <label class="form-label">Kondisi Matahari</label>
                 <select class="form-select" name="kondisi_matahari" required>
                     <option value="">Pilih Kondisi</option>
                     <option value="matahari penuh">Matahari Penuh</option>

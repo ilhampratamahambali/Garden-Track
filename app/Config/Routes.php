@@ -11,7 +11,7 @@ $routes->get('/', 'Pengguna::dashboard');
 $routes->get('/services', 'Pengguna::services');
 
 //register google
-$routes->get('register', 'Pengguna::index_regis');
+$routes->get('/register', 'Pengguna::index_regis');
 $routes->get('register/proses', 'Pengguna::proses_regis');
 
 // register biasa
@@ -27,13 +27,12 @@ $routes->post('login/auth', 'Pengguna::auth');
 $routes->get('logout', 'Pengguna::logout');
 
 //user page
-$routes->get('user_page', 'Pengguna::home');
+$routes->get('/user_page', 'Pengguna::home');
 
 //PROFILE
-$routes->get('/profile', 'Pengguna::profile');
-$routes->get('/Pengguna/editProfile/(:num)', 'Pengguna::editProfile/$1');
-$routes->post('/Pengguna/updateProfile/(:num)', 'Pengguna::updateProfile/$1');
-$routes->get('/Pengguna/deleteProfile/(:num)', 'Pengguna::deleteProfile/$1'); 
+$routes->get('/Pengguna/editProfile/(:any)', 'Pengguna::editProfile/$1');
+$routes->post('/Pengguna/updateProfile/(:any)', 'Pengguna::updateProfile/$1');
+$routes->get('/Pengguna/deleteProfile/(:any)', 'Pengguna::deleteProfile/$1'); 
 
 // --=========================================|| TANAMAN ||================================================--
 

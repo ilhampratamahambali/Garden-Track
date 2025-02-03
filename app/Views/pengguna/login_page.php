@@ -182,7 +182,6 @@
             </div>
         </div>
     </div>
-
     <!-- Script untuk menampilkan SweetAlert dari session flashdata -->
     <script>
         // Cek apakah ada session flashdata 
@@ -229,7 +228,7 @@
 
             Toast.fire({
                 icon: "error",
-                title: errorMessage // Tampilkan pesan error
+                title: errorMessage 
             });
         }
     </script>
