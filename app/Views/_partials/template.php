@@ -38,39 +38,13 @@
     <!-- Template Stylesheet -->
     <link href="<?php echo base_url('tanaman/'); ?>css/style.css" rel="stylesheet">
 </head>
-
 <body>
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
     <!-- Spinner End -->
-    <!-- Topbar Start -->
-    <!-- <div class="container-fluid bg-dark text-light px-0 py-2">
-        <div class="row gx-0 d-none d-lg-flex">
-            <div class="col-lg-7 px-5 text-start">
-                <div class="h-100 d-inline-flex align-items-center me-4">
-                    <span class="fa fa-phone-alt me-2"></span>
-                    <span>+012 345 6789</span>
-                </div>
-                <div class="h-100 d-inline-flex align-items-center">
-                    <span class="far fa-envelope me-2"></span>
-                    <span>info@example.com</span>
-                </div>
-            </div>
-            <div class="col-lg-5 px-5 text-end">
-                <div class="h-100 d-inline-flex align-items-center mx-n2">
-                    <span>Follow Us:</span>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Topbar End -->
-    
+
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
         <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -87,7 +61,7 @@
                 <?php if (session()->get('logged_in')) : ?>
                     <a href="/user_page" class="nav-item nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
                     <a href="/services" class="nav-item nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
-                    <a href="/kelola_kebun" class="nav-item nav-link <?= ($uri->getSegment(1) == 'kelola_kebun') ? 'active' : '' ?>">Kebun</a>
+                    <a href="/kebun/semua-kebun" class="nav-item nav-link <?= ($uri->getSegment(1) == 'kebun/semua-kebun') ? 'active' : '' ?>">Kebun</a>
                     <a href="/plants" class="nav-item nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
                 <?php else: ?>
                     <a href="/" class="nav-item nav-link">Home</a>
@@ -100,8 +74,6 @@
                             $profile = base_url('uploads/profile/' . $profile);
                         }
                         $user = session()->get('id_user');
-                        // dd($user,$profile); 
-                        // die;
                     ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -118,7 +90,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/Pengguna/editProfile/<?php echo $user; ?>">Edit Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Kebun Saya</a></li>
+                            <li><a class="dropdown-item" href="/kelola_kebun">Kebun Saya</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>

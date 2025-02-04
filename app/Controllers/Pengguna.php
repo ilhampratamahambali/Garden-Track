@@ -266,8 +266,6 @@ class Pengguna extends BaseController
         // die;
         return redirect()->to('/');
     }
-
-
 // --=========================================|| PANEL ||================================================--
     public function dashboard(): string
     {

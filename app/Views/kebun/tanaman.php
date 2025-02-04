@@ -155,7 +155,7 @@
 <nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/user_page">Home</a></li>
-        <li class="breadcrumb-item"><a href="/kebun/detail">Kebun</a></li>
+        <li class="breadcrumb-item"><a href="/kebun/semua-kebun">Kebun</a></li>
         <li class="breadcrumb-item active"><?= esc($kebun['nama_kebun']) ?></li>
     </ol>
 </nav>
@@ -165,49 +165,55 @@
         <img src="<?= base_url('uploads/' . $kebun['poto_kebun']) ?>" alt="<?= htmlspecialchars($kebun['nama_kebun']) ?>">
         <div class="card-body">
             <h5>Nama Kebun: <?= htmlspecialchars($kebun['nama_kebun']) ?></h5>
-            <!-- Tombol Edit dan Hapus -->
+                <!-- Tombol Edit dan Hapus -->
             <div style="display: flex; justify-content: center; gap: 10px;">
-                <!-- Tombol Edit -->
-                <a href="/kebun/edit/<?= $kebun['id_kebun']; ?>" style="text-decoration: none;">
-                    <button class="edit-button">
-                        <svg class="edit-svgIcon" viewBox="0 0 512 512">
-                            <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
-                        </svg>
-                    </button>
-                </a>
-                <!-- Tombol Hapus -->
-                <a href="/kebun/delete/<?= $kebun['id_kebun']; ?>" id="deleteButton" style="text-decoration: none;">
-                    <button class="button">
-                        <svg viewBox="0 0 448 512" class="svgIcon">
-                            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
-                        </svg>
-                    </button>
-                </a>
+                <?php if (session()->get('id_user') == $kebun['id_user']): ?>
+                    <!-- Tombol Edit -->
+                    <a href="/kebun/edit/<?= $kebun['id_kebun']; ?>" style="text-decoration: none;">
+                        <button class="edit-button">
+                            <svg class="edit-svgIcon" viewBox="0 0 512 512">
+                                <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
+                            </svg>
+                        </button>
+                    </a>
+                    <!-- Tombol Hapus -->
+                    <a href="/kebun/delete/<?= $kebun['id_kebun']; ?>" id="deleteButton" style="text-decoration: none;">
+                        <button class="button">
+                            <svg viewBox="0 0 448 512" class="svgIcon">
+                                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+                            </svg>
+                        </button>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
+<div class="col-md-9">
+
 <section class="container mt-4">
-<!-- Tombol Tambah Tanaman -->
-<center><a href="/tanaman/tambah/<?= $kebun['id_kebun'] ?>" class="btn btn-success">Tambah Tanaman</a></center>
-<!-- Daftar Tanaman -->
-<?php if (empty($tanaman)): ?>
-    <div class="alert alert-info text-center">
-        Anda belum memiliki tanaman di kebun ini.
-        <br>
-    </div>
-<?php else: ?>
-    <div class="alert alert-info text-center">
-        Berikut adalah daftar tanaman Anda:
-    </div>
-    <div class="list-group">
-        <?php foreach ($tanaman as $item): ?>
-            <a href="/tanaman/detail/<?= $item['id'] ?>" class="list-group-item list-group-item-action">
-                <?= htmlspecialchars($item['common_name']) ?> - <?= htmlspecialchars($item['scientific_name']) ?>
-            </a>
-        <?php endforeach; ?>
-    </div>
-<?php endif; ?>
+    <?php if (session()->get('id_user') == $kebun['id_user']): ?>
+        <!-- Tombol Tambah Tanaman -->
+        <center><a href="/tanaman/tambah/<?= $kebun['id_kebun'] ?>" class="btn btn-success">Tambah Tanaman</a></center>
+    <?php endif; ?>
+    <!-- Daftar Tanaman -->
+    <?php if (empty($tanaman)): ?>
+        <div class="alert alert-info text-center">
+            Belum memiliki tanaman di kebun ini.
+            <br>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-info text-center">
+            Berikut adalah daftar tanaman Anda:
+        </div>
+        <div class="list-group">
+            <?php foreach ($tanaman as $item): ?>
+                <a href="/tanaman/detail/<?= $item['id'] ?>" class="list-group-item list-group-item-action">
+                    <?= htmlspecialchars($item['common_name']) ?> - <?= htmlspecialchars($item['scientific_name']) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </section>
 <script>
     // Cek apakah ada session flashdata 

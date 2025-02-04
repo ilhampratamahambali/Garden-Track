@@ -194,5 +194,86 @@ class Kebun extends BaseController
 
         return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
     }
-}
+// --=========================================|| SEMUA KEBUN ||================================================--
+    public function allkebun(){
+        $kebunData = $this->kebunModel
+        ->select('kebun.id_kebun, kebun.nama_kebun, kebun.poto_kebun, pengguna.nama_users, pengguna.email, pengguna.profile, tanaman.common_name, tanaman_kebun.tanggal_mulai, tanaman_kebun.tanggal_selesai')
+        ->join('pengguna', 'pengguna.id_user = kebun.id_user', 'left')
+        ->join('tanaman_kebun', 'tanaman_kebun.id_kebun = kebun.id_kebun', 'left')
+        ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman', 'left')
+        ->orderBy('kebun.id_kebun', 'ASC')
+        ->findAll();
 
+        // **Mengelompokkan data berdasarkan id_kebun**
+        $kebunList = [];
+
+        foreach ($kebunData as $item) {
+            $id_kebun = $item['id_kebun'];
+            if (!isset($kebunList[$id_kebun])) {
+                // Jika kebun belum ada di array, buat data baru
+                $kebunList[$id_kebun] = [
+                    'id_kebun' => $id_kebun,
+                    'nama_kebun' => $item['nama_kebun'],
+                    'poto_kebun' => $item['poto_kebun'],
+                    'nama_users' => $item['nama_users'],
+                    'email' => $item['email'],
+                    'profile' => $item['profile'],
+                    'tanaman' => [],
+                    'progress' => 0,
+                    'total_progress' => 0,
+                    'jumlah_tanaman' => 0,
+                ];
+            }
+
+            // **Perhitungan progress untuk setiap tanaman**
+            if (!empty($item['tanggal_mulai']) && !empty($item['tanggal_selesai'])) {
+                $tanggalMulai = strtotime($item['tanggal_mulai']);
+                $tanggalSelesai = strtotime($item['tanggal_selesai']);
+                $tanggalSekarang = time();
+
+                // Inisialisasi progress untuk tanaman
+                $tanamanProgress = 0;
+
+                // Jika tanggal sekarang sebelum tanggal mulai, progress = 0
+                if ($tanggalSekarang < $tanggalMulai) {
+                    $tanamanProgress = 0;
+                }
+                // Jika tanggal sekarang lebih besar dari tanggal selesai, progress = 100
+                elseif ($tanggalSekarang > $tanggalSelesai) {
+                    $tanamanProgress = 100;
+                }
+                // Jika tanggal sekarang antara tanggal mulai dan selesai, hitung progress
+                else {
+                    $tanamanProgress = (($tanggalSekarang - $tanggalMulai) / ($tanggalSelesai - $tanggalMulai)) * 100;
+                }
+
+                // Tambahkan tanaman ke array tanaman dalam kebun ini
+                $kebunList[$id_kebun]['tanaman'][] = [
+                    'nama' => $item['common_name'],
+                    'tanggal_selesai' => date('Y-m-d', $tanggalSelesai), // Tampilkan tanggal selesai dengan format yang jelas
+                    'progress' => round($tanamanProgress),  // Membulatkan progress tanaman
+                ];
+
+                // Update total progress kebun
+                $kebunList[$id_kebun]['total_progress'] += $tanamanProgress;
+                $kebunList[$id_kebun]['jumlah_tanaman']++;
+            }
+        }
+
+        // **Hitung rata-rata progress untuk setiap kebun**
+        foreach ($kebunList as &$kebun) {
+            if ($kebun['jumlah_tanaman'] > 0) {
+                $kebun['progress'] = round($kebun['total_progress'] / $kebun['jumlah_tanaman']);
+            }
+        }
+
+        // Data untuk ditampilkan di view
+        $data = [
+            'title' => 'Kebun Saya',
+            'kebun' => $kebunList
+        ];
+        // dd($data);
+        // die;
+        return view('kebun/allkebun', $data); 
+    }
+}

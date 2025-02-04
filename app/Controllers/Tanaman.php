@@ -234,7 +234,6 @@ class Tanaman extends BaseController
     //     }
     // }
 // --=========================================|| TANAMAN-KEBUN ||================================================--
-
     public function formTambah($id_kebun)
     {
         // Ambil data tanaman dari tabel master tanaman
@@ -394,7 +393,6 @@ class Tanaman extends BaseController
             return redirect()->back()->withInput();
         }
     }
-
 
     // Method untuk menghapus tanaman dari kebun
     public function delete($id)
