@@ -87,28 +87,43 @@ class Kebun extends BaseController
     }
 
     public function detail($id)
-    {
-        $kebun = $this->kebunModel->find($id);
-        // Jika data kebun tidak ditemukan
-        if (!$kebun) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
-        }
-        // Ambil daftar tanaman terkait dengan kebun ini
-        $tanaman = $this->tanamanKebunModel
-            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name') 
-            ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
-            ->where('tanaman_kebun.id_kebun', $id) 
-            ->findAll();
-        $data = [
-            'title' => 'Detail Kebun',
-            'noFooter' => true,
-            'kebun' => $kebun,
-            'tanaman' => $tanaman
-        ];
+{
+    // Tambahkan model komentar di constructor
+    $this->komentarModel = new \App\Models\komentarModel();
 
-        return view('kebun/tanaman', $data);
+    $kebun = $this->kebunModel->find($id);
+    if (!$kebun) {
+        throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
     }
 
+    // Data tanaman (kode yang sudah ada)
+    $tanaman = $this->tanamanKebunModel
+        ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name')
+        ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
+        ->where('tanaman_kebun.id_kebun', $id)
+        ->findAll();
+
+    // Tambahkan query untuk komentar
+    $komentar = $this->komentarModel
+        ->select('komentar.*, pengguna.nama_users as nama_users')
+        ->join('pengguna', 'pengguna.id_user = komentar.id_user')
+        ->where('komentar.id_kebun', $id)
+        ->orderBy('komentar.created_at', 'DESC')
+        ->findAll();
+
+    $data = [
+        'title' => 'Detail Kebun',
+        'noFooter' => true,
+        'kebun' => $kebun,
+        'tanaman' => $tanaman,
+        'komentar' => $komentar, // Tambahkan data komentar
+        'idUserLogin' => session()->get('id_user')
+    ];
+
+    return view('kebun/tanaman', $data);
+}
+    
+    
     public function edit($id)
     {
         if (!session()->get('logged_in')) {
@@ -197,5 +212,20 @@ class Kebun extends BaseController
 
         return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
     }
-}
+     public function lihat_kebun_orang_lain()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
 
+        $idUser = session()->get('id_user');
+        $kebunOrangLain = $this->kebunModel->where('id_user !=', $idUser)->findAll();
+
+        $data = [
+            'title' => 'Kebun Orang Lain',
+            'kebun' => $kebunOrangLain
+        ];
+
+        return view('kebun/lihat_kebun', $data);
+    }
+}

@@ -34,5 +34,24 @@ class TanamanKebunModel extends Model{
             ->get()
             ->getRowArray();
     }
+    public function getKebunOrangLain($id_user)
+{
+    return $this->db->table('kebun')
+        ->select('kebun.id_kebun, kebun.nama_kebun, users.nama AS pemilik')
+        ->join('users', 'users.id_user = kebun.id_user')
+        ->where('kebun.id_user !=', $id_user) // Ambil kebun selain milik user login
+        ->get()
+        ->getResultArray();
+}
+
+public function getTanamanByKebun($id_kebun)
+{
+    return $this->db->table('tanaman_kebun')
+        ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name')
+        ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
+        ->where('tanaman_kebun.id_kebun', $id_kebun)
+        ->get()
+        ->getResultArray();
+}
 
 }

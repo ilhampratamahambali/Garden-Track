@@ -94,7 +94,14 @@
     <i class="bi bi-plus-circle"></i> Tambah Kebun
 </a>
 </div>
+<!-- Tombol Lihat Kebun -->
+<div class="container mt-4 text-center">
+    <a href="<?= base_url('lihat_kebun') ?>" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
+        <i class="bi bi-eye"></i> Lihat Kebun Orang Lain
+    </a>
+</div>
 <!-- Catalog Section -->
+
 <section class="catalog-section my-5">
   <div class="container">
     <div class="card-container">

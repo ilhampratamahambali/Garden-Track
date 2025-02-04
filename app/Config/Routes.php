@@ -80,3 +80,12 @@ $routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');
 
 $routes->get('/growstuff', 'Growstuff::index');
 $routes->get('/growstuff/search', 'Growstuff::search');
+
+
+
+//lihat kebun
+$routes->get('lihat_kebun', 'kebun::lihat_kebun_orang_lain');
+$routes->get('/kebun/detail_Kebun_orang_lain/(:num)', 'kebun::detail_kebun_orang_lain/$1');
+
+//komentar
+$routes->post('/komentarController/addComment', 'komentarController::addComment');
