@@ -300,14 +300,22 @@ class Tanaman extends BaseController
     // Method untuk menampilkan detail tanaman
     public function detail($id_tanaman_kebun)
     {
-        $data['tanaman'] = $this->TanamanKebunModel->getDetailTanaman($id_tanaman_kebun);
-
+        $data = [
+            'title' => 'Detail Tanaman',
+            'tanaman' => $this->TanamanKebunModel
+                    ->select('tanaman_kebun.*, tanaman.*,pengguna.id_user, pengguna.nama_users, pengguna.email, pengguna.profile')
+                    ->join('kebun', 'kebun.id_kebun = tanaman_kebun.id_kebun')
+                    ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
+                    ->join('pengguna', 'pengguna.id_user = kebun.id_user') 
+                    ->where('tanaman_kebun.id', $id_tanaman_kebun) 
+                    ->first(),
+        ];
         // Jika tanaman tidak ditemukan
         if (!$data['tanaman']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
         // Tampilkan halaman detail tanaman
-        return view('tanaman/Detail_Tanaman', $data, ['title' => 'Detail Tanaman']);
+        return view('tanaman/Detail_Tanaman', $data);
     }
     
     public function edit($id)

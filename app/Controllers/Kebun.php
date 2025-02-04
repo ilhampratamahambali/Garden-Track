@@ -92,7 +92,7 @@ class Kebun extends BaseController
         }
         // Ambil daftar tanaman terkait dengan kebun ini
         $tanaman = $this->tanamanKebunModel
-            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name') 
+            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name, tanaman.image_url') 
             ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
             ->where('tanaman_kebun.id_kebun', $id) 
             ->findAll();
