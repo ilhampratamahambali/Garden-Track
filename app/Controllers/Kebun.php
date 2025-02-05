@@ -3,16 +3,19 @@ namespace App\Controllers;
 
 use App\Models\KebunModel;
 use App\Models\TanamanKebunModel;
+use App\Models\komentarModel;
 
 class Kebun extends BaseController
 {
     protected $kebunModel;
     protected $tanamanKebunModel;
+    protected $komentarModel;
 
     public function __construct()
     {
         $this->tanamanKebunModel = new TanamanKebunModel();
         $this->kebunModel = new KebunModel();
+        $this->komentarModel = new komentarModel();
     }
 
     public function index()
@@ -50,7 +53,7 @@ class Kebun extends BaseController
 
         if ($file->isValid() && !$file->hasMoved()) {
             $fileName = $file->getRandomName();
-            $file->move('uploads', $fileName);
+            $file->move('uploads/kebun/', $fileName);
         } else {
             return redirect()->back()->with('error', 'Gagal mengunggah gambar.');
         }
@@ -96,11 +99,19 @@ class Kebun extends BaseController
             ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
             ->where('tanaman_kebun.id_kebun', $id) 
             ->findAll();
+        $komentar = $this->komentarModel
+            ->select('komentar.*, pengguna.nama_users as nama_users')
+            ->join('pengguna', 'pengguna.id_user = komentar.id_user')
+            ->where('komentar.id_kebun', $id)
+            ->orderBy('komentar.created_at', 'DESC')
+            ->findAll();
         $data = [
             'title' => 'Detail Kebun',
             'noFooter' => true,
             'kebun' => $kebun,
-            'tanaman' => $tanaman
+            'tanaman' => $tanaman,
+            'komentar' => $komentar,
+            'idUserLogin' => session()->get('id_user')
         ];
 
         return view('kebun/tanaman', $data);
@@ -275,5 +286,33 @@ class Kebun extends BaseController
         // dd($data);
         // die;
         return view('kebun/allkebun', $data); 
+    }
+
+    public function Komentar()
+    {
+        $validationRules = [
+            'komentar' => 'required|string',
+            'id_kebun' => 'required|integer',
+        ];
+    
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+    
+        $komentar = $this->request->getPost('komentar');
+        $id_user = session()->get('id_user');
+        $id_kebun = $this->request->getPost('id_kebun');
+        $induk_komentar_id = $this->request->getPost('induk_komentar_id') ?: null;
+        // dd($komentar, $id_user, $id_kebun, $induk_komentar_id);
+        // die;
+        $this->komentarModel->insert([
+            'komentar' => $komentar,
+            'id_user' => $id_user,
+            'id_kebun' => $id_kebun,
+            'induk_komentar_id' => $induk_komentar_id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+        
+        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan.');
     }
 }

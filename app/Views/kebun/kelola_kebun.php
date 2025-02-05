@@ -90,7 +90,7 @@
 </section>
 <!-- Tombol Tambah Kebun -->
 <div class="container mt-4 text-center">
-<a href="buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
+<a href="/buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
     <i class="bi bi-plus-circle"></i> Tambah Kebun
 </a>
 </div>

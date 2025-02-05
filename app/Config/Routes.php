@@ -74,3 +74,6 @@ $routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');
 
 // Semua Kebun
 $routes->get('/kebun/semua-kebun', 'Kebun::allkebun');
+
+//komentar
+$routes->post('/kebun/komentar', 'Kebun::Komentar');

@@ -216,7 +216,7 @@
                         <?= esc($item['nama_users']); ?>
                       </a>
                     </span>
-                    <img alt="<?= esc($item['nama_kebun']); ?>" class="img-card" src="/uploads/<?= $item['poto_kebun']; ?>">
+                    <img alt="<?= esc($item['nama_kebun']); ?>" class="img-card" src="/uploads/kebun/<?= $item['poto_kebun']; ?>">
                   </div>
                   <div class="col-md-8">
                     <section>
