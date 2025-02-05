@@ -1,18 +1,23 @@
 <?php
 namespace App\Controllers;
 use App\Models\UsersModel;
+use App\Models\KebunModel;
+use App\Models\TanamanKebunModel;
 use Google_Client;
 
 class Pengguna extends BaseController
 {
     private $googleClient;
     protected $users;
+    protected $kebunModel;
+    protected $tanamanKebunModel;
 
     public function __construct()
     {
         $this->googleClient = new Google_Client();
         $this->users = new UsersModel();
-
+        $this->kebunModel = new KebunModel();
+        $this->tanamanKebunModel = new TanamanKebunModel();
         $this->googleClient->setClientId(env('Clientid'));
         $this->googleClient->setClientSecret(env('ClientSecret'));
         $this->googleClient->setRedirectUri('http://localhost:8080/login/proses');
@@ -34,8 +39,7 @@ class Pengguna extends BaseController
         return view('pengguna/login_page', $data, ['title' => 'Login']);
     }
 
-    public function proses_login()
-    {
+    public function proses_login(){
         $token = $this->googleClient->fetchAccessTokenWithAuthCode($this->request->getvar('code'));
         if (!isset($token['error'])) {
             $this->googleClient->setAccessToken($token['access_token']);
@@ -111,8 +115,7 @@ class Pengguna extends BaseController
     }
 
     // -----------------------------------++USER_PAGE++----------------------------------------
-    public function home()
-    {
+    public function home(){
         // Validasi apakah pengguna telah login
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
@@ -163,19 +166,28 @@ class Pengguna extends BaseController
     }
 
     //REGIS BIASA
-    public function regis_auth(){
+    public function regis_auth()
+    {
         // Aturan validasi untuk form registrasi
         $rules = [
-            'nama_users' => 'required',
-            'email' => 'required|valid_email|is_unique[pengguna.email]', 
-            'password' => 'required',
+            'nama_users' => 'required|alpha_space|min_length[3]|max_length[20]',
+            'email' => 'required|valid_email', 
+            'password' => 'required|min_length[6]',
             'confirm_password' => 'required|matches[password]',
         ];
 
-        // Pesan error khusus email
+        // Pesan error khusus
         $messages = [
+            'nama_users' => [
+                'alpha_space' => 'Nama hanya boleh berisi huruf',
+                'min_length' => 'Nama harus memiliki minimal 3 karakter.',
+                'max_length' => 'Nama tidak boleh lebih dari 20 karakter.',
+            ],
             'email' => [
                 'is_unique' => 'Email ini sudah terdaftar. Silakan gunakan email lain.',
+            ],
+            'password' => [
+                'min_length' => 'Password harus memiliki minimal 6 karakter.',
             ],
         ];
 
@@ -189,7 +201,13 @@ class Pengguna extends BaseController
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
         $confirmPassword = $this->request->getPost('confirm_password');
-
+        
+        $user = $this->users->where('email', $email)->first();
+        if ($user && $user['deleted_at'] === null) {
+            // Email sudah terdaftar dan akun tidak dihapus
+            session()->setFlashdata('error', ['Email ini sudah terdaftar. Silakan gunakan email lain.']);
+            return redirect()->to('/register');
+        }
         // Jika password dan confirm password tidak cocok
         if ($password !== $confirmPassword) {
             session()->setFlashdata('error', ['Password dan konfirmasi password tidak cocok.']);
@@ -248,8 +266,6 @@ class Pengguna extends BaseController
         // die;
         return redirect()->to('/');
     }
-
-
 // --=========================================|| PANEL ||================================================--
     public function dashboard(): string
     {
@@ -261,104 +277,167 @@ class Pengguna extends BaseController
         return view('services',['title' => 'Layanan']);
     }
 
+    // --======================================|| PROFILE ||==================================================--
+        public function editProfile($id_user)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
 
+        $user = $this->users->find($id_user);
 
-// --======================================|| PROFILE ||==================================================--
-public function profile()
-{
-    $id_user = session()->get('id_user');
-    $user = $this->users->find($id_user);
+        if (!$user) {
+            return redirect()->to('/user_page')->with('error', 'Pengguna tidak ditemukan.');
+        }
 
-    if (!$user) {
-        return redirect()->to('/login')->with('error', 'Pengguna tidak ditemukan. Silakan login kembali.');
+        return view('pengguna/update_profile', [
+            'title' => 'Edit Profil',
+            'user' => $user
+        ]);
     }
 
-    return view('pengguna/profile_page', [
-        'title' => 'Profile',
-        'user' => $user
-    ]);
-}
+    public function updateProfile($id_user)
+    {
+        // Ambil data pengguna yang sedang diupdate
+        $userLama = $this->users->find($id_user);
 
-public function editProfile($id_user)
-{
-    if (!session()->get('logged_in')) {
-        return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        $existingUser = $this->users->where('email', $this->request->getPost('email'))
+                                    ->where('deleted_at', NULL)
+                                    ->where('id_user !=', $id_user)
+                                    ->asArray()
+                                    ->first();
+        
+        if ($existingUser) {
+            return redirect()->to('/Pengguna/editProfile/' . $id_user)
+                            ->withInput()
+                            ->with('error', ['Email sudah digunakan, silakan gunakan email lain.']);
+        }
+
+        // Aturan validasi
+        $rules = [
+            'nama_users' => 'required|max_length[50]',
+            'email' => [
+                'rules' => 'required|valid_email',
+                'errors' => [
+                    'required' => 'Email wajib diisi.',
+                    'valid_email' => 'Format email tidak valid.'
+                ]
+            ],
+            'profile' => 'is_image[profile]|mime_in[profile,image/jpg,image/jpeg,image/png]|max_size[profile,2048]',
+        ];
+
+        // Jika password diisi, validasi harus sama dengan confirm_password
+        if ($this->request->getPost('password')) {
+            $rules['password'] = [
+                'rules' => 'required|min_length[6]',
+                'errors' => [
+                    'required' => 'Password wajib diisi.',
+                    'min_length' => 'Password minimal 6 karakter.'
+                ]
+            ];
+            $rules['confirm_password'] = [
+                'rules' => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Konfirmasi password wajib diisi.',
+                    'matches' => 'Password dan konfirmasi password harus sama.'
+                ]
+            ];
+        }
+
+        if (!$this->validate($rules)) {
+            return redirect()->to('/Pengguna/editProfile/' . $id_user)
+                        ->withInput()
+                        ->with('error', $this->validator->getErrors());
+        }
+
+        // Data yang akan diupdate
+        $data = [
+            'nama_users' => $this->request->getPost('nama_users'),
+            'email' => $this->request->getPost('email'),
+        ];
+
+        // Jika user mengubah password, lakukan hashing sebelum update
+        if ($this->request->getPost('password')) {
+            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
+        }
+
+        // Handle file upload
+        $file = $this->request->getFile('profile');
+        // dd($userLama, $file);
+        // die;
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getRandomName();
+            $file->move('uploads/profile', $newName);
+            
+            // Hapus foto lama jika bukan default
+            if ($userLama->profile && $userLama->profile != 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png') {
+                @unlink($userLama->profile); // Hapus file lama
+            }
+
+            // Set path file baru dalam database
+            $data['profile'] = $newName;
+        }
+
+        // Update user data
+        $this->users->update($id_user, $data);
+
+        // Update session jika user yang sedang login yang diupdate
+        if (session()->get('id_user') == $id_user) {
+            session()->set($data);
+        }
+
+        return redirect()->to('/Pengguna/editProfile/' . $id_user)->with('success', 'Profil berhasil diperbarui.');
     }
 
-    $user = $this->users->find($id_user);
+    public function deleteProfile($id_user)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
 
-    if (!$user) {
-        return redirect()->to('/profile')->with('error', 'Pengguna tidak ditemukan.');
+        // Ambil data pengguna berdasarkan ID
+        $user = $this->users->asArray()->find($id_user);
+
+        if (!$user) {
+            return redirect()->to('/Pengguna/editProfile/' . $id_user)->with('error', 'Pengguna tidak ditemukan.');
+        }
+
+        // Hapus kebun yang dimiliki oleh user menggunakan model Kebun
+        $kebunList = $this->kebunModel->where('id_user', $id_user)->findAll();
+
+        foreach ($kebunList as $kebun) {
+            // Hapus gambar kebun jika ada dan bukan gambar default
+            if (!empty($kebun['poto_kebun']) && $kebun['poto_kebun'] != 'uploads/kebun/default.jpg') {
+                $potoKebunPath = FCPATH . $kebun['poto_kebun'];
+                if (file_exists($potoKebunPath)) {
+                    unlink($potoKebunPath); // Hapus gambar kebun
+                }
+            }
+            // Hapus tanaman yang terkait dengan kebun ini menggunakan model TanamanKebun
+            $this->tanamanKebunModel->where('id_kebun', $kebun['id_kebun'])->delete();
+        }
+        // Hapus semua kebun milik user
+        $this->kebunModel->where('id_user', $id_user)->delete();
+
+        // **Hapus gambar profil jika bukan default dan file ada**
+        if (!empty($user['profile']) && !filter_var($user['profile'], FILTER_VALIDATE_URL)) {
+            $profilePath = FCPATH . 'uploads/profile/' . $user['profile']; 
+
+            if (file_exists($profilePath)) {
+                unlink($profilePath);
+            }
+        }
+
+        // Hapus akun pengguna
+        $this->users->delete($id_user);
+
+        // Jika akun yang dihapus adalah akun yang sedang login, logout user
+        if (session()->get('id_user') == $id_user) {
+            session()->destroy();
+            session()->setFlashdata('success', 'Akun Anda berhasil dihapus.');
+            return redirect()->to('/login');
+        }
+
+        return redirect()->to('/login')->with('success', 'Akun berhasil dihapus.');
     }
-
-    return view('pengguna/update_profile', [
-        'title' => 'Edit Profil',
-        'user' => $user
-    ]);
-}
-
-public function updateProfile($id_user)
-{
-    $rules = [
-        'nama_users' => 'required|max_length[50]',
-        'email' => 'required|valid_email',
-        'profile' => 'is_image[profile]|mime_in[profile,image/jpg,image/jpeg,image/png]|max_size[profile,2048]',
-    ];
-
-    if (!$this->validate($rules)) {
-        return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
-    }
-
-    $data = [
-        'nama_users' => $this->request->getPost('nama_users'),
-        'email' => $this->request->getPost('email'),
-    ];
-    
-
-    // Handle file upload
-    $file = $this->request->getFile('profile');
-    if ($file && $file->isValid() && !$file->hasMoved()) {
-        $newName = $file->getRandomName();
-        $file->move('uploads/profile', $newName);
-
-        // Set path file in database
-        $data['profile'] = 'uploads/profile/' . $newName;
-
-    }
-
-    // Update user data
-    $this->users->update($id_user, $data);
-
-    // Update session
-    if (session()->get('id_user') == $id_user) {
-        session()->set($data);
-    }
-
-    return redirect()->to('/profile')->with('success', 'Profil berhasil diperbarui.');
-}
-
-public function deleteProfile($id_user)
-{
-    if (!session()->get('logged_in')) {
-        return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
-    }
-
-    $user = $this->users->find($id_user);
-
-    if (!$user) {
-        return redirect()->to('/profile')->with('error', 'Pengguna tidak ditemukan.');
-    }
-
-    // Remove profile image if exists
-    if (!empty($user['profile']) && $user['profile'] != 'uploads/profile/default.jpg' && file_exists($user['profile'])) {
-        unlink($user['profile']);
-    }
-
-    $this->users->delete($id_user);
-
-    if (session()->get('id_user') == $id_user) {
-        session()->destroy();
-        return redirect()->to('/login')->with('success', 'Akun Anda berhasil dihapus.');
-    }
-}
 }

@@ -161,10 +161,6 @@
         <div class="register-section">
             <h2>Register</h2>
             <form action="<?= base_url('register/auth') ?>" method="POST">
-                <!-- <div class="form-group">
-                    <input type="text" name="fullname" placeholder="Full Name" required>
-                    <i class="fas fa-user"></i>
-                </div> -->
                 <div class="form-group">
                     <input type="text" name="nama_users" placeholder="Username" required>
                     <i class="fas fa-user-circle"></i>

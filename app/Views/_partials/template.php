@@ -21,6 +21,7 @@
 
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" rel="stylesheet">
     <!-- SweetAlert2 JS -->
@@ -37,39 +38,13 @@
     <!-- Template Stylesheet -->
     <link href="<?php echo base_url('tanaman/'); ?>css/style.css" rel="stylesheet">
 </head>
-
 <body>
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
     <!-- Spinner End -->
-    <!-- Topbar Start -->
-    <!-- <div class="container-fluid bg-dark text-light px-0 py-2">
-        <div class="row gx-0 d-none d-lg-flex">
-            <div class="col-lg-7 px-5 text-start">
-                <div class="h-100 d-inline-flex align-items-center me-4">
-                    <span class="fa fa-phone-alt me-2"></span>
-                    <span>+012 345 6789</span>
-                </div>
-                <div class="h-100 d-inline-flex align-items-center">
-                    <span class="far fa-envelope me-2"></span>
-                    <span>info@example.com</span>
-                </div>
-            </div>
-            <div class="col-lg-5 px-5 text-end">
-                <div class="h-100 d-inline-flex align-items-center mx-n2">
-                    <span>Follow Us:</span>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-linkedin-in"></i></a>
-                    <a class="btn btn-link text-light" href=""><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <!-- Topbar End -->
-    
+
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0">
         <a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -81,61 +56,47 @@
         <?php 
             $uri = service('uri');
         ?>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav ms-auto align-items-center">
-        <?php if (session()->get('logged_in')) : ?>
-            <li class="nav-item">
-                <a href="/user_page" class="nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/services" class="nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
-            </li>
-            <li class="nav-item">
-                <a href="/kelola_kebun" class="nav-link <?= ($uri->getSegment(1) == 'kelola_kebun') ? 'active' : '' ?>">Kebun</a>
-            </li>
-            <li class="nav-item">
-                <a href="/plants" class="nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
-            </li>
-        <?php else : ?>
-            <li class="nav-item">
-                <a href="/" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/services" class="nav-link">Layanan</a>
-            </li>
-        <?php endif; ?>
-
-        <!-- Dropdown Profile -->
-        <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>
-            <?php
-            $userModel = new \App\Models\UsersModel();
-            $userId = session()->get('id_user');
-            $user = $userModel->find($userId);
-            $profile = $user->profile ?? 'uploads/profile/default_profile.jpg'; // Gambar default jika profil kosong
-            ?>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= base_url($profile) ?>" alt="Profile Picture" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                    <span>
-                        <?php
-                        if (session()->has('nama_users')) {
-                            echo session('nama_users');
-                        } elseif (session()->has('email')) {
-                            echo session('email');
-                        } else {
-                            echo "Profile";
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <?php if (session()->get('logged_in')) : ?>
+                    <a href="/user_page" class="nav-item nav-link <?= ($uri->getSegment(1) == 'user_page') ? 'active' : '' ?>">Home</a>
+                    <a href="/services" class="nav-item nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>">Layanan</a>
+                    <a href="/kebun/semua-kebun" class="nav-item nav-link <?= ($uri->getSegment(1) == 'kebun/semua-kebun') ? 'active' : '' ?>">Kebun</a>
+                    <a href="/plants" class="nav-item nav-link <?= ($uri->getSegment(1) == 'plants') ? 'active' : '' ?>">Tanaman</a>
+                <?php else: ?>
+                    <a href="/" class="nav-item nav-link">Home</a>
+                    <a href="/services" class="nav-item nav-link">Layanan</a>
+                <?php endif; ?>
+                <?php if (session()->has('logged_in') && session('logged_in') === true) : ?>    
+                    <?php
+                        $profile = session()->get('profile') ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
+                        if (!filter_var($profile, FILTER_VALIDATE_URL)) {
+                            $profile = base_url('uploads/profile/' . $profile);
                         }
-                        ?>
-                    </span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                </ul>
-            </li>
-        <?php endif; ?>
-    </ul>
-</div>
-
+                        $user = session()->get('id_user');
+                    ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img alt="" height="30" width="30" aria-hidden="true" src="<?= esc($profile) ?>">
+                            <?php
+                            if (session()->has('nama_users')) {
+                                echo session('nama_users'); 
+                            } elseif (session()->has('email')) {
+                                echo session('email'); 
+                            } else {
+                                echo "Profile"; 
+                            }
+                            ?>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Pengguna/editProfile/<?php echo $user; ?>">Edit Profile</a></li>
+                            <li><a class="dropdown-item" href="/kelola_kebun">Kebun Saya</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+            </div>
             <?php if (session()->get('logged_in')): ?>
                 <a href="/logout" class="btn btn-primary py-4 px-lg-4 rounded-0 d-none d-lg-block">
                     Logout
@@ -150,7 +111,6 @@
         </div>
     </nav>
     <!-- Navbar End -->
-
 
     <?php echo $this->renderSection('isi')?>
 
@@ -193,12 +153,8 @@
         </div>
     <?php endif; ?>
     <!-- Copyright End -->
-
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -210,7 +166,6 @@
     <script src="<?php echo base_url('tanaman/'); ?>lib/parallax/parallax.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/isotope/isotope.pkgd.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/lightbox/js/lightbox.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="<?php echo base_url('tanaman/'); ?>js/main.js"></script>
 </body>

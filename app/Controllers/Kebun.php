@@ -3,17 +3,19 @@ namespace App\Controllers;
 
 use App\Models\KebunModel;
 use App\Models\TanamanKebunModel;
+use App\Models\komentarModel;
 
 class Kebun extends BaseController
 {
     protected $kebunModel;
     protected $tanamanKebunModel;
-
+    protected $komentarModel;
 
     public function __construct()
     {
         $this->tanamanKebunModel = new TanamanKebunModel();
         $this->kebunModel = new KebunModel();
+        $this->komentarModel = new komentarModel();
     }
 
     public function index()
@@ -51,7 +53,7 @@ class Kebun extends BaseController
 
         if ($file->isValid() && !$file->hasMoved()) {
             $fileName = $file->getRandomName();
-            $file->move('uploads', $fileName);
+            $file->move('uploads/kebun/', $fileName);
         } else {
             return redirect()->back()->with('error', 'Gagal mengunggah gambar.');
         }
@@ -70,8 +72,6 @@ class Kebun extends BaseController
         // Redirect ke halaman tambah tanaman dengan membawa ID kebun
         return redirect()->to('/tanaman/tambah/' . $kebunId);
     }
-
-
 // --=========================================|| KELOLA KEBUN ||================================================--
     public function index_kelola()
     {
@@ -87,43 +87,36 @@ class Kebun extends BaseController
     }
 
     public function detail($id)
-{
-    // Tambahkan model komentar di constructor
-    $this->komentarModel = new \App\Models\komentarModel();
+    {
+        $kebun = $this->kebunModel->find($id);
+        // Jika data kebun tidak ditemukan
+        if (!$kebun) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
+        }
+        // Ambil daftar tanaman terkait dengan kebun ini
+        $tanaman = $this->tanamanKebunModel
+            ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name, tanaman.image_url') 
+            ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
+            ->where('tanaman_kebun.id_kebun', $id) 
+            ->findAll();
+        $komentar = $this->komentarModel
+            ->select('komentar.*, pengguna.nama_users as nama_users')
+            ->join('pengguna', 'pengguna.id_user = komentar.id_user')
+            ->where('komentar.id_kebun', $id)
+            ->orderBy('komentar.created_at', 'DESC')
+            ->findAll();
+        $data = [
+            'title' => 'Detail Kebun',
+            'noFooter' => true,
+            'kebun' => $kebun,
+            'tanaman' => $tanaman,
+            'komentar' => $komentar,
+            'idUserLogin' => session()->get('id_user')
+        ];
 
-    $kebun = $this->kebunModel->find($id);
-    if (!$kebun) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException("Kebun dengan ID $id tidak ditemukan");
+        return view('kebun/tanaman', $data);
     }
 
-    // Data tanaman (kode yang sudah ada)
-    $tanaman = $this->tanamanKebunModel
-        ->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name')
-        ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
-        ->where('tanaman_kebun.id_kebun', $id)
-        ->findAll();
-
-    // Tambahkan query untuk komentar
-    $komentar = $this->komentarModel
-        ->select('komentar.*, pengguna.nama_users as nama_users')
-        ->join('pengguna', 'pengguna.id_user = komentar.id_user')
-        ->where('komentar.id_kebun', $id)
-        ->orderBy('komentar.created_at', 'DESC')
-        ->findAll();
-
-    $data = [
-        'title' => 'Detail Kebun',
-        'noFooter' => true,
-        'kebun' => $kebun,
-        'tanaman' => $tanaman,
-        'komentar' => $komentar, // Tambahkan data komentar
-        'idUserLogin' => session()->get('id_user')
-    ];
-
-    return view('kebun/tanaman', $data);
-}
-    
-    
     public function edit($id)
     {
         if (!session()->get('logged_in')) {
@@ -212,20 +205,114 @@ class Kebun extends BaseController
 
         return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
     }
-     public function lihat_kebun_orang_lain()
-    {
-        if (!session()->get('logged_in')) {
-            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+// --=========================================|| SEMUA KEBUN ||================================================--
+    public function allkebun(){
+        $kebunData = $this->kebunModel
+        ->select('kebun.id_kebun, kebun.nama_kebun, kebun.poto_kebun, pengguna.nama_users, pengguna.email, pengguna.profile, tanaman.common_name, tanaman_kebun.tanggal_mulai, tanaman_kebun.tanggal_selesai')
+        ->join('pengguna', 'pengguna.id_user = kebun.id_user', 'left')
+        ->join('tanaman_kebun', 'tanaman_kebun.id_kebun = kebun.id_kebun', 'left')
+        ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman', 'left')
+        ->orderBy('kebun.id_kebun', 'ASC')
+        ->findAll();
+
+        // **Mengelompokkan data berdasarkan id_kebun**
+        $kebunList = [];
+
+        foreach ($kebunData as $item) {
+            $id_kebun = $item['id_kebun'];
+            if (!isset($kebunList[$id_kebun])) {
+                // Jika kebun belum ada di array, buat data baru
+                $kebunList[$id_kebun] = [
+                    'id_kebun' => $id_kebun,
+                    'nama_kebun' => $item['nama_kebun'],
+                    'poto_kebun' => $item['poto_kebun'],
+                    'nama_users' => $item['nama_users'],
+                    'email' => $item['email'],
+                    'profile' => $item['profile'],
+                    'tanaman' => [],
+                    'progress' => 0,
+                    'total_progress' => 0,
+                    'jumlah_tanaman' => 0,
+                ];
+            }
+
+            // **Perhitungan progress untuk setiap tanaman**
+            if (!empty($item['tanggal_mulai']) && !empty($item['tanggal_selesai'])) {
+                $tanggalMulai = strtotime($item['tanggal_mulai']);
+                $tanggalSelesai = strtotime($item['tanggal_selesai']);
+                $tanggalSekarang = time();
+
+                // Inisialisasi progress untuk tanaman
+                $tanamanProgress = 0;
+
+                // Jika tanggal sekarang sebelum tanggal mulai, progress = 0
+                if ($tanggalSekarang < $tanggalMulai) {
+                    $tanamanProgress = 0;
+                }
+                // Jika tanggal sekarang lebih besar dari tanggal selesai, progress = 100
+                elseif ($tanggalSekarang > $tanggalSelesai) {
+                    $tanamanProgress = 100;
+                }
+                // Jika tanggal sekarang antara tanggal mulai dan selesai, hitung progress
+                else {
+                    $tanamanProgress = (($tanggalSekarang - $tanggalMulai) / ($tanggalSelesai - $tanggalMulai)) * 100;
+                }
+
+                // Tambahkan tanaman ke array tanaman dalam kebun ini
+                $kebunList[$id_kebun]['tanaman'][] = [
+                    'nama' => $item['common_name'],
+                    'tanggal_selesai' => date('Y-m-d', $tanggalSelesai), // Tampilkan tanggal selesai dengan format yang jelas
+                    'progress' => round($tanamanProgress),  // Membulatkan progress tanaman
+                ];
+
+                // Update total progress kebun
+                $kebunList[$id_kebun]['total_progress'] += $tanamanProgress;
+                $kebunList[$id_kebun]['jumlah_tanaman']++;
+            }
         }
 
-        $idUser = session()->get('id_user');
-        $kebunOrangLain = $this->kebunModel->where('id_user !=', $idUser)->findAll();
+        // **Hitung rata-rata progress untuk setiap kebun**
+        foreach ($kebunList as &$kebun) {
+            if ($kebun['jumlah_tanaman'] > 0) {
+                $kebun['progress'] = round($kebun['total_progress'] / $kebun['jumlah_tanaman']);
+            }
+        }
 
+        // Data untuk ditampilkan di view
         $data = [
-            'title' => 'Kebun Orang Lain',
-            'kebun' => $kebunOrangLain
+            'title' => 'Kebun Saya',
+            'kebun' => $kebunList
         ];
+        // dd($data);
+        // die;
+        return view('kebun/allkebun', $data); 
+    }
 
-        return view('kebun/lihat_kebun', $data);
+    public function Komentar()
+    {
+        $validationRules = [
+            'komentar' => 'required|string',
+            'id_kebun' => 'required|integer',
+        ];
+    
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+    
+        $komentar = $this->request->getPost('komentar');
+        $id_user = session()->get('id_user');
+        $id_kebun = $this->request->getPost('id_kebun');
+        $induk_komentar_id = $this->request->getPost('induk_komentar_id') ?: null;
+        // dd($komentar, $id_user, $id_kebun, $induk_komentar_id);
+        // die;
+        $this->komentarModel->insert([
+            'komentar' => $komentar,
+            'id_user' => $id_user,
+            'id_kebun' => $id_kebun,
+            'induk_komentar_id' => $induk_komentar_id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+        
+        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan.');
     }
 }

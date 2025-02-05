@@ -90,25 +90,18 @@
 </section>
 <!-- Tombol Tambah Kebun -->
 <div class="container mt-4 text-center">
-<a href="buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
+<a href="/buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
     <i class="bi bi-plus-circle"></i> Tambah Kebun
 </a>
 </div>
-<!-- Tombol Lihat Kebun -->
-<div class="container mt-4 text-center">
-    <a href="<?= base_url('lihat_kebun') ?>" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
-        <i class="bi bi-eye"></i> Lihat Kebun Orang Lain
-    </a>
-</div>
 <!-- Catalog Section -->
-
 <section class="catalog-section my-5">
   <div class="container">
     <div class="card-container">
       <?php if (isset($kebun) && !empty($kebun)): ?>
         <?php foreach ($kebun as $item): ?>
           <a href="/kebun/detail/<?= $item['id_kebun']; ?>" class="card">
-            <img src="/uploads/<?= $item['poto_kebun'] ?>" class="card-img-top" alt="<?= $item['nama_kebun']; ?>">
+            <img src="/uploads/kebun/<?= $item['poto_kebun'] ?>" class="card-img-top" alt="<?= $item['nama_kebun']; ?>">
             <div class="card-body">
               <h5 class="card-title">Nama Kebun : <?= htmlspecialchars($item['nama_kebun']); ?></h5>
             </div>

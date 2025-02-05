@@ -1,13 +1,17 @@
 <?php
 namespace App\Models;
-
 use CodeIgniter\Model;
-
 class komentarModel extends Model
 {
     protected $table = 'komentar';
     protected $primaryKey = 'id_komentar';
-    protected $allowedFields = ['komentar', 'id_user', 'id_kebun', 'induk_komentar_id', 'created_at'];
+    protected $allowedFields = [
+        'id_kebun',
+        'id_user', 
+        'induk_komentar_id', 
+        'komentar', 
+        'created_at'
+    ];
 
     // Ambil semua komentar berdasarkan id_kebun
     public function getKomentarByKebun($id_kebun)

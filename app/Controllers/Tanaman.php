@@ -234,7 +234,6 @@ class Tanaman extends BaseController
     //     }
     // }
 // --=========================================|| TANAMAN-KEBUN ||================================================--
-
     public function formTambah($id_kebun)
     {
         // Ambil data tanaman dari tabel master tanaman
@@ -301,36 +300,72 @@ class Tanaman extends BaseController
     // Method untuk menampilkan detail tanaman
     public function detail($id_tanaman_kebun)
     {
-        $data['tanaman'] = $this->TanamanKebunModel->getDetailTanaman($id_tanaman_kebun);
-
+        $data = [
+            'title' => 'Detail Tanaman',
+            'tanaman' => $this->TanamanKebunModel
+                    ->select('tanaman_kebun.*, tanaman.*,pengguna.id_user, pengguna.nama_users, pengguna.email, pengguna.profile')
+                    ->join('kebun', 'kebun.id_kebun = tanaman_kebun.id_kebun')
+                    ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman') 
+                    ->join('pengguna', 'pengguna.id_user = kebun.id_user') 
+                    ->where('tanaman_kebun.id', $id_tanaman_kebun) 
+                    ->first(),
+        ];
         // Jika tanaman tidak ditemukan
         if (!$data['tanaman']) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
         // Tampilkan halaman detail tanaman
-        return view('tanaman/Detail_Tanaman', $data, ['title' => 'Detail Tanaman']);
+        return view('tanaman/Detail_Tanaman', $data);
     }
     
     public function edit($id)
     {
-        // Ambil data tanaman dari kebun
-        $tanaman = $this->TanamanKebunModel->findAll();
+        // Ambil data tanaman berdasarkan ID
+        $tanaman = $this->TanamanKebunModel->getDetailTanaman($id);
 
-         return view('tanaman/update_Tanaman', [
-             'title' => 'Form Tambah',
-             'tanaman' => $tanaman,
-         ]);
-        if (!$data['tanaman']) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");                                                                 
+        // Jika data tidak ditemukan, lempar error 404
+        if (!$tanaman) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan");
         }
-
-        return view('tanaman/', $data);
+        // dd($tanaman);
+        return view('tanaman/update_tanaman', [
+            'title' => 'Form Edit Tanaman',
+            'tanaman' => $tanaman,
+        ]);
     }
         
     public function update($id)
     {
-        $validationRules = [
+        $id = $this->request->getPost('id');
+
+        if (!is_numeric($id) || !$id) {
+            return redirect()->back()->with('error', 'ID tanaman tidak valid.');
+        };
+
+        // Ambil data tanaman_kebun berdasarkan ID
+        $tanamanKebun = $this->TanamanKebunModel->getDetailTanaman($id);
+
+        // Cek apakah data ditemukan
+        if (!$tanamanKebun) {
+            return redirect()->back()->with('error', 'Data tanaman tidak ditemukan.');
+        }
+
+        // Ambil id_user yang sedang login
+        $user = session()->get('id_user');
+
+        $userCheck = $this->TanamanKebunModel->where('id', $id)
+                                        ->where('id_user', $user)
+                                        ->first();
+
+        // Jika tidak ditemukan, berarti pengguna tidak memiliki izin
+        if (!$userCheck) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate data ini.');
+        }
+
+        // Aturan validasi
+        $rules = [
             'id_tanaman' => 'required',
+            'id_user' => 'required',
             'id_kebun' => 'required',
             'benih' => 'required|numeric',
             'cara_menanam' => 'required',
@@ -338,11 +373,16 @@ class Tanaman extends BaseController
             'tanggal_mulai' => 'required|valid_date',
             'tanggal_selesai' => 'required|valid_date',
             'deskripsi' => 'required',
-
         ];
 
+        // Validasi input
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('error', 'Validasi gagal, periksa kembali input Anda.');
+        }
+        // Ambil data yang sudah divalidasi
         $tanaman = [
             'id_tanaman' => $this->request->getPost('id_tanaman'),
+            'id_kebun' => $this->request->getPost('id_kebun'),
             'benih' => $this->request->getPost('benih'),
             'cara_menanam' => $this->request->getPost('cara_menanam'),
             'kondisi_matahari' => $this->request->getPost('kondisi_matahari'),
@@ -350,13 +390,14 @@ class Tanaman extends BaseController
             'tanggal_selesai' => $this->request->getPost('tanggal_selesai'),
             'deskripsi' => $this->request->getPost('deskripsi')
         ];
-    
+
         try {
-            $PlantModel->update($id, $data);
+            // Update data
+            $this->TanamanKebunModel->update($id, $tanaman);
             session()->setFlashdata('success', 'Data tanaman berhasil diperbarui!');
-            return redirect()->to('/kebun/detail/' . $this->request->getPost('id_kebun'));  
+            return redirect()->to('/tanaman/detail/' . $this->request->getPost('id'));
         } catch (\Exception $e) {
-            session()->setFlashdata('error', 'Gagal memperbarui data tanaman!');
+            session()->setFlashdata('error', 'Gagal memperbarui data tanaman: ' . $e->getMessage());
             return redirect()->back()->withInput();
         }
     }

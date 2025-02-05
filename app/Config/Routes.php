@@ -11,7 +11,7 @@ $routes->get('/', 'Pengguna::dashboard');
 $routes->get('/services', 'Pengguna::services');
 
 //register google
-$routes->get('register', 'Pengguna::index_regis');
+$routes->get('/register', 'Pengguna::index_regis');
 $routes->get('register/proses', 'Pengguna::proses_regis');
 
 // register biasa
@@ -27,20 +27,18 @@ $routes->post('login/auth', 'Pengguna::auth');
 $routes->get('logout', 'Pengguna::logout');
 
 //user page
-$routes->get('user_page', 'Pengguna::home');
+$routes->get('/user_page', 'Pengguna::home');
 
 //PROFILE
-$routes->get('/profile', 'Pengguna::profile');
-$routes->get('/Pengguna/editProfile/(:num)', 'Pengguna::editProfile/$1');
-$routes->post('/Pengguna/updateProfile/(:num)', 'Pengguna::updateProfile/$1');
-$routes->get('/Pengguna/deleteProfile/(:num)', 'Pengguna::deleteProfile/$1');                           
+$routes->get('/Pengguna/editProfile/(:any)', 'Pengguna::editProfile/$1');
+$routes->post('/Pengguna/updateProfile/(:any)', 'Pengguna::updateProfile/$1');
+$routes->get('/Pengguna/deleteProfile/(:any)', 'Pengguna::deleteProfile/$1'); 
 
 // --=========================================|| TANAMAN ||================================================--
 
 //tanaman
 $routes->get('/plants', 'Tanaman::index');
 $routes->get('/plants/search', 'Tanaman::search');
-
 
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
@@ -56,36 +54,26 @@ $routes->get('/tanaman/delete/(:num)', 'Tanaman::delete/$1');
 $routes->get('/tanaman/search', 'Tanaman::search');
 
 //update delete tanaman
-$routes->get('tanaman/edit/(:num)', 'Tanaman::edit/$1');
-$routes->post('tanaman/edit/(:num)', 'Tanaman::edit/$1');
+$routes->get('/tanaman/edit/(:num)', 'Tanaman::edit/$1');
+$routes->post('/tanaman/update/(:num)', 'Tanaman::update/$1');
 
 $routes->post('tanaman/update/(:num)', 'Tanaman::update/$1');
 // --=========================================|| KEBUN ||================================================--
 
 //tambah kebun
 $routes->get('/buat_kebun', 'Kebun::index');
-$routes->get('/kebun', 'Kebun::index');
 $routes->post('/buat', 'Kebun::buat');
 $routes->get('/kebun/detail', 'Kebun::index_kelola');
 
-
-
 //kelola kebun
-$routes->get('kelola_kebun', 'Kebun::index_kelola');
+$routes->get('/kelola_kebun', 'Kebun::index_kelola');
 $routes->get('/kebun/detail/(:num)', 'Kebun::detail/$1');
 $routes->get('/kebun/edit/(:num)', 'Kebun::edit/$1');
 $routes->post('/kebun/update/(:num)', 'Kebun::update/$1');
 $routes->get('/kebun/delete/(:num)', 'Kebun::delete/$1');
 
-
-$routes->get('/growstuff', 'Growstuff::index');
-$routes->get('/growstuff/search', 'Growstuff::search');
-
-
-
-//lihat kebun
-$routes->get('lihat_kebun', 'kebun::lihat_kebun_orang_lain');
-$routes->get('/kebun/detail_Kebun_orang_lain/(:num)', 'kebun::detail_kebun_orang_lain/$1');
+// Semua Kebun
+$routes->get('/kebun/semua-kebun', 'Kebun::allkebun');
 
 //komentar
-$routes->post('/komentarController/addComment', 'komentarController::addComment');
+$routes->post('/kebun/komentar', 'Kebun::Komentar');
