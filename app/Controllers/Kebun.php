@@ -167,7 +167,7 @@ class Kebun extends BaseController
         // Pastikan file ada, valid, dan belum dipindahkan
         if ($file && $file->isValid() && !$file->hasMoved()) {
             $newName = $file->getRandomName(); 
-            $file->move(ROOTPATH . 'public/uploads', $newName); 
+            $file->move(ROOTPATH . 'public/uploads/kebun/', $newName); 
             $data['poto_kebun'] = $newName; 
 
             // Debugging: Log nama file yang diunggah
