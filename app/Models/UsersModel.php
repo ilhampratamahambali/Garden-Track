@@ -30,8 +30,12 @@ class UsersModel extends Model{
         return $result;
     }
 
-    public function get_user_id($id){
-        $result = $this->where('id_user', $id)->first();
+    public function get_user_id($id)
+    {        
+        $result = $this->select('id_user, nama_users, email, profile') 
+                    ->where('id_user', $id)
+                    ->first(); 
+        
         return $result;
     }
 

@@ -84,11 +84,11 @@
 <section class="hero-section" style="background-size: cover; background-position: center; padding-top: 40px;">
     <div class="container d-flex align-items-center justify-content-center">
         <div class="text-center">
-            <h1 class="catalog-text">Kebun <?= $kebun[0]['nama_users']?></h1>
+            <h1 class="catalog-text">Kebun <?= !empty($kebun) && isset($user->nama_users) ? $user->nama_users : 'Belum Ada' ?></h1>
         </div>
     </div>
 </section>
-<?php if (session()->get('id_user') == $kebun[0]['id_user']): ?>
+<?php if (!empty($user) && session()->get('id_user') == $user->id_user): ?>\
   <!-- Tombol Tambah Kebun -->
   <div class="container mt-4 text-center">
   <a href="/buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">
