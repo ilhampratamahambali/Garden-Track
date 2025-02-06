@@ -183,7 +183,7 @@ class Kebun extends BaseController
 
         $this->kebunModel->update($id, $data);
 
-        return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil diperbarui.');
+        return redirect()->to('kebun')->with('success', 'Kebun berhasil diperbarui.');
     }
 
     public function delete($id)
@@ -205,7 +205,7 @@ class Kebun extends BaseController
 
         $this->kebunModel->delete($id);
 
-        return redirect()->to('kelola_kebun')->with('success', 'Kebun berhasil dihapus.');
+        return redirect()->to('kebun')->with('success', 'Kebun berhasil dihapus.');
     }
 // --=========================================|| SEMUA KEBUN ||================================================--
     public function allkebun(){
