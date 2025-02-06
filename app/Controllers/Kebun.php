@@ -235,35 +235,39 @@ class Kebun extends BaseController
 
             // **Perhitungan progress untuk setiap tanaman**
             if (!empty($item['tanggal_mulai']) && !empty($item['tanggal_selesai'])) {
-                $tanggalMulai = strtotime($item['tanggal_mulai']);
-                $tanggalSelesai = strtotime($item['tanggal_selesai']);
-                $tanggalSekarang = time();
+                 // Konversi tanggal ke timestamp
+                $tanggalMulai = strtotime(date('Y-m-d', strtotime($item['tanggal_mulai'])));
+                $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
+                $tanggalSelesai = strtotime(date('Y-m-d', strtotime($item['tanggal_selesai'])));
 
-                // Inisialisasi progress untuk tanaman
-                $tanamanProgress = 0;
+                // Menghitung jumlah total hari
+                $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
 
-                // Jika tanggal sekarang sebelum tanggal mulai, progress = 0
+                // Menghitung hari yang telah berlalu (termasuk hari ini)
+                $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
+
+                // Menghitung progress hari
                 if ($tanggalSekarang < $tanggalMulai) {
-                    $tanamanProgress = 0;
+                    $progressHari = 0;
+                    $progresBar = 0;
+                } elseif ($tanggalSekarang > $tanggalSelesai) {
+                    $progressHari = $jumlahHari;
+                    $progresBar = 100;
+                } else {
+                    $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
+                    $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
                 }
-                // Jika tanggal sekarang lebih besar dari tanggal selesai, progress = 100
-                elseif ($tanggalSekarang > $tanggalSelesai) {
-                    $tanamanProgress = 100;
-                }
-                // Jika tanggal sekarang antara tanggal mulai dan selesai, hitung progress
-                else {
-                    $tanamanProgress = (($tanggalSekarang - $tanggalMulai) / ($tanggalSelesai - $tanggalMulai)) * 100;
-                }
+
 
                 // Tambahkan tanaman ke array tanaman dalam kebun ini
                 $kebunList[$id_kebun]['tanaman'][] = [
                     'nama' => $item['common_name'],
                     'tanggal_selesai' => date('Y-m-d', $tanggalSelesai), // Tampilkan tanggal selesai dengan format yang jelas
-                    'progress' => round($tanamanProgress),  // Membulatkan progress tanaman
+                    'progress' => round($progresBar),  // Membulatkan progress tanaman
                 ];
 
                 // Update total progress kebun
-                $kebunList[$id_kebun]['total_progress'] += $tanamanProgress;
+                $kebunList[$id_kebun]['total_progress'] += $progresBar;
                 $kebunList[$id_kebun]['jumlah_tanaman']++;
             }
         }
