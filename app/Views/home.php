@@ -180,7 +180,7 @@ html {
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-4.png" alt="Icon">
                             </div>
                             <h4 class="mb-3">Buat Kebun Anda</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <p class="mb-4">Buat kebun digital anda disini, dan tambahkan tanaman</p>
                             <a class="btn btn-sm" href="buat_kebun"><i class="fa fa-plus text-primary me-2"></i>Buat Kebun</a>
                         </div>
                     </div>
@@ -195,7 +195,7 @@ html {
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-8.png" alt="Icon">
                             </div>
                             <h4 class="mb-3">Kelola Kebun Anda</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <p class="mb-4">Kelola kebun digital anda disini, lihat perkembangan tanaman anda</p>
                             <a class="btn btn-sm" href="kelola_kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
                         </div>
                     </div>
