@@ -4,18 +4,21 @@ namespace App\Controllers;
 use App\Models\KebunModel;
 use App\Models\TanamanKebunModel;
 use App\Models\komentarModel;
+use App\Models\UsersModel;
 
 class Kebun extends BaseController
 {
     protected $kebunModel;
     protected $tanamanKebunModel;
     protected $komentarModel;
+    protected $usermodel;
 
     public function __construct()
     {
         $this->tanamanKebunModel = new TanamanKebunModel();
         $this->kebunModel = new KebunModel();
         $this->komentarModel = new komentarModel();
+        $this->usermodel = new UsersModel();
     }
 
     public function index()
@@ -75,15 +78,20 @@ class Kebun extends BaseController
 // --=========================================|| KELOLA KEBUN ||================================================--
     public function kebun()
     {
+        // Pastikan pengguna sudah login
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
+        
         $idUser = session()->get('id_user'); 
+        $kebun = $this->kebunModel->getKebunByUser($idUser);
+        $user = $this->usermodel->get_user_id($idUser);
+
         $data = [
             'title' => 'Kebun Saya',
-            'kebun' => $this->kebunModel->getKebunByUser($idUser)
+            'kebun' => $kebun,
+            'user' => $user,
         ] ;
-
         return view('kebun/kebun', $data); 
     }
 
