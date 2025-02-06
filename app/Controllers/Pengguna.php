@@ -301,7 +301,7 @@ class Pengguna extends BaseController
         // Ambil data pengguna yang sedang diupdate
         $userLama = $this->users->find($id_user);
 
-        $existingUser = $this->users->getUserByEmailExcludingSelf($this->request->getPost('email'), $id_user);
+        $existingUser = $this->users->getUserByEmail($this->request->getPost('email'), $id_user);
         
         if ($existingUser) {
             return redirect()->to('/Pengguna/editProfile/' . $id_user)

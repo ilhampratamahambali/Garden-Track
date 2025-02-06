@@ -33,31 +33,44 @@
     } */
 
     .info-card {
-        background: white;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        text-align: center;
-    }
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Allow card to grow with content */
+    min-height: 120px; /* Minimum height for consistency */
+}
 
-    .info-card-title {
-        color: #666;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-    }
+.info-card-title {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    flex-shrink: 0; /* Prevent title from shrinking */
+}
 
-    .info-card-value {
-        font-size: 1.5rem;
-        color: #333;
-        font-weight: bold;
-    }
+.info-card-value {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+    flex-grow: 1; /* Allow value to take available space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    word-break: break-word; /* Handle long words */
+    hyphens: auto;
+    padding: 10px 0;
+}
 
-    .info-card-subtext {
-        font-size: 0.8rem;
-        color: #888;
-    }
-
+.info-card-subtext {
+    font-size: 0.8rem;
+    color: #888;
+    flex-shrink: 0; /* Prevent subtext from shrinking */
+    word-wrap: break-word; /* Handle long words */
+}
     .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

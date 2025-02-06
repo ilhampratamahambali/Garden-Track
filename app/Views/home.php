@@ -81,10 +81,6 @@ html {
                             <div class="row justify-content-center">
                                 <div class="col-lg-8">
                                     <h1 class="display-1 text-white mb-4 animated slideInDown">Tamanmu Dimulai dari Rumah</h1>
-                                    <form action="/search" method="get" class="d-flex animated fadeInUp" style="max-width: 600px; margin: auto;">
-                                        <input type="text" name="query" class="form-control form-control-lg" placeholder="Cari tanaman..." style="border-radius: 30px 0 0 30px;">
-                                        <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 0 30px 30px 0;">Cari</button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -97,10 +93,6 @@ html {
                             <div class="row justify-content-center">
                                 <div class="col-lg-7">
                                     <h1 class="display-1 text-white mb-4 animated slideInDown">Taman Kecil, Kebahagiaan Besar</h1>
-                                    <form action="/search" method="get" class="d-flex animated fadeInUp" style="max-width: 600px; margin: auto;">
-                                        <input type="text" name="query" class="form-control form-control-lg" placeholder="Cari tanaman..." style="border-radius: 30px 0 0 30px;">
-                                        <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 0 30px 30px 0;">Cari</button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -308,4 +300,55 @@ html {
         </div>
     </div>
     <!-- Quote End -->
+</html>
+    <script>
+        // Cek apakah ada session flashdata 
+        const successMessage = "<?= session()->getFlashdata('success') ?>";
+        const errorMessage = "<?= session()->getFlashdata('error') ?>";
+
+        if (successMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",  
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
+                }
+            });
+
+            Toast.fire({
+                icon: "success",
+                title: successMessage // Tampilkan pesan dari session flashdata
+            });
+        }
+
+        if (errorMessage) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top", 
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+                customClass: {
+                    popup: 'toast-popup'
+                }
+            });
+
+            Toast.fire({
+                icon: "error",
+                title: errorMessage // Tampilkan pesan error
+            });
+        }
+    </script>
+
 <?php echo $this->endSection()?>

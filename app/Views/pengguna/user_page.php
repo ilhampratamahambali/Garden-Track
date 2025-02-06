@@ -87,10 +87,6 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <h1 class="display-1 text-white mb-4 animated slideInDown">Tamanmu Dimulai dari Rumah</h1>
-                                <form action="/search" method="get" class="d-flex animated fadeInUp" style="max-width: 600px; margin: auto;">
-                                    <input type="text" name="query" class="form-control form-control-lg" placeholder="Cari tanaman..." style="border-radius: 30px 0 0 30px;">
-                                    <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 0 30px 30px 0;">Cari</button> 
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -103,10 +99,6 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-7">
                                 <h1 class="display-1 text-white mb-4 animated slideInDown">Taman Kecil, Kebahagiaan Besar</h1> 
-                                <form action="/search" method="get" class="d-flex animated fadeInUp" style="max-width: 600px; margin: auto;">
-                                    <input type="text" name="query" class="form-control form-control-lg" placeholder="Cari tanaman..." style="border-radius: 30px 0 0 30px;">
-                                    <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 0 30px 30px 0;">Cari</button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -175,7 +167,7 @@
                             </div>
                             <h4 class="mb-3">Kelola Kebun Anda</h4>
                             <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
-                            <a class="btn btn-sm" href="kelola_kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
+                            <a class="btn btn-sm" href="kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
                         </div>
                     </div>
                 </div>
@@ -241,7 +233,7 @@
         if (successMessage) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end",  
+                position: "top",  
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -263,7 +255,7 @@
         if (errorMessage) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: "top-end", 
+                position: "top", 
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
