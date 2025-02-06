@@ -403,7 +403,7 @@ class Pengguna extends BaseController
         foreach ($kebunList as $kebun) {
             // Hapus gambar kebun jika ada dan bukan gambar default
             if (!empty($kebun['poto_kebun']) && $kebun['poto_kebun'] != 'uploads/kebun/default.jpg') {
-                $potoKebunPath = FCPATH . $kebun['poto_kebun'];
+                $potoKebunPath = FCPATH . 'public/kebun/'. $kebun['poto_kebun'];
                 if (file_exists($potoKebunPath)) {
                     unlink($potoKebunPath); // Hapus gambar kebun
                 }
