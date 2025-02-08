@@ -15,12 +15,7 @@
 <!-- Plants Data -->
 <div class="container my-4">
     <div class="row g-4">
-<<<<<<< HEAD
-    <?php if (!empty($plants)): ?>
-        <div class="row">
-=======
         <?php if (!empty($plants)): ?>
->>>>>>> e8f06c65e5bb4c13b29ab26ef8086487abe4cfca
             <?php foreach ($plants as $plant): ?>
                 <div class="col-md-4">
                     <div class="card mb-4">

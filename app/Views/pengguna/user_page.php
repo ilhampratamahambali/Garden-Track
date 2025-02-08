@@ -174,15 +174,6 @@
     // Cek apakah ada session flashdata 
     const successMessage = "<?= session()->getFlashdata('success') ?>";
     const errorMessage = "<?= session()->getFlashdata('error') ?>";
-
-<<<<<<< HEAD
-  
-    <!-- Script untuk menampilkan SweetAlert dari session flashdata -->
-    <script>
-        // Cek apakah ada session flashdata 
-        const successMessage = "<?= session()->getFlashdata('success') ?>";
-        const errorMessage = "<?= session()->getFlashdata('error') ?>";
-=======
     if (successMessage) {
         const Toast = Swal.mixin({
             toast: true,
@@ -198,7 +189,6 @@
                 popup: 'toast-popup'
             }
         });
->>>>>>> e8f06c65e5bb4c13b29ab26ef8086487abe4cfca
 
         Toast.fire({
             icon: "success",
