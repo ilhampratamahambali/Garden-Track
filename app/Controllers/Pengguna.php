@@ -189,6 +189,9 @@ class Pengguna extends BaseController
             'password' => [
                 'min_length' => 'Password harus memiliki minimal 6 karakter.',
             ],
+            'confirm_password' => [
+                'matches' => 'Konfirmasi password tidak sesuai dengan password yang Anda masukkan.',
+            ]
         ];
 
         // Validasi inputan
@@ -308,10 +311,9 @@ class Pengguna extends BaseController
                             ->withInput()
                             ->with('error', ['Email sudah digunakan, silakan gunakan email lain.']);
         }
-
         // Aturan validasi
         $rules = [
-            'nama_users' => 'required|max_length[50]',
+            'nama_users' => 'required|max_length[20]|alpha_space|min_length[3]',
             'email' => [
                 'rules' => 'required|valid_email',
                 'errors' => [
@@ -322,8 +324,7 @@ class Pengguna extends BaseController
             'profile' => 'is_image[profile]|mime_in[profile,image/jpg,image/jpeg,image/png]|max_size[profile,2048]',
         ];
 
-        // Jika password diisi, validasi harus sama dengan confirm_password
-        if ($this->request->getPost('password')) {
+        if ($this->request->getPost('password') || $this->request->getPost('confirm_password')) {
             $rules['password'] = [
                 'rules' => 'required|min_length[6]',
                 'errors' => [
@@ -339,11 +340,11 @@ class Pengguna extends BaseController
                 ]
             ];
         }
-
+        // dd($this->request->getpost());die;
         if (!$this->validate($rules)) {
-            return redirect()->to('/Pengguna/editProfile/' . $id_user)
-                        ->withInput()
-                        ->with('error', $this->validator->getErrors());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $this->validator->getErrors());
         }
 
         // Data yang akan diupdate
@@ -351,7 +352,7 @@ class Pengguna extends BaseController
             'nama_users' => $this->request->getPost('nama_users'),
             'email' => $this->request->getPost('email'),
         ];
-
+        // dd($data);die;
         // Jika user mengubah password, lakukan hashing sebelum update
         if ($this->request->getPost('password')) {
             $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_BCRYPT);
@@ -372,7 +373,7 @@ class Pengguna extends BaseController
             // Set path file baru dalam database
             $data['profile'] = $newName;
         }
-
+        
         // Update user data
         $this->users->update($id_user, $data);
 

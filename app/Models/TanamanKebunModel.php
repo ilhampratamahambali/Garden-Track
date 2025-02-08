@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -52,5 +51,4 @@ class TanamanKebunModel extends Model{
                     ->where('tanaman_kebun.id', $id_tanaman_kebun) 
                     ->first();  
     }
-
 }

@@ -127,12 +127,26 @@
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control text-center" id="password" name="kosongkan jika tidak melakukan perubahan" value="">
+                        <input type="password" class="form-control text-center" id="password" name="password" value="">
                     </div>
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">Confirm Password</label>
                         <input type="password" class="form-control text-center" id="confirm_password" name="confirm_password" value="">
                     </div>
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div style="color: red;">
+                            <?php 
+                            $errors = session()->getFlashdata('error'); 
+                            if (is_array($errors)) {
+                                foreach ($errors as $error) {
+                                    echo "<p>$error</p>"; 
+                                }
+                            } else {
+                                echo "<p>$errors</p>";
+                            }
+                            ?>
+                        </div>
+                    <?php endif; ?>
                     <div style="display: flex; justify-content: center; gap: 10px;">
                         <button type="submit" class="btn btn-success">Simpan Perubahan</button>
                     </div>
