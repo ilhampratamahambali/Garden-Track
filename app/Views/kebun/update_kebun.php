@@ -96,7 +96,7 @@
         const fileInput = document.getElementById('poto_kebun');
         form.reset();
         fileInput.value = '';
-        preview.src = '/uploads/<?= $kebun['poto_kebun']; ?>';
+        preview.src = '/uploads/kebun/<?= $kebun['poto_kebun']; ?>';
         preview.style.display = 'block';
     }
 </script>
