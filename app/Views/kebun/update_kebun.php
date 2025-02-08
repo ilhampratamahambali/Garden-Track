@@ -62,7 +62,7 @@
             <div class="mb-4">
                 <label for="poto_kebun" class="form-label">Gambar Kebun</label>
                 <input type="file" id="poto_kebun" name="poto_kebun" class="form-control" accept="image/*" onchange="previewImage(event)">
-                <img id="preview" src="/uploads/<?= $kebun['poto_kebun']; ?>" class="img-thumbnail" style="display: block;">
+                <img id="preview" src="/uploads/kebun/<?= $kebun['poto_kebun']; ?>" class="img-thumbnail" style="display: block;">
             </div>
             <div class="d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
