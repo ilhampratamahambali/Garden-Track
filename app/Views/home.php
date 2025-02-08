@@ -252,7 +252,6 @@ html {
     </div>
     <!-- Features End -->
 
-   
 </html>
     <script>
         // Cek apakah ada session flashdata 

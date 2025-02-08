@@ -97,6 +97,9 @@ class Kebun extends BaseController
 
     public function kebunOrang($id_user)
     {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $kebun = $this->kebunModel->getKebunByUser($id_user);
 
         if (empty($kebun)) {
@@ -112,6 +115,9 @@ class Kebun extends BaseController
 
     public function detail($id)
     {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $kebun = $this->kebunModel->find($id);
         // Jika data kebun tidak ditemukan
         if (!$kebun) {
@@ -217,6 +223,9 @@ class Kebun extends BaseController
     }
 // --=========================================|| SEMUA KEBUN ||================================================--
     public function allkebun(){
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $kebunData = $this->kebunModel->getKebunData();
 
         // **Mengelompokkan data berdasarkan id_kebun**

@@ -186,6 +186,21 @@
         flex: none;
         flex-wrap: wrap;
     }
+    /* Styling Badge Owner - Warna Lebih Kontras */
+    .badge-owner {
+        background-color:rgba(233, 215, 206, 0.3) !important; /* Warna oranye kemerahan */
+        color: black;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 8px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .badge-owner-container {
+        display: inline-block;
+        margin-left: 10px; /* Tambahkan jarak dengan nama pengguna */
+    }
+
 </style>
 <!-- Breadcrumb -->
 <nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
@@ -293,7 +308,6 @@
 <section class="mt-4">
     <h2>Komentar</h2>
     <!-- Form Komentar (Hanya untuk user selain pemilik kebun) -->
-    <?php if (session()->get('id_user') && session()->get('id_user') != $kebun['id_user']): ?>
     <div class="card mb-4">
         <div class="card-body">
             <form action="/kebun/komentar" method="post">
@@ -306,7 +320,6 @@
             </form>
         </div>
     </div>
-    <?php endif; ?>
     <center><hr width="50%"></center>
 
     <!-- Menampilkan Komentar -->
@@ -318,8 +331,17 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="font-weight-bold"><?= htmlspecialchars($comment['nama_users']) ?></span>
+                        <span class="font-weight-bold"><?= htmlspecialchars($comment['nama_users']) ?> <span class="badge text-bg-secondary">4</span></span>
                         <span class="text-muted"><?= $comment['created_at'] ?></span>
+
+                        <!-- Menambahkan badge Owner jika komentar dari pemilik kebun -->
+                        <?php if ($comment['id_user'] == $kebun['id_user']): ?>
+                            <div class="badge-owner-container">
+                                <span class="badge badge-owner">Owner</span>
+                            </div>
+
+                        <?php endif; ?>
+
                     </div>
                     <p class="card-text"><?= htmlspecialchars($comment['komentar']) ?></p>
 
@@ -359,6 +381,7 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </section>
+
 <script>
 // Tampilkan/hilangkan form balasan
 const replyButtons = document.querySelectorAll('.reply-btn');
@@ -373,12 +396,6 @@ replyButtons.forEach(button => {
     });
 });
 </script>
-
-
-
-
-
-
 <script>
     // Cek apakah ada session flashdata 
     const successMessage = "<?= session()->getFlashdata('success') ?>";

@@ -70,12 +70,6 @@
         });
     });
 </script>
-<!-- <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Library</li>
-    </ol>
-</nav> -->
 <!-- Carousel Start -->
 <div class="container-fluid p-0 wow fadeIn" data-wow-delay="0.1s">
     <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -175,56 +169,63 @@
         </div>
     </div>
 </div>
+<!-- Script untuk menampilkan SweetAlert dari session flashdata -->
+<script>
+    // Cek apakah ada session flashdata 
+    const successMessage = "<?= session()->getFlashdata('success') ?>";
+    const errorMessage = "<?= session()->getFlashdata('error') ?>";
 
+<<<<<<< HEAD
   
     <!-- Script untuk menampilkan SweetAlert dari session flashdata -->
     <script>
         // Cek apakah ada session flashdata 
         const successMessage = "<?= session()->getFlashdata('success') ?>";
         const errorMessage = "<?= session()->getFlashdata('error') ?>";
+=======
+    if (successMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top",  
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
+>>>>>>> e8f06c65e5bb4c13b29ab26ef8086487abe4cfca
 
-        if (successMessage) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top",  
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-                customClass: {
-                    popup: 'toast-popup'
-                }
-            });
+        Toast.fire({
+            icon: "success",
+            title: successMessage // Tampilkan pesan dari session flashdata
+        });
+    }
 
-            Toast.fire({
-                icon: "success",
-                title: successMessage // Tampilkan pesan dari session flashdata
-            });
-        }
+    if (errorMessage) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top", 
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+            customClass: {
+                popup: 'toast-popup'
+            }
+        });
 
-        if (errorMessage) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top", 
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-                customClass: {
-                    popup: 'toast-popup'
-                }
-            });
-
-            Toast.fire({
-                icon: "error",
-                title: errorMessage // Tampilkan pesan error
-            });
-        }
-    </script>
+        Toast.fire({
+            icon: "error",
+            title: errorMessage // Tampilkan pesan error
+        });
+    }
+</script>
 <?php echo $this->endSection()?>

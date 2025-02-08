@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\PlantModel;
 use App\Models\TanamanKebunModel;
 use App\Models\KebunModel;
+use \DateTime; // Tambahkan import ini
 
 class Tanaman extends BaseController
 {
@@ -23,84 +24,182 @@ class Tanaman extends BaseController
         $this->baseUrl = 'https://trefle.io/api/v1/plants';
     }
 
-    private function Tanaman($filter = null, $currentPage = 1) {
+    private function Tanaman($searchQuery = null) {
         $client = \Config\Services::curlrequest();
-
-        // Set maximum page limit
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        if ($currentPage > 21863) {
-            $currentPage = 21863;
-        }
-
-        // Prepare query parameters
+    
+        // Define category explicitly as 'vegetable'
+        $category = 'vegetable'; 
+    
+        // Setup query parameters with token
         $query = [
-            'token' => $this->apiToken,
-            'page' => $currentPage
+            'token' => $this->apiToken
         ];
-        if ($filter) {
-            $query['filter[vegetable]'] = 'true';
+    
+        // Add search query if present
+        if ($searchQuery) {
+            $query['q'] = urlencode($searchQuery);
         }
-
-        // API Endpoint for fetching plant data
-        $response = $client->get("{$this->baseUrl}", ['query' => $query]);
-
-        if ($response->getStatusCode() === 200) {
-            $data = json_decode($response->getBody(), true);
-            return [
-                'plants' => $data['data'],
-                'currentPage' => $currentPage,
-                'totalPages' => $data['meta']['last_page'] ?? 1
-            ];
-        } else {
-            $this->logger->error('Failed to retrieve data from Trefle API', ['response' => $response->getBody()]);
-            log_message('error', 'Gagal mengambil data dari Trefle API: ' . $response->getBody());
+    
+        // Apply filter for vegetable category (using URL-encoded parameter)
+        $query['filter%5Bvegetable%5D'] = ''; // Leave the value empty (instead of 'true')
+    
+        $allPlants = [];
+        $currentPage = 1;
+    
+        // Try to fetch data with a reasonable timeout
+        try {
+            // Loop to retrieve all pages (or until a limit is reached)
+            while (true) {
+                $query['page'] = $currentPage;
+    
+                // Send API request with query parameters and timeout
+                $response = $client->get($this->baseUrl, [
+                    'query'   => $query,
+                    'timeout' => 60 // Timeout set to 60 seconds
+                ]);
+    
+                // Check if the response is successful
+                if ($response->getStatusCode() === 200) {
+                    $data = json_decode($response->getBody(), true);
+    
+                    // If no more data, break the loop
+                    if (empty($data['data'])) {
+                        break;
+                    }
+    
+                    // Merge the current page data into the allPlants array
+                    $allPlants = array_merge($allPlants, $data['data']);
+                    $currentPage++;
+    
+                    // Stop if we've retrieved more than 100 items (adjust as needed)
+                    if (count($allPlants) > 100) {
+                        break;
+                    }
+    
+                    // *** New condition: Stop if we've fetched more than 10 pages ***
+                    if ($currentPage > 10) {
+                        break;
+                    }
+                } else {
+                    throw new \Exception("Error API Response: " . $response->getBody());
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to retrieve data from Trefle API: ' . $e->getMessage());
+            log_message('error', 'Gagal mengambil data dari Trefle API: ' . $e->getMessage());
             return [
                 'plants' => [],
-                'currentPage' => $currentPage,
-                'totalPages' => 1,
-                'error' => 'Gagal mengambil data dari Trefle API. Silakan coba lagi nanti.'
+                'error'  => 'Gagal mengambil data dari Trefle API. Silakan coba lagi nanti.'
             ];
         }
-    }
-
-    public function index(){
-        $currentPage = (int) $this->request->getGet('page') ?? 1;
-        $data = $this->Tanaman(null, $currentPage);
-        return view('tanaman/plants', $data, ['title' => 'Tanaman']);
-    }
-
-    public function search()
-    {
-        $page = $this->request->getGet('page') ?? 1;
-        $searchQuery = $this->request->getGet('search'); // Ambil parameter pencarian
-
-        // Tentukan URL API berdasarkan apakah ada pencarian atau tidak
+    
+        // Filter plants that have a common name and an image URL
+        $filteredPlants = array_filter($allPlants, function($plant) {
+            return !empty($plant['common_name']) && !empty($plant['image_url']);
+        });
+    
+        // If a search query is provided, further filter the results based on the query
         if ($searchQuery) {
-            $url = "https://trefle.io/api/v1/plants?token={$this->apiToken}&q=" . urlencode($searchQuery) . "&page={$page}";
-        } else {
-            $url = "{$this->baseUrl}?token={$this->apiToken}&page={$page}";
+            $filteredPlants = array_filter($filteredPlants, function($plant) use ($searchQuery) {
+                return stripos($plant['common_name'], $searchQuery) !== false;
+            });
         }
-
-        // Panggil API Trefle
-        $client = \Config\Services::curlrequest();
-        $response = $client->get($url);
-        $data = json_decode($response->getBody(), true);
-
-        // Pastikan data ada
-        if (!isset($data['data'])) {
-            return redirect()->back()->with('error', 'Tanaman tidak ditemukan.');
+    
+        // If no plants are found after filtering, return an error message
+        if (empty($filteredPlants)) {
+            return [
+                'plants' => [],
+                'error'  => 'Tanaman tidak ditemukan atau tidak memiliki nama umum dan gambar.'
+            ];
         }
-
+    
+        // Now apply pagination on the filtered results
+        $perPage = 20; // Number of items per page
+        $totalItems = count($filteredPlants);
+        $totalPages = ceil($totalItems / $perPage);
+    
+        // Get current page from GET parameters; default to 1 if not set
+        $currentPageRequest = (int) $this->request->getGet('page');
+        if ($currentPageRequest < 1) {
+            $currentPageRequest = 1;
+        } elseif ($currentPageRequest > $totalPages) {
+            $currentPageRequest = $totalPages;
+        }
+        $offset = ($currentPageRequest - 1) * $perPage;
+        $plantsPaginated = array_slice($filteredPlants, $offset, $perPage);
+    
+        // Cache the full filtered result for 1 hour (optional)
+        $cacheKey = md5($category . $searchQuery);
+        $cache = \Config\Services::cache();
+        $cache->save($cacheKey, [
+            'plants'      => $filteredPlants,
+            'searchQuery' => $searchQuery ?? ''
+        ], 3600);
+    
+        return [
+            'plants'      => $plantsPaginated,
+            'searchQuery' => $searchQuery ?? '',
+            'totalItems'  => $totalItems,
+            'totalPages'  => $totalPages,
+            'currentPage' => $currentPageRequest,
+        ];
+    }
+    
+    
+    
+    
+    
+    public function index() {
+        // Define category explicitly as 'vegetable'
+        $category = 'vegetable';
+        $searchQuery = $this->request->getGet('search'); // Get search query parameter
+    
+        // Fetch plant data based on category and search query, with pagination applied
+        $data = $this->Tanaman($searchQuery);
+    
+        // If there is an error, redirect back with error message
+        if (!empty($data['error'])) {
+            return redirect()->back()->with('error', $data['error']);
+        }
+    
+        // Pass pagination data along with the plants to the view
         return view('tanaman/plants', [
-            'title' => 'Tanaman',
-            'plants' => $data['data'],
-            'pagination' => $data['links'] ?? [],
-            'searchQuery' => $searchQuery,
-            'currentPage' => $page
+            'title'       => 'Tanaman',
+            'plants'      => $data['plants'],
+            'searchQuery' => $data['searchQuery'] ?? '',
+            'totalItems'  => $data['totalItems'],
+            'totalPages'  => $data['totalPages'],
+            'currentPage' => $data['currentPage']
         ]);
     }
+    
+    
+    public function search() {
+        // The category is implicitly 'vegetable' in Tanaman(), so we only get the search query.
+        $searchQuery = $this->request->getGet('search'); // Get search query parameter
+    
+        // Fetch plant data based on the search query (with 'vegetable' filter applied in Tanaman())
+        $data = $this->Tanaman($searchQuery);
+    
+        // If no plants are found, show an error message (using flashdata for example)
+        if (empty($data['plants'])) {
+            return redirect()->back()->with('error', 'Tanaman tidak ditemukan atau tidak memiliki nama umum dan gambar.');
+        }
+    
+        // Return the view with the paginated plants and pagination information
+        return view('tanaman/plants', [
+            'title'       => 'Tanaman',
+            'plants'      => $data['plants'],
+            'searchQuery' => $data['searchQuery'] ?? '',
+            'totalItems'  => $data['totalItems'],
+            'totalPages'  => $data['totalPages'],
+            'currentPage' => $data['currentPage']
+        ]);
+    }
+    
+    
+    
+    
 
 // --=========================================|| VEGETABLE ||================================================--
     public function vegetable()
@@ -118,16 +217,25 @@ class Tanaman extends BaseController
         // Decode JSON ke array
         $plants = json_decode($jsonData, true);
 
+        // Filter data untuk menghapus yang memiliki common_name atau image_url null
+        $filteredPlants = array_filter($plants, function ($plant) {
+            return !is_null($plant['common_name']) && !is_null($plant['image_url']);
+        });
+
+        // Reindex array agar key mulai dari 0 setelah filter
+        $filteredPlants = array_values($filteredPlants);
+
         // Ambil halaman dari parameter GET
         $page = (int) ($this->request->getGet('page') ?? 1);
-        $perPage = 9; // Jumlah data per halaman setelah scroll
+        $perPage = 12; 
         $start = ($page - 1) * $perPage;
+        
 
-        // Total data dalam JSON
-        $totalData = count($plants);
+        // Total data setelah filter
+        $totalData = count($filteredPlants);
 
         // Ambil data berdasarkan halaman
-        $plantsPaginated = array_slice($plants, $start, $perPage);
+        $plantsPaginated = array_slice($filteredPlants, $start, $perPage);
 
         // Jika permintaan berasal dari AJAX (untuk load lebih banyak data)
         if ($this->request->isAJAX()) {
@@ -135,14 +243,15 @@ class Tanaman extends BaseController
                 'plants' => $plantsPaginated,
                 'hasMore' => ($start + $perPage) < $totalData, // Cek apakah masih ada data yang tersisa
             ]);
-        }else {
+        } else {
             return view('tanaman/vegetable', [
                 'title' => 'Sayuran',
-                'plants' => array_slice($plants, 0, 30), 
+                'plants' => array_slice($filteredPlants, 0, 100), 
                 'totalData' => $totalData
             ]);
         }
     }
+
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
     // {
@@ -356,19 +465,10 @@ public function ambildata()
 
 
 // --=========================================|| TANAMAN-KEBUN ||================================================--
-    public function formTambah($id_kebun)
-    {
-        // Ambil data tanaman dari tabel master tanaman
-        $dataTanaman = $this->PlantModel->findAll();
-        return view('tanaman/TambahTanaman', [
-            'title' => 'Form Tambah',
-            'id_kebun' => $id_kebun,
-            'dataTanaman' => $dataTanaman,
-        ]);
-    }
-    
-    public function tambah($kebunId)
-    {
+    public function tambah($kebunId){
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $dataTanaman = $this->PlantModel->findAll();
         $data = [
             'title' => 'Tambah Tanaman',
@@ -397,7 +497,30 @@ public function ambildata()
             $validation = \Config\Services::validation();
             return redirect()->back()->withInput()->with('error', 'Input tidak valid')->with('validation_errors', $validation->getErrors());
         }
-
+    
+        // Ambil data tanggal
+        $tanggalMulai = $this->request->getPost('tanggal_mulai');
+        $tanggalSelesai = $this->request->getPost('tanggal_selesai');
+        
+        // Pengecekan untuk tanggal mulai dan selesai tidak boleh dari masa lalu
+        $today = date('Y-m-d');
+        if ($tanggalMulai < $today || $tanggalSelesai < $today) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal mulai dan tanggal selesai tidak boleh dari masa lalu.');
+        }
+    
+        // Pengecekan tanggal mulai tidak boleh lebih besar dari tanggal selesai
+        if ($tanggalMulai > $tanggalSelesai) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
+        }
+    
+        // Pengecekan tanggal selesai minimal 1 hari setelah tanggal mulai
+        $date1 = new \DateTime($tanggalMulai);
+        $date2 = new \DateTime($tanggalSelesai);        
+        $interval = $date1->diff($date2);
+        if ($interval->days < 1) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal selesai minimal 1 hari setelah tanggal mulai.');
+        }
+    
         // Ambil data tanaman
         $dataTanaman = [
             'id_tanaman' => $this->request->getPost('id_tanaman'),
@@ -410,74 +533,81 @@ public function ambildata()
             'tanggal_selesai' => $this->request->getPost('tanggal_selesai'),
             'deskripsi' => $this->request->getPost('deskripsi'),
         ];
+        
         // Simpan tanaman ke kebun
         $this->TanamanKebunModel->insert($dataTanaman);
-
+    
         // Update status kebun menjadi "selesai"
         $this->kebunModel->update($dataTanaman['id_kebun'], ['status' => 'selesai']);
-
+    
         return redirect()->to('/kebun/detail/'. $dataTanaman['id_kebun'])->with('success', 'Tanaman berhasil ditambahkan.');
     }
     
-    // Method untuk menampilkan detail tanaman
-    public function detail($id_tanaman_kebun)
-{
-    $detailtanaman = $this->TanamanKebunModel->getTanamanDetailById($id_tanaman_kebun);
-    if (!$detailtanaman) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman dengan tidak ditemukan.");
-    }
-
-    // Konversi tanggal ke timestamp
-    $tanggalMulai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_mulai'])));
-    $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
-    $tanggalSelesai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_selesai'])));
-
-    // Menghitung jumlah total hari
-    $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
-
-    // Menghitung hari yang telah berlalu (termasuk hari ini)
-    $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
-
-    // Menghitung progress hari
-    if ($tanggalSekarang < $tanggalMulai) {
-        $progressHari = 0;
-        $progresBar = 0;
-    } elseif ($tanggalSekarang > $tanggalSelesai) {
-        $progressHari = $jumlahHari;
-        $progresBar = 100;
-    } else {
-        $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
-        $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
-    }
-
-    // Data untuk view
-    $data = [
-        'title' => 'Detail Tanaman',
-        'tanaman' => $detailtanaman,
-        'jumlahHari' => $jumlahHari,
-        'progressHari' => $progressHari,
-        'progressBar' => round($progresBar)
-    ];
-
-    // Untuk debugging
-    $debug = [
-        'tanggal_mulai' => date('Y-m-d', $tanggalMulai),
-        'tanggal_sekarang' => date('Y-m-d', $tanggalSekarang),
-        'tanggal_selesai' => date('Y-m-d', $tanggalSelesai),
-        'hari_berjalan' => $hariYangBerjalan,
-        'jumlah_hari' => $jumlahHari,
-        'progress_hari' => $progressHari,
-        'progress_bar' => $progresBar
-    ];
     
-    // Uncomment baris berikut untuk melihat nilai perhitungan
-    // dd($debug);
+    // Method untuk menampilkan detail tanaman
+    public function detail($id_tanaman_kebun){
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        $detailtanaman = $this->TanamanKebunModel->getTanamanDetailById($id_tanaman_kebun);
+        if (!$detailtanaman) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan.");
+        }
 
-    return view('tanaman/Detail_Tanaman', $data);
-}
+        // Konversi tanggal ke timestamp
+        $tanggalMulai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_mulai'])));
+        $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
+        $tanggalSelesai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_selesai'])));
+
+        // Menghitung jumlah total hari
+        $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
+
+        // Menghitung hari yang telah berlalu (termasuk hari ini)
+        $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
+
+        // Menghitung progress hari
+        if ($tanggalSekarang < $tanggalMulai) {
+            $progressHari = 0;
+            $progresBar = 0;
+        } elseif ($tanggalSekarang > $tanggalSelesai) {
+            $progressHari = $jumlahHari;
+            $progresBar = 100;
+        } else {
+            $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
+            $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
+        }
+
+        // Data untuk view
+        $data = [
+            'title' => 'Detail Tanaman',
+            'tanaman' => $detailtanaman,
+            'jumlahHari' => $jumlahHari,
+            'progressHari' => $progressHari,
+            'progressBar' => round($progresBar)
+        ];
+
+        // Untuk debugging
+        $debug = [
+            'tanggal_mulai' => date('Y-m-d', $tanggalMulai),
+            'tanggal_sekarang' => date('Y-m-d', $tanggalSekarang),
+            'tanggal_selesai' => date('Y-m-d', $tanggalSelesai),
+            'hari_berjalan' => $hariYangBerjalan,
+            'jumlah_hari' => $jumlahHari,
+            'progress_hari' => $progressHari,
+            'progress_bar' => $progresBar
+        ];
+        
+        // Uncomment baris berikut untuk melihat nilai perhitungan
+        // dd($debug);
+
+        return view('tanaman/Detail_Tanaman', $data);
+    }
     
     public function edit($id)
     {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         // Ambil data tanaman berdasarkan ID
         $tanaman = $this->TanamanKebunModel->getDetailTanaman($id);
 
