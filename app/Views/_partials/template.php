@@ -121,17 +121,10 @@
                 <div class="row g-5">
                     <div class="col-lg-3 col-md-6">
                         <h4 class="text-white mb-4">Layanan</h4>
-                        <a class="btn btn-link" href="">Cari Tanaman</a>
-                        <a class="btn btn-link" href="">Buat Taman Anda</a>
-                        <a class="btn btn-link" href="">Kelola Taman Anda</a>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h4 class="text-white mb-4">Newsletter</h4>
-                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                        <div class="position-relative w-100">
-                            <input class="form-control bg-light border-light w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                            <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                        </div>
+                        <a class="btn btn-link" href="/plants">Cari Tanaman</a>
+                        <a class="btn btn-link" href="/kebun/semua-kebun">Lihat Kebun</a>
+                        <a class="btn btn-link" href="/buat_kebun">Buat Taman Anda</a>
+                        <a class="btn btn-link" href="/kebun/detail">Kelola Taman Anda</a>
                     </div>
                 </div>
             </div>
@@ -146,7 +139,7 @@
                     </div>
                     <div class="col-md-6 text-center text-md-end">
                         <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                        Designed By <a class="border-bottom" href="#">ZHINK</a> Distributed By <a href="#">Elon Musk</a>
+                        Designed By <a class="border-bottom" href="#">ZHINK</a>
                     </div>
                 </div>
             </div>
@@ -157,6 +150,7 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/wow/wow.min.js"></script>
     <script src="<?php echo base_url('tanaman/'); ?>lib/easing/easing.min.js"></script>

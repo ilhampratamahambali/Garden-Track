@@ -42,7 +42,8 @@ $routes->get('/plants/search', 'Tanaman::search');
 
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
-$routes->get('vegetable/loadMore/(:num)', 'Tanaman::loadMore/$1');
+$routes->get('/vegetable/load', 'Tanaman::vegetable');
+
 // tanaman
 // TAMBAH 
 $routes->get('/tanaman/tambah/(:num)', 'Tanaman::tambah/$1');

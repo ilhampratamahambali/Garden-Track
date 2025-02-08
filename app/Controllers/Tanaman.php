@@ -118,16 +118,25 @@ class Tanaman extends BaseController
         // Decode JSON ke array
         $plants = json_decode($jsonData, true);
 
+        // Filter data untuk menghapus yang memiliki common_name atau image_url null
+        $filteredPlants = array_filter($plants, function ($plant) {
+            return !is_null($plant['common_name']) && !is_null($plant['image_url']);
+        });
+
+        // Reindex array agar key mulai dari 0 setelah filter
+        $filteredPlants = array_values($filteredPlants);
+
         // Ambil halaman dari parameter GET
         $page = (int) ($this->request->getGet('page') ?? 1);
-        $perPage = 9; // Jumlah data per halaman setelah scroll
+        $perPage = 12; 
         $start = ($page - 1) * $perPage;
+        
 
-        // Total data dalam JSON
-        $totalData = count($plants);
+        // Total data setelah filter
+        $totalData = count($filteredPlants);
 
         // Ambil data berdasarkan halaman
-        $plantsPaginated = array_slice($plants, $start, $perPage);
+        $plantsPaginated = array_slice($filteredPlants, $start, $perPage);
 
         // Jika permintaan berasal dari AJAX (untuk load lebih banyak data)
         if ($this->request->isAJAX()) {
@@ -135,14 +144,15 @@ class Tanaman extends BaseController
                 'plants' => $plantsPaginated,
                 'hasMore' => ($start + $perPage) < $totalData, // Cek apakah masih ada data yang tersisa
             ]);
-        }else {
+        } else {
             return view('tanaman/vegetable', [
                 'title' => 'Sayuran',
-                'plants' => array_slice($plants, 0, 30), 
+                'plants' => array_slice($filteredPlants, 0, 100), 
                 'totalData' => $totalData
             ]);
         }
     }
+
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
     // {
@@ -356,19 +366,10 @@ public function ambildata()
 
 
 // --=========================================|| TANAMAN-KEBUN ||================================================--
-    public function formTambah($id_kebun)
-    {
-        // Ambil data tanaman dari tabel master tanaman
-        $dataTanaman = $this->PlantModel->findAll();
-        return view('tanaman/TambahTanaman', [
-            'title' => 'Form Tambah',
-            'id_kebun' => $id_kebun,
-            'dataTanaman' => $dataTanaman,
-        ]);
-    }
-    
-    public function tambah($kebunId)
-    {
+    public function tambah($kebunId){
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $dataTanaman = $this->PlantModel->findAll();
         $data = [
             'title' => 'Tambah Tanaman',
@@ -420,64 +421,69 @@ public function ambildata()
     }
     
     // Method untuk menampilkan detail tanaman
-    public function detail($id_tanaman_kebun)
-{
-    $detailtanaman = $this->TanamanKebunModel->getTanamanDetailById($id_tanaman_kebun);
-    if (!$detailtanaman) {
-        throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman dengan tidak ditemukan.");
+    public function detail($id_tanaman_kebun){
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        $detailtanaman = $this->TanamanKebunModel->getTanamanDetailById($id_tanaman_kebun);
+        if (!$detailtanaman) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan.");
+        }
+
+        // Konversi tanggal ke timestamp
+        $tanggalMulai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_mulai'])));
+        $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
+        $tanggalSelesai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_selesai'])));
+
+        // Menghitung jumlah total hari
+        $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
+
+        // Menghitung hari yang telah berlalu (termasuk hari ini)
+        $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
+
+        // Menghitung progress hari
+        if ($tanggalSekarang < $tanggalMulai) {
+            $progressHari = 0;
+            $progresBar = 0;
+        } elseif ($tanggalSekarang > $tanggalSelesai) {
+            $progressHari = $jumlahHari;
+            $progresBar = 100;
+        } else {
+            $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
+            $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
+        }
+
+        // Data untuk view
+        $data = [
+            'title' => 'Detail Tanaman',
+            'tanaman' => $detailtanaman,
+            'jumlahHari' => $jumlahHari,
+            'progressHari' => $progressHari,
+            'progressBar' => round($progresBar)
+        ];
+
+        // Untuk debugging
+        $debug = [
+            'tanggal_mulai' => date('Y-m-d', $tanggalMulai),
+            'tanggal_sekarang' => date('Y-m-d', $tanggalSekarang),
+            'tanggal_selesai' => date('Y-m-d', $tanggalSelesai),
+            'hari_berjalan' => $hariYangBerjalan,
+            'jumlah_hari' => $jumlahHari,
+            'progress_hari' => $progressHari,
+            'progress_bar' => $progresBar
+        ];
+        
+        // Uncomment baris berikut untuk melihat nilai perhitungan
+        // dd($debug);
+
+        return view('tanaman/Detail_Tanaman', $data);
     }
-
-    // Konversi tanggal ke timestamp
-    $tanggalMulai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_mulai'])));
-    $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
-    $tanggalSelesai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_selesai'])));
-
-    // Menghitung jumlah total hari
-    $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
-
-    // Menghitung hari yang telah berlalu (termasuk hari ini)
-    $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
-
-    // Menghitung progress hari
-    if ($tanggalSekarang < $tanggalMulai) {
-        $progressHari = 0;
-        $progresBar = 0;
-    } elseif ($tanggalSekarang > $tanggalSelesai) {
-        $progressHari = $jumlahHari;
-        $progresBar = 100;
-    } else {
-        $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
-        $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
-    }
-
-    // Data untuk view
-    $data = [
-        'title' => 'Detail Tanaman',
-        'tanaman' => $detailtanaman,
-        'jumlahHari' => $jumlahHari,
-        'progressHari' => $progressHari,
-        'progressBar' => round($progresBar)
-    ];
-
-    // Untuk debugging
-    $debug = [
-        'tanggal_mulai' => date('Y-m-d', $tanggalMulai),
-        'tanggal_sekarang' => date('Y-m-d', $tanggalSekarang),
-        'tanggal_selesai' => date('Y-m-d', $tanggalSelesai),
-        'hari_berjalan' => $hariYangBerjalan,
-        'jumlah_hari' => $jumlahHari,
-        'progress_hari' => $progressHari,
-        'progress_bar' => $progresBar
-    ];
-    
-    // Uncomment baris berikut untuk melihat nilai perhitungan
-    // dd($debug);
-
-    return view('tanaman/Detail_Tanaman', $data);
-}
     
     public function edit($id)
     {
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         // Ambil data tanaman berdasarkan ID
         $tanaman = $this->TanamanKebunModel->getDetailTanaman($id);
 
