@@ -24,6 +24,7 @@ class Pengguna extends BaseController
         $this->googleClient->setRedirectUri('http://localhost:8080/register/proses');
         $this->googleClient->addScope('email');
         $this->googleClient->addScope('profile');
+        $this->googleClient->setPrompt('select_account');
     }
 
 // --=========================================|| LOGIN ||================================================--
