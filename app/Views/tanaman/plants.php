@@ -4,17 +4,18 @@
     <h1 class="text-center mb-3">Data Tanaman</h1>
     <!-- Search bar -->
     <div class="container my-4">
-        <form action="<?= base_url('/plants/search') ?>" method="get" class="d-flex">
-            <input type="text" name="search" class="form-control me-2" placeholder="Cari tanaman..." aria-label="Search" value="<?= isset($searchQuery) ? esc($searchQuery) : '' ?>">
-            <button class="btn btn-outline-success" type="submit">Cari</button>
-        </form>
-    </div>
+    <form action="<?= base_url('/plants/search') ?>" method="get" class="d-flex">
+        <input type="text" name="search" class="form-control me-2" placeholder="Cari tanaman..." aria-label="Search" value="<?= isset($searchQuery) ? esc($searchQuery) : '' ?>">
+        <button class="btn btn-outline-success" type="submit">Cari</button>
+    </form>
+</div>
 
-    <br><br>
-    <!-- Plants Data -->
+<br><br>
+
+<!-- Plants Data -->
+<div class="container my-4">
     <div class="row g-4">
         <?php if (!empty($plants)): ?>
-        <div class="row">
             <?php foreach ($plants as $plant): ?>
                 <div class="col-md-4">
                     <div class="card mb-4">
@@ -26,69 +27,53 @@
                         <div class="card-body">
                             <h5 class="card-title"><?= $plant['common_name'] ?? 'Nama Tidak Tersedia' ?></h5>
                             <p class="card-text">
-                                <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?? 'Tidak Tersedia'?><br>
+                                <strong>Nama Ilmiah:</strong> <?= $plant['scientific_name'] ?? 'Tidak Tersedia' ?><br>
                                 <strong>Kategori:</strong> <?= $plant['family'] ?? 'Tidak Tersedia' ?><br>
                             </p>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
-        </div>
         <?php else: ?>
             <p class="text-danger">Tidak ada data tanaman yang sesuai dengan pencarian.</p>
         <?php endif; ?>
     </div>
-    
-    <!-- Pagination -->
-    <div class="d-flex justify-content-between">
-        <?php if (isset($pagination['prev'])) : ?>
-            <a href="<?= base_url('/plants?search=' . urlencode($searchQuery) . '&page=' . ($currentPage - 1)) ?>" class="btn btn-primary">Previous</a>
-        <?php else : ?>
-            <button class="btn btn-primary" disabled>Previous</button>
-        <?php endif; ?>
 
-        <?php if (isset($pagination['next'])) : ?>
-            <a href="<?= base_url('/plants?search=' . urlencode($searchQuery) . '&page=' . ($currentPage + 1)) ?>" class="btn btn-primary">Next</a>
-        <?php else : ?>
-            <button class="btn btn-primary" disabled>Next</button>
-        <?php endif; ?>
-    </div>
+    <!-- Pagination Controls -->
+    <?php if (isset($totalPages) && $totalPages > 1): ?>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center mt-4">
+            <?php 
+              // Previous button
+              $prevPage = ($currentPage > 1) ? $currentPage - 1 : 1;
+            ?>
+            <li class="page-item <?= ($currentPage == 1) ? 'disabled' : '' ?>">
+              <a class="page-link" href="<?= base_url('plants?search=' . urlencode($searchQuery) . '&page=' . $prevPage) ?>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+              <li class="page-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+                <a class="page-link" href="<?= base_url('plants?search=' . urlencode($searchQuery) . '&page=' . $i) ?>">
+                  <?= $i ?>
+                </a>
+              </li>
+            <?php endfor; ?>
+            
+            <?php 
+              // Next button
+              $nextPage = ($currentPage < $totalPages) ? $currentPage + 1 : $totalPages;
+            ?>
+            <li class="page-item <?= ($currentPage == $totalPages) ? 'disabled' : '' ?>">
+              <a class="page-link" href="<?= base_url('plants?search=' . urlencode($searchQuery) . '&page=' . $nextPage) ?>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+    <?php endif; ?>
 </div>
-<script>
-    // Ambil parameter 'page' dari URL saat ini
-    const urlParams = new URLSearchParams(window.location.search);
-    let currentPage = parseInt(urlParams.get('page')) || 1; // Default ke halaman 1 jika tidak ada parameter
-    const totalPages = <?= $totalPages ?? 1 ?>; // Ambil total halaman dari PHP
+</div>
 
-    // Fungsi untuk mengarahkan ke halaman berikutnya atau sebelumnya
-    function goToPage(page) {
-        urlParams.set('page', page); // Set parameter 'page' di URL
-        window.location.href = "<?= base_url('plants') ?>?" + urlParams.toString(); // Update URL dan refresh halaman
-    }
-
-    // Fungsi untuk update status tombol
-    function updatePaginationButtons() {
-        document.getElementById('prevButton').disabled = currentPage <= 1;
-        document.getElementById('nextButton').disabled = currentPage >= totalPages || currentPage >= 21863;
-    }
-
-    // Tambahkan event listener untuk tombol "Previous"
-    document.getElementById('prevButton').addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--; // Halaman berkurang
-            goToPage(currentPage); // Arahkan ke halaman sebelumnya
-        }
-    });
-
-    // Tambahkan event listener untuk tombol "Next"
-    document.getElementById('nextButton').addEventListener('click', () => {
-        if (currentPage < totalPages && currentPage <= 21863) {
-            currentPage++; // Halaman bertambah
-            goToPage(currentPage); // Arahkan ke halaman berikutnya
-        }
-    });
-
-    // Update status tombol saat halaman dimuat
-    updatePaginationButtons();
-</script>
 <?php echo $this->endSection()?>
