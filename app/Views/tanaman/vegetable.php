@@ -4,7 +4,7 @@
     <h1 class="text-center mb-3">Data Sayuran</h1>
     <!-- Search bar -->
     <div class="container my-4">
-        <form action="<?= base_url('plants/search') ?>" method="get" class="d-flex">
+        <form action="<?= base_url('vegetable/search') ?>" method="get" class="d-flex">
             <input type="text" name="search" class="form-control me-2" placeholder="Cari tanaman..." aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Cari</button>
         </form>

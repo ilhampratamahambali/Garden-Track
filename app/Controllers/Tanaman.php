@@ -277,6 +277,61 @@ class Tanaman extends BaseController
         ]);
     }
 
+    public function search_vegetable()
+    {
+        $jsonPath = FCPATH . 'tanaman/json/sayuran.json';
+
+        // Cek apakah file JSON ada
+        if (!file_exists($jsonPath)) {
+            throw new \RuntimeException("File JSON tidak ditemukan: $jsonPath");
+        }
+
+        // Baca file JSON
+        $jsonData = file_get_contents($jsonPath);
+
+        // Decode JSON ke array
+        $plants = json_decode($jsonData, true);
+
+        // Ambil query pencarian dari parameter GET
+        $query = trim($this->request->getGet('search'));
+
+        // Jika ada query pencarian, filter data
+        if (!empty($query)) {
+            $filteredPlants = array_filter($plants, function ($plant) use ($query) {
+                // Cek apakah query ditemukan di common_name atau scientific_name (case-insensitive)
+                return (stripos($plant['common_name'], $query) !== false) || (stripos($plant['scientific_name'], $query) !== false);
+            });
+        } else {
+            $filteredPlants = $plants;
+        }
+
+        // Reindex array setelah filter agar indeks dimulai dari 0
+        $filteredPlants = array_values($filteredPlants);
+
+        // Pagination: ambil parameter halaman dan hitung slice array
+        $page = (int) ($this->request->getGet('page') ?? 1);
+        $perPage = 12;
+        $start = ($page - 1) * $perPage;
+        $totalData = count($filteredPlants);
+        $plantsPaginated = array_slice($filteredPlants, $start, $perPage);
+
+        // Jika request berasal dari AJAX, kembalikan response JSON
+        if ($this->request->isAJAX()) {
+            return $this->response->setJSON([
+                'plants'  => $plantsPaginated,
+                'hasMore' => ($start + $perPage) < $totalData,
+            ]);
+        } else {
+            // Untuk request biasa, tampilkan view dengan data yang difilter
+            return view('tanaman/vegetable', [
+                'title'       => 'Hasil Pencarian Sayuran',
+                'plants'      => $plantsPaginated,
+                'totalData'   => $totalData,
+                'searchQuery' => $query,
+            ]);
+        }
+    }
+
 
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
