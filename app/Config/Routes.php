@@ -25,7 +25,7 @@ $routes->post('/login/auth', 'Pengguna::auth');
 
 //LOGOUT
 $routes->get('/logout', 'Pengguna::logout');
-$routes->get('/logout-berhasil', 'Pengguna::logout_pesan');
+$routes->get('/logout-berhasil', 'Pengguna::logout');
 
 //user page
 $routes->get('/user_page', 'Pengguna::home');
@@ -43,7 +43,7 @@ $routes->get('/plants/search', 'Tanaman::search');
 
 //VEGETABLE
 $routes->get('/vegetable', 'Tanaman::vegetable');
-$routes->get('/vegetable/load', 'Tanaman::vegetable');
+$routes->get('/vegetable/load', 'Tanaman::loadVegetables');
 
 // tanaman
 // TAMBAH 

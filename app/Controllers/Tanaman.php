@@ -237,11 +237,46 @@ class Tanaman extends BaseController
         } else {
             return view('tanaman/vegetable', [
                 'title' => 'Sayuran',
-                'plants' => array_slice($filteredPlants, 0, 100), 
+                'plants' => array_slice($filteredPlants, 0, 30), 
                 'totalData' => $totalData
             ]);
         }
     }
+
+    public function loadVegetables()
+    {
+        $jsonPath = FCPATH . 'tanaman/json/sayuran.json';
+
+        if (!file_exists($jsonPath)) {
+            return $this->response->setJSON([
+                'error' => 'File JSON tidak ditemukan'
+            ]);
+        }
+
+        $jsonData = file_get_contents($jsonPath);
+        $plants = json_decode($jsonData, true);
+
+        $filteredPlants = array_filter($plants, function ($plant) {
+            return !is_null($plant['common_name']) && !is_null($plant['image_url']);
+        });
+
+        $filteredPlants = array_values($filteredPlants);
+
+        $page = (int) ($this->request->getGet('page') ?? 1);
+        $perPage = 12;
+        $start = ($page - 1) * $perPage;
+        $totalData = count($filteredPlants);
+        $plantsPaginated = array_slice($filteredPlants, $start, $perPage);
+
+        // Tambahkan log untuk debugging
+        log_message('debug', 'Load Vegetables: Page ' . $page . ' Data: ' . json_encode($plantsPaginated));
+
+        return $this->response->setJSON([
+            'plants' => $plantsPaginated,
+            'hasMore' => ($start + $perPage) < $totalData
+        ]);
+    }
+
 
 // ------------------------------------------------++BARENG++-----------------------------------------------
     // public function vegetable()
