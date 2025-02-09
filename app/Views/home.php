@@ -196,7 +196,7 @@
                             </div>
                             <h4 class="mb-3">Kelola Kebun Anda</h4>
                             <p class="mb-4">Kelola kebun digital anda disini, lihat perkembangan tanaman anda</p>
-                            <a class="btn btn-sm" href="kelola_kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
+                            <a class="btn btn-sm" href="kebun"><i class="fa fa-plus text-primary me-2"></i>Kelola Kebun</a>
                         </div>
                     </div>
                 </div>
