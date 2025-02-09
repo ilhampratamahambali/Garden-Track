@@ -477,7 +477,7 @@ public function ambildata()
             'dataTanaman' => $dataTanaman,
         ];
         return view('tanaman/TambahTanaman', $data);
-    }
+    } 
 
     public function simpanTanaman()
     {

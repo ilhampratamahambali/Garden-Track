@@ -251,8 +251,6 @@ html {
         </div>
     </div>
     <!-- Features End -->
-
-</html>
     <script>
         // Cek apakah ada session flashdata 
         const successMessage = "<?= session()->getFlashdata('success') ?>";

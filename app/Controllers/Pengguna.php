@@ -264,12 +264,12 @@ class Pengguna extends BaseController
             $this->googleClient->revokeToken(session()->get('access_token'));
             session()->remove('access_token');
         }
-        session()->setFlashdata('error', 'Anda Berhasil Logout..');
         session()->destroy();
-        // dd(session());
+        // dd(session()->setFlashdata('success'));
         // die;
-        return redirect()->to('/');
+        return redirect()->to('/')->with('success', 'Anda Berhasil Logout..');
     }
+
 // --=========================================|| PANEL ||================================================--
     public function dashboard(): string
     {

@@ -64,7 +64,6 @@ $routes->post('tanaman/update/(:num)', 'Tanaman::update/$1');
 //tambah kebun
 $routes->get('/buat_kebun', 'Kebun::index');
 $routes->post('/buat', 'Kebun::buat');
-$routes->get('/kebun/detail', 'Kebun::kebun');
 
 //kelola kebun
 $routes->get('/kebun', 'Kebun::kebun');
