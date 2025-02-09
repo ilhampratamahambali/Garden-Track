@@ -57,8 +57,8 @@
                             <div class="btn-square rounded-circle mx-auto mb-3">
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-5.png" alt="Icon">
                             </div>
-                            <h4 class="mb-3">Irrigation & Drainage</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <h4 class="mb-3">Kelola Air dengan Efisien</h4>
+                            <p class="mb-4">Sistem irigasi yang optimal memastikan tanaman tetap terhidrasi tanpa pemborosan air.</p>
                             <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>
@@ -72,8 +72,8 @@
                             <div class="btn-square rounded-circle mx-auto mb-3">
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-4.png" alt="Icon">
                             </div>
-                            <h4 class="mb-3">Garden Maintenance </h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <h4 class="mb-3">Kebun Indah & Sehat Sepanjang Waktu</h4>
+                            <p class="mb-4">Perawatan rutin dan profesional untuk taman yang selalu segar dan asri.</p>
                             <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>
@@ -87,8 +87,8 @@
                             <div class="btn-square rounded-circle mx-auto mb-3">
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-8.png" alt="Icon">
                             </div>
-                            <h4 class="mb-3">Green Technology</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <h4 class="mb-3">Inovasi Hijau untuk Masa Depan Berkelanjutan</h4>
+                            <p class="mb-4">Gunakan teknologi ramah lingkungan untuk mengurangi dampak negatif terhadap alam.</p>
                             <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>
@@ -102,8 +102,8 @@
                             <div class="btn-square rounded-circle mx-auto mb-3">
                                 <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-2.png" alt="Icon">
                             </div>
-                            <h4 class="mb-3">Urban Gardening</h4>
-                            <p class="mb-4">Erat ipsum justo amet duo et elitr dolor, est duo duo eos lorem sed diam stet diam sed stet.</p>
+                            <h4 class="mb-3">Hijaukan Kota, Wujudkan Hidup Sehat</h4>
+                            <p class="mb-4">Ubah ruang perkotaan menjadi taman hijau yang produktif dan menyegarkan.</p>
                             <a class="btn btn-sm" href=""><i class="fa fa-plus text-primary me-2"></i>Read More</a>
                         </div>
                     </div>

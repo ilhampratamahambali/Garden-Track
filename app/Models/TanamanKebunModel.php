@@ -36,7 +36,7 @@ class TanamanKebunModel extends Model{
 
     public function getTanamanByKebun($id_kebun)
     {
-        return $this->select('tanaman_kebun.*, tanaman.common_name, tanaman.scientific_name, tanaman.image_url')
+        return $this->select('tanaman_kebun.*, tanaman.*, tanaman.image_url')
             ->join('tanaman', 'tanaman.id_tanaman = tanaman_kebun.id_tanaman')
             ->where('tanaman_kebun.id_kebun', $id_kebun)
             ->findAll();

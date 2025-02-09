@@ -80,11 +80,19 @@
     text-decoration: none; /* Menghapus garis bawah pada link */
   }
 </style>
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="px-4 px-lg-5" style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/user_page">Home</a></li>
+        <li class="breadcrumb-item"><a href="/kebun/semua-kebun">Kebun</a></li>
+        <li class="breadcrumb-item active"><?= !empty($kebun) && isset($kebun[0]['nama_users']) ? esc($kebun[0]['nama_users']) : 'Belum Ada' ?></li>
+    </ol>
+</nav>
 <!-- Hero Section -->
 <section class="hero-section" style="background-size: cover; background-position: center; padding-top: 40px;">
     <div class="container d-flex align-items-center justify-content-center">
         <div class="text-center">
-            <h1 class="catalog-text">Kebun <?= !empty($kebun) && isset($user->nama_users) ? $user->nama_users : 'Belum Ada' ?></h1>
+          <h1 class="catalog-text">Kebun <?= !empty($kebun) && isset($kebun[0]['nama_users']) ? esc($kebun[0]['nama_users']) : 'Belum Ada' ?></h1>
         </div>
     </div>
 </section>

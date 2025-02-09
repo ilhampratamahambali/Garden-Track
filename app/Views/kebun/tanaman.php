@@ -207,7 +207,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/user_page">Home</a></li>
         <li class="breadcrumb-item"><a href="/kebun/semua-kebun">Kebun</a></li>
-        <li class="breadcrumb-item active"><?= esc($kebun['nama_kebun']) ?></li>
+        <li class="breadcrumb-item"><?= esc($kebun['nama_kebun']) ?></li>
     </ol>
 </nav>
 <div class="row">
@@ -249,7 +249,6 @@
                                 }
                             }
                         ?>
-                        
                             <div class="col">
                                 <div class="card h-100 plant-card">
                                     <a href="/tanaman/detail/<?= $item['id'] ?>" >
@@ -257,7 +256,7 @@
                                     </a>
                                     <div class="card-body">
                                         <h5 class="card-title"><?= esc($item['common_name']);?></h5>
-                                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        <p class="card-text">Nama ilmiah: <?= esc($item['common_name']);?> <br> Jenis: <?= esc($item['genus']);?></p>
                                     </div>
                                     <div class="card-footer">
                                         <small class="text-body-secondary">DiTanam Pada <?= esc($item['tanggal_mulai']); ?></small>

@@ -252,35 +252,34 @@ class Kebun extends BaseController
 
             // **Perhitungan progress untuk setiap tanaman**
             if (!empty($item['tanggal_mulai']) && !empty($item['tanggal_selesai'])) {
-                 // Konversi tanggal ke timestamp
+                // Konversi tanggal ke timestamp
                 $tanggalMulai = strtotime(date('Y-m-d', strtotime($item['tanggal_mulai'])));
-                $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
+                $tanggalSekarang = strtotime(date('Y-m-d')); 
                 $tanggalSelesai = strtotime(date('Y-m-d', strtotime($item['tanggal_selesai'])));
 
                 // Menghitung jumlah total hari
-                $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
+                $jumlahHari = ($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24);
 
                 // Menghitung hari yang telah berlalu (termasuk hari ini)
-                $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
+                $hariYangBerjalan = ($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24);
 
                 // Menghitung progress hari
                 if ($tanggalSekarang < $tanggalMulai) {
                     $progressHari = 0;
                     $progresBar = 0;
-                } elseif ($tanggalSekarang > $tanggalSelesai) {
+                } elseif ($tanggalSekarang >= $tanggalSelesai) {
                     $progressHari = $jumlahHari;
                     $progresBar = 100;
                 } else {
-                    $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
-                    $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
+                    $progressHari = $hariYangBerjalan;
+                    $progresBar = ($progressHari / $jumlahHari) * 100;
                 }
-
 
                 // Tambahkan tanaman ke array tanaman dalam kebun ini
                 $kebunList[$id_kebun]['tanaman'][] = [
                     'nama' => $item['common_name'],
-                    'tanggal_selesai' => date('Y-m-d', $tanggalSelesai), // Tampilkan tanggal selesai dengan format yang jelas
-                    'progress' => round($progresBar),  // Membulatkan progress tanaman
+                    'tanggal_selesai' => date('Y-m-d', $tanggalSelesai), 
+                    'progress' => round($progresBar),  
                 ];
 
                 // Update total progress kebun

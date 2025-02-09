@@ -626,10 +626,12 @@ public function ambildata()
     
     
     // Method untuk menampilkan detail tanaman
-    public function detail($id_tanaman_kebun){
+    public function detail($id_tanaman_kebun)
+    {
         if (!session()->get('logged_in')) {
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
+
         $detailtanaman = $this->TanamanKebunModel->getTanamanDetailById($id_tanaman_kebun);
         if (!$detailtanaman) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException("Tanaman tidak ditemukan.");
@@ -637,25 +639,25 @@ public function ambildata()
 
         // Konversi tanggal ke timestamp
         $tanggalMulai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_mulai'])));
-        $tanggalSekarang = strtotime(date('Y-m-d')); // Waktu sekarang tanpa jam
+        $tanggalSekarang = strtotime(date('Y-m-d')); 
         $tanggalSelesai = strtotime(date('Y-m-d', strtotime($detailtanaman['tanggal_selesai'])));
 
         // Menghitung jumlah total hari
-        $jumlahHari = round(($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24));
+        $jumlahHari = ($tanggalSelesai - $tanggalMulai) / (60 * 60 * 24);
 
-        // Menghitung hari yang telah berlalu (termasuk hari ini)
-        $hariYangBerjalan = round(($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24));
+        // Menghitung hari yang telah berlalu
+        $hariYangBerjalan = ($tanggalSekarang - $tanggalMulai) / (60 * 60 * 24);
 
-        // Menghitung progress hari
+        // Menghitung progress hari & progress bar
         if ($tanggalSekarang < $tanggalMulai) {
             $progressHari = 0;
             $progresBar = 0;
-        } elseif ($tanggalSekarang > $tanggalSelesai) {
+        } elseif ($tanggalSekarang >= $tanggalSelesai) {
             $progressHari = $jumlahHari;
             $progresBar = 100;
         } else {
-            $progressHari = $hariYangBerjalan + 1; // +1 karena menghitung hari ini
-            $progresBar = ($progressHari / ($jumlahHari + 1)) * 100;
+            $progressHari = $hariYangBerjalan;
+            $progresBar = ($progressHari / $jumlahHari) * 100;
         }
 
         // Data untuk view
@@ -666,23 +668,9 @@ public function ambildata()
             'progressHari' => $progressHari,
             'progressBar' => round($progresBar)
         ];
-
-        // Untuk debugging
-        $debug = [
-            'tanggal_mulai' => date('Y-m-d', $tanggalMulai),
-            'tanggal_sekarang' => date('Y-m-d', $tanggalSekarang),
-            'tanggal_selesai' => date('Y-m-d', $tanggalSelesai),
-            'hari_berjalan' => $hariYangBerjalan,
-            'jumlah_hari' => $jumlahHari,
-            'progress_hari' => $progressHari,
-            'progress_bar' => $progresBar
-        ];
-        
-        // Uncomment baris berikut untuk melihat nilai perhitungan
-        // dd($debug);
-
         return view('tanaman/Detail_Tanaman', $data);
     }
+
     
     public function edit($id)
     {
@@ -747,6 +735,29 @@ public function ambildata()
         // Validasi input
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('error', 'Validasi gagal, periksa kembali input Anda.');
+        }
+
+        // Ambil data tanggal
+        $tanggalMulai = $this->request->getPost('tanggal_mulai');
+        $tanggalSelesai = $this->request->getPost('tanggal_selesai');
+        
+        // Pengecekan untuk tanggal mulai dan selesai tidak boleh dari masa lalu
+        $today = date('Y-m-d');
+        if ($tanggalMulai < $today || $tanggalSelesai < $today) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal mulai dan tanggal selesai tidak boleh dari masa lalu.');
+        }
+    
+        // Pengecekan tanggal mulai tidak boleh lebih besar dari tanggal selesai
+        if ($tanggalMulai > $tanggalSelesai) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
+        }
+    
+        // Pengecekan tanggal selesai minimal 1 hari setelah tanggal mulai
+        $date1 = new \DateTime($tanggalMulai);
+        $date2 = new \DateTime($tanggalSelesai);        
+        $interval = $date1->diff($date2);
+        if ($interval->days < 1) {
+            return redirect()->back()->withInput()->with('error', 'Tanggal selesai minimal 1 hari setelah tanggal mulai.');
         }
         // Ambil data yang sudah divalidasi
         $tanaman = [

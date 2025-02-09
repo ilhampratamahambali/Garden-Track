@@ -50,7 +50,6 @@ $routes->get('/vegetable/search', 'Tanaman::search_vegetable');
 // TAMBAH 
 $routes->get('/tanaman/tambah/(:num)', 'Tanaman::tambah/$1');
 $routes->post('/tanaman/tambah', 'Tanaman::simpanTanaman'); 
-$routes->post('/tanaman/detail', 'Tanaman::detail'); 
 
 $routes->get('/tanaman/detail/(:num)', 'Tanaman::detail/$1');
 $routes->get('/tanaman/delete/(:num)', 'Tanaman::delete/$1');
