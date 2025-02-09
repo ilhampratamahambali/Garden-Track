@@ -40,8 +40,8 @@ class KebunModel extends Model
         return $result;
     }
 
-    public function deleteKebunBelum()
-    {
-        return $this->where('status', 'belum')->delete();
-    }
+    // public function deleteKebunBelum()
+    // {
+    //     return $this->where('status', 'belum')->delete();
+    // }
 }
