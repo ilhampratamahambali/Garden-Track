@@ -161,7 +161,7 @@ class Pengguna extends BaseController
 
             session()->set($row);
             session()->set('logged_in', true);
-            session()->setFlashdata('success', 'Login berhasil!');
+            session()->setFlashdata('success', 'Login berhasil! yess yess');
             return redirect()->to('/user_page');
         }   
     }
@@ -265,8 +265,11 @@ class Pengguna extends BaseController
             session()->remove('access_token');
         }
         session()->destroy();
-        // dd(session()->setFlashdata('success'));
-        // die;
+        return redirect()->to('/logout-berhasil');
+    }
+
+    public function logout_pesan(){
+        session()->setFlashdata('success', 'Anda Berhasil Logout!!');
         return redirect()->to('/')->with('success', 'Anda Berhasil Logout..');
     }
 

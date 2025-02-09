@@ -12,19 +12,20 @@ $routes->get('/services', 'Pengguna::services');
 
 //register google
 $routes->get('/register', 'Pengguna::index_regis');
-$routes->get('register/proses', 'Pengguna::proses_regis');
+$routes->get('/register/proses', 'Pengguna::proses_regis');
 
 // register biasa
-$routes->post('register/auth', 'Pengguna::regis_auth');
+$routes->post('/register/auth', 'Pengguna::regis_auth');
 // $routes->get('/trefle', 'plant::index');
 
 //login
-$routes->get('login', 'Pengguna::index_login');
-$routes->get('login/proses', 'Pengguna::proses_login');
-$routes->post('login/auth', 'Pengguna::auth');
+$routes->get('/login', 'Pengguna::index_login');
+$routes->get('/login/proses', 'Pengguna::proses_login');
+$routes->post('/login/auth', 'Pengguna::auth');
 
 //LOGOUT
-$routes->get('logout', 'Pengguna::logout');
+$routes->get('/logout', 'Pengguna::logout');
+$routes->get('/logout-berhasil', 'Pengguna::logout_pesan');
 
 //user page
 $routes->get('/user_page', 'Pengguna::home');

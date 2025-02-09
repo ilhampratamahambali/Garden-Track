@@ -39,4 +39,9 @@ class KebunModel extends Model
                     ->findAll();
         return $result;
     }
+
+    public function deleteKebunBelum()
+    {
+        return $this->where('status', 'belum')->delete();
+    }
 }

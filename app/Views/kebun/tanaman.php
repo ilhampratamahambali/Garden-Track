@@ -333,15 +333,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="font-weight-bold"><?= htmlspecialchars($comment['nama_users']) ?> <span class="badge text-bg-secondary">4</span></span>
                         <span class="text-muted"><?= $comment['created_at'] ?></span>
-
                         <!-- Menambahkan badge Owner jika komentar dari pemilik kebun -->
                         <?php if ($comment['id_user'] == $kebun['id_user']): ?>
                             <div class="badge-owner-container">
                                 <span class="badge badge-owner">Owner</span>
                             </div>
-
                         <?php endif; ?>
-
                     </div>
                     <p class="card-text"><?= htmlspecialchars($comment['komentar']) ?></p>
 
@@ -369,6 +366,12 @@
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="font-weight-bold"><?= htmlspecialchars($reply['nama_users']) ?></span>
                                     <span class="text-muted"><?= $reply['created_at'] ?></span>
+                                    <!-- Menambahkan badge Owner jika komentar dari pemilik kebun -->
+                                    <?php if ($reply['id_user'] == $kebun['id_user']): ?>
+                                        <div class="badge-owner-container">
+                                            <span class="badge badge-owner">Owner</span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 <p class="card-text mb-0"><?= htmlspecialchars($reply['komentar']) ?></p> <!-- Margin bottom 0 -->
                             </div>

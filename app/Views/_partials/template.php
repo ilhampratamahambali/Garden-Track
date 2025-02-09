@@ -92,7 +92,7 @@
                             <li><a class="dropdown-item" href="/Pengguna/editProfile/<?php echo $user; ?>">Edit Profile</a></li>
                             <li><a class="dropdown-item" href="/kebun">Kebun Saya</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <!-- <li><a class="dropdown-item" href="#">Something else here</a></li> -->
                         </ul>
                     </li>
                 <?php endif; ?>

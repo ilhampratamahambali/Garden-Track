@@ -170,6 +170,9 @@
     </div>
 </div>
 <!-- Script untuk menampilkan SweetAlert dari session flashdata -->
+ <!-- <php
+     dd(session()->getFlashdata('success'), session()->getFlashdata('error'));
+     ?> -->
 <script>
     // Cek apakah ada session flashdata 
     const successMessage = "<?= session()->getFlashdata('success') ?>";

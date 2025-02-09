@@ -144,11 +144,7 @@ class Tanaman extends BaseController
             'currentPage' => $currentPageRequest,
         ];
     }
-    
-    
-    
-    
-    
+
     public function index() {
         // Define category explicitly as 'vegetable'
         $category = 'vegetable';
@@ -173,7 +169,6 @@ class Tanaman extends BaseController
         ]);
     }
     
-    
     public function search() {
         // The category is implicitly 'vegetable' in Tanaman(), so we only get the search query.
         $searchQuery = $this->request->getGet('search'); // Get search query parameter
@@ -197,10 +192,6 @@ class Tanaman extends BaseController
         ]);
     }
     
-    
-    
-    
-
 // --=========================================|| VEGETABLE ||================================================--
     public function vegetable()
     {
