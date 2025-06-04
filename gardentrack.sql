@@ -1,14 +1,22 @@
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
 -- Host: localhost
+-- Generation Time: Jun 04, 2025 at 08:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-drop database if exists gardentrack;
-create database gardentrack;
-use database gardentrack;
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- Database: `gardentrack`
 --
@@ -20,11 +28,26 @@ use database gardentrack;
 --
 
 CREATE TABLE `kebun` (
-  `id_kebun` int(11) NOT NULL AUTO_INCREMENT,
+  `id_kebun` int(11) NOT NULL,
   `id_user` varchar(100) NOT NULL,
   `nama_kebun` varchar(255) NOT NULL,
   `poto_kebun` varchar(255) NOT NULL,
   `status` enum('belum','selesai') NOT NULL DEFAULT 'belum'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `komentar`
+--
+
+CREATE TABLE `komentar` (
+  `id_komentar` int(11) NOT NULL,
+  `id_kebun` int(11) NOT NULL,
+  `id_user` varchar(100) NOT NULL,
+  `induk_komentar_id` int(11) DEFAULT NULL,
+  `komentar` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -51,7 +74,7 @@ CREATE TABLE `pengguna` (
 --
 
 CREATE TABLE `tanaman` (
-  `id_tanaman` int(11) NOT NULL AUTO_INCREMENT,
+  `id_tanaman` int(11) NOT NULL,
   `trefle_id` varchar(50) NOT NULL,
   `common_name` varchar(255) NOT NULL,
   `scientific_name` varchar(255) NOT NULL,
@@ -68,7 +91,7 @@ CREATE TABLE `tanaman` (
 --
 
 CREATE TABLE `tanaman_kebun` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `id_tanaman` int(11) NOT NULL,
   `id_kebun` int(11) NOT NULL,
   `id_user` varchar(100) NOT NULL,
@@ -81,11 +104,22 @@ CREATE TABLE `tanaman_kebun` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Indexes for dumped tables
+--
+
+--
 -- Indexes for table `kebun`
 --
 ALTER TABLE `kebun`
   ADD PRIMARY KEY (`id_kebun`),
   ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `komentar`
+--
+ALTER TABLE `komentar`
+  ADD PRIMARY KEY (`id_komentar`),
+  ADD KEY `id_kebun` (`id_kebun`,`id_user`);
 
 --
 -- Indexes for table `pengguna`
@@ -107,3 +141,36 @@ ALTER TABLE `tanaman_kebun`
   ADD KEY `id_tanaman` (`id_tanaman`),
   ADD KEY `id_kebun` (`id_kebun`),
   ADD KEY `id_user` (`id_user`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `kebun`
+--
+ALTER TABLE `kebun`
+  MODIFY `id_kebun` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `komentar`
+--
+ALTER TABLE `komentar`
+  MODIFY `id_komentar` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tanaman`
+--
+ALTER TABLE `tanaman`
+  MODIFY `id_tanaman` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tanaman_kebun`
+--
+ALTER TABLE `tanaman_kebun`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
