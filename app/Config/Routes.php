@@ -25,7 +25,7 @@ $routes->post('/login/auth', 'Pengguna::auth');
 
 //LOGOUT
 $routes->get('/logout', 'Pengguna::logout');
-$routes->get('/logout-berhasil', 'Pengguna::logout');
+$routes->get('/logout-berhasil', 'Pengguna::logout_pesan');
 
 //user page
 $routes->get('/user_page', 'Pengguna::home');

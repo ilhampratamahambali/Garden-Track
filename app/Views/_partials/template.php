@@ -124,7 +124,7 @@
                         <a class="btn btn-link" href="/plants">Cari Tanaman</a>
                         <a class="btn btn-link" href="/kebun/semua-kebun">Lihat Kebun</a>
                         <a class="btn btn-link" href="/buat_kebun">Buat Taman Anda</a>
-                        <a class="btn btn-link" href="/kebun/detail">Kelola Taman Anda</a>
+                        <a class="btn btn-link" href="/kebun">Kelola Taman Anda</a>
                     </div>
                 </div>
             </div>

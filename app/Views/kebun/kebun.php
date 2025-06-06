@@ -96,7 +96,7 @@
         </div>
     </div>
 </section>
-<?php if (!empty($user) && session()->get('id_user') == $user->id_user): ?>\
+<?php if (!empty($user) && session()->get('id_user') == $user->id_user): ?>
   <!-- Tombol Tambah Kebun -->
   <div class="container mt-4 text-center">
   <a href="/buat_kebun" class="btn btn-success btn-lg rounded-pill shadow btn-hover-animate">

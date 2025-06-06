@@ -4,6 +4,7 @@ use App\Models\UsersModel;
 use App\Models\KebunModel;
 use App\Models\TanamanKebunModel;
 use Google_Client;
+use Google_Service_Oauth2;
 
 class Pengguna extends BaseController
 {
@@ -40,34 +41,43 @@ class Pengguna extends BaseController
         return view('pengguna/login_page', $data, ['title' => 'Login']);
     }
 
-    public function proses_login(){
-        $token = $this->googleClient->fetchAccessTokenWithAuthCode($this->request->getvar('code'));
-        if (!isset($token['error'])) {
-            $this->googleClient->setAccessToken($token['access_token']);
-            session()->set('access_token', $token['access_token']);
-    
-            $googleService = new \Google_Service_Oauth2($this->googleClient);
-            $data = $googleService->userinfo->get();
-    
-            // Simpan data ke dalam array sesi
-            $row = [
-                'id_user'     => $data['id'],
-                'nama_users'  => $data['name'],
-                'email'       => $data['email'],
-                'profile'     => $data['picture'],
-                'logged_in'   => true,
-            ];
-            session()->set($row);
-    
-            $userExists = $this->users->where('id_user', $data['id'])->first();
-            if (!$userExists) {
-                $this->users->save($row);
-            }
-            
-            return redirect()->to('/user_page');
+    public function proses_login()
+    {
+        $code = htmlspecialchars($this->request->getVar('code'));
+
+        if (!$code) {
+            return redirect()->to('/login')->with('error', 'Kode otentikasi tidak ditemukan.');
         }
-        return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
+
+        $token = $this->googleClient->fetchAccessTokenWithAuthCode($code);
+
+        if (isset($token['error'])) {
+            return redirect()->to('/login')->with('error', 'Autentikasi gagal.');
+        }
+
+        $this->googleClient->setAccessToken($token['access_token']);
+        session()->set('access_token', $token['access_token']);
+
+        $googleService = new Google_Service_Oauth2($this->googleClient);
+        $data = $googleService->userinfo->get();
+
+        $row = [
+            'id_user'     => $data['id'],
+            'nama_users'  => $data['name'],
+            'email'       => $data['email'],
+            'profile'     => $data['picture'],
+            'logged_in'   => true,
+        ];
+        session()->set($row);
+
+        $userExists = $this->users->find($data['id']);
+        if (!$userExists) {
+            $this->users->save($row);
+        }
+
+        return redirect()->to('/user_page');
     }
+
 
     //LOGIN BIASA
     public function auth(){
@@ -149,7 +159,7 @@ class Pengguna extends BaseController
         $token = $this->googleClient->fetchAccessTokenWithAuthCode($this->request->getvar('code'));
         if(!isset($token['error'])){
             $this->googleClient->setAccessToken($token['access_token']);
-            $googleService = new \Google_Service_Oauth2($this->googleClient);
+            $googleService = new Google_Service_Oauth2($this->googleClient);
             $data = $googleService->userinfo->get();
             $row=[
                 'id_user'=>$data['id'],
@@ -260,17 +270,30 @@ class Pengguna extends BaseController
     // LOGOUT DISINI
     public function logout()
     {
-        if (session()->get('access_token')) {
-            $this->googleClient->revokeToken(session()->get('access_token'));
-            session()->remove('access_token');
+        // Revoke token jika masih tersimpan
+        $accessToken = session('access_token');
+        if (!empty($accessToken)) {
+            try {
+                $this->googleClient->revokeToken($accessToken);
+            } catch (\Exception $e) {
+                // Log error jika gagal revoke (tidak wajib, hanya jika kamu punya logger)
+                log_message('error', 'Failed to revoke Google token: ' . $e->getMessage());
+            }
         }
+
+        // Bersihkan semua session data
+        session()->remove('access_token');
         session()->destroy();
+
+        // Redirect ke halaman logout sukses
         return redirect()->to('/logout-berhasil');
     }
 
+
+
     public function logout_pesan(){
         session()->setFlashdata('success', 'Anda Berhasil Logout!!');
-        return redirect()->to('/')->with('success', 'Anda Berhasil Logout..');
+        return redirect()->to('/login')->with('success', 'Anda Berhasil Logout..');
     }
 
 // --=========================================|| PANEL ||================================================--
