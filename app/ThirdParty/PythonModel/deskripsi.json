@@ -1,0 +1,278 @@
+{
+    "Aloe Vera": {
+      "nama_latin": "Aloe barbadensis miller",
+      "deskripsi": "Aloe vera adalah tanaman sukulen yang populer untuk pengobatan alami. Gel dalam daunnya sering digunakan untuk menyembuhkan luka, iritasi kulit, dan perawatan rambut.",
+      "perawatan": "Letakkan di tempat terang dengan cahaya matahari tidak langsung. Siram 1–2 kali seminggu saat tanah mengering. Tidak memerlukan pupuk sering.",
+      "iklim": "Tropis, subtropis, tahan kekeringan. Suhu ideal 20–30°C.",
+      "media_tanam": "Campuran tanah berpasir atau tanah kaktus yang memiliki drainase baik.",
+      "tinggi": "30–90 cm",
+      "umur_panen": "Daun dapat dipanen setelah 8–12 bulan ketika cukup besar."
+    },
+    "Banana": {
+      "nama_latin": "Musa spp.",
+      "deskripsi": "Pohon pisang merupakan tanaman tropis penghasil buah pisang, kaya kalium dan serat. Juga bermanfaat untuk pakan ternak dan bahan pangan tradisional.",
+      "perawatan": "Siram setiap hari, pupuk organik 1 bulan sekali. Jaga agar tanah tetap lembap dan gembur.",
+      "iklim": "Tropis dan lembap, suhu ideal 26–30°C, curah hujan tinggi.",
+      "media_tanam": "Tanah lempung berpasir kaya bahan organik dan drainase baik.",
+      "tinggi": "2–6 meter tergantung varietas.",
+      "umur_panen": "9–12 bulan sejak tanam. Tandan pisang siap panen saat buah membesar penuh."
+    },
+    "Bilimbi": {
+      "nama_latin": "Averrhoa bilimbi",
+      "deskripsi": "Belimbing wuluh adalah tanaman penghasil buah asam yang digunakan dalam kuliner tradisional dan pengobatan herbal.",
+      "perawatan": "Perlu sinar matahari penuh, siram 3–4 kali seminggu, pangkas cabang kering secara berkala.",
+      "iklim": "Tropis, suhu ideal 23–32°C.",
+      "media_tanam": "Tanah lempung berpasir subur dan tidak tergenang air.",
+      "tinggi": "5–15 meter",
+      "umur_panen": "Berbuah setelah 3–5 tahun, panen saat buah berwarna hijau muda kekuningan."
+    },
+    "Cantaloupe": {
+      "nama_latin": "Cucumis melo",
+      "deskripsi": "Melon cantaloupe memiliki daging buah berwarna oranye yang manis, mengandung banyak air, serta kaya vitamin A dan C.",
+      "perawatan": "Tanam di lahan terbuka dengan sinar matahari penuh, siram setiap hari, berikan pupuk NPK seimbang.",
+      "iklim": "Tropis, suhu optimal 24–30°C, curah hujan sedang.",
+      "media_tanam": "Tanah gembur, kaya humus, dan berdrainase baik.",
+      "tinggi": "40–60 cm (merambat)",
+      "umur_panen": "65–80 hari sejak tanam. Panen saat kulit buah berwarna kuning kehijauan dan harum."
+    },
+    "Cassava": {
+      "nama_latin": "Manihot esculenta",
+      "deskripsi": "Singkong adalah tanaman umbi-umbian penting sebagai sumber karbohidrat. Digunakan sebagai bahan pangan dan industri tepung tapioka.",
+      "perawatan": "Tanam di tempat terbuka, penyulaman saat muda, siram di awal tanam, pupuk kompos atau pupuk kandang setiap 1–2 bulan.",
+      "iklim": "Tropis/subtropis, suhu ideal 25–29°C, tahan kekeringan.",
+      "media_tanam": "Tanah gembur, subur, dengan pH 5.5–7 dan drainase baik.",
+      "tinggi": "1–3 meter",
+      "umur_panen": "7–12 bulan sejak tanam, tergantung varietas dan kebutuhan."
+    },
+    "Coconut": {
+      "nama_latin": "Cocos nucifera",
+      "deskripsi": "Kelapa adalah tanaman serbaguna yang menghasilkan air kelapa, daging buah, minyak, sabut, hingga bahan bangunan dari batangnya.",
+      "perawatan": "Siram secara berkala saat muda, beri pupuk NPK dan organik setiap 3 bulan, bersihkan gulma.",
+      "iklim": "Tropis pantai, lembap, suhu optimal 27–32°C.",
+      "media_tanam": "Tanah berpasir hingga lempung berdrainase baik, toleran terhadap salinitas ringan.",
+      "tinggi": "10–30 meter",
+      "umur_panen": "Mulai berbuah umur 4–6 tahun, panen setiap 45–60 hari sekali."
+    },
+    "Corn": {
+        "nama_latin": "Zea mays",
+        "deskripsi": "Jagung adalah tanaman pangan penting yang digunakan sebagai sumber karbohidrat utama di berbagai negara. Biji jagung dapat diolah menjadi makanan manusia dan pakan ternak.",
+        "perawatan": "Tanam di tempat terbuka dengan sinar matahari penuh. Siram setiap hari pada awal pertumbuhan, beri pupuk NPK dan pupuk kandang secara berkala.",
+        "iklim": "Tropis hingga subtropis, suhu ideal 25–30°C.",
+        "media_tanam": "Tanah lempung berpasir, gembur, dan subur dengan drainase baik.",
+        "tinggi": "1,5–3 meter",
+        "umur_panen": "90–110 hari setelah tanam, saat rambut jagung kering dan biji keras."
+      },
+      "Cucumber": {
+        "nama_latin": "Cucumis sativus",
+        "deskripsi": "Mentimun adalah tanaman sayur buah yang populer karena kandungan airnya yang tinggi dan menyegarkan, sering dikonsumsi mentah atau sebagai acar.",
+        "perawatan": "Siram dua kali sehari, gunakan pupuk kandang atau kompos setiap 2 minggu, beri ajir atau rambatan jika diperlukan.",
+        "iklim": "Tropis dan subtropis, suhu optimal 24–30°C.",
+        "media_tanam": "Tanah lempung berpasir, gembur, dan kaya bahan organik.",
+        "tinggi": "30–60 cm (merambat)",
+        "umur_panen": "35–45 hari setelah tanam, saat buah berwarna hijau cerah dan belum terlalu tua."
+      },
+      "Curcuma": {
+        "nama_latin": "Curcuma longa",
+        "deskripsi": "Kunyit adalah tanaman rimpang yang sering digunakan sebagai bumbu masak, pewarna alami, dan pengobatan tradisional karena kandungan kurkuminnya.",
+        "perawatan": "Tanam di tempat teduh sebagian, siram secukupnya, dan beri pupuk kandang tiap 4 minggu.",
+        "iklim": "Tropis, suhu optimal 25–30°C, curah hujan sedang hingga tinggi.",
+        "media_tanam": "Tanah lempung gembur dengan humus tinggi dan drainase baik.",
+        "tinggi": "60–100 cm",
+        "umur_panen": "8–10 bulan setelah tanam, saat daun mulai menguning dan rimpang membesar."
+      },
+      "Eggplant": {
+        "nama_latin": "Solanum melongena",
+        "deskripsi": "Terong adalah tanaman sayuran buah berwarna ungu, hijau, atau putih yang banyak digunakan dalam berbagai masakan di seluruh dunia.",
+        "perawatan": "Siram 2 kali sehari, beri pupuk NPK dan kompos setiap 2 minggu, pangkas daun tua dan cabang tidak produktif.",
+        "iklim": "Tropis hingga subtropis, suhu ideal 22–30°C.",
+        "media_tanam": "Tanah gembur, subur, dan tidak tergenang air.",
+        "tinggi": "50–150 cm",
+        "umur_panen": "60–80 hari setelah tanam. Panen saat buah masih muda dan mengkilap."
+      },
+      "Galangal": {
+        "nama_latin": "Alpinia galanga",
+        "deskripsi": "Lengkuas adalah tanaman rimpang aromatik yang digunakan sebagai bumbu dapur dan bahan obat herbal.",
+        "perawatan": "Siram secukupnya, beri pupuk kompos dan jaga kelembapan tanah. Pangkas daun kering secara berkala.",
+        "iklim": "Tropis dengan kelembapan tinggi, suhu 24–30°C.",
+        "media_tanam": "Tanah lempung berhumus, gembur, dan drainase baik.",
+        "tinggi": "1–2 meter",
+        "umur_panen": "10–12 bulan setelah tanam, ketika batang mulai menguning dan rimpang keras."
+      },
+      "Ginger": {
+        "nama_latin": "Zingiber officinale",
+        "deskripsi": "Jahe adalah tanaman rimpang yang banyak digunakan sebagai rempah-rempah dan bahan obat. Memiliki rasa pedas dan aroma khas.",
+        "perawatan": "Siram setiap 2–3 hari, beri pupuk kompos atau organik setiap bulan, hindari genangan air.",
+        "iklim": "Tropis lembap, suhu ideal 25–30°C.",
+        "media_tanam": "Tanah gembur, kaya humus, dan berdrainase baik.",
+        "tinggi": "60–100 cm",
+        "umur_panen": "8–10 bulan, saat daun mulai menguning dan mengering."
+      },
+      "Guava": {
+        "nama_latin": "Psidium guajava",
+        "deskripsi": "Jambu biji adalah tanaman buah yang kaya vitamin C. Buahnya bisa dimakan langsung atau diolah menjadi jus, manisan, atau selai.",
+        "perawatan": "Siram secara teratur, pangkas cabang setiap 3 bulan, beri pupuk kandang dan NPK.",
+        "iklim": "Tropis dan subtropis, suhu 23–30°C.",
+        "media_tanam": "Tanah lempung berpasir, subur, dan tidak tergenang.",
+        "tinggi": "3–10 meter",
+        "umur_panen": "2–3 tahun setelah tanam, panen 2–3 kali setahun tergantung varietas."
+      },
+      "Kale": {
+        "nama_latin": "Brassica oleracea var. acephala",
+        "deskripsi": "Kale adalah sayuran hijau superfood yang kaya akan vitamin K, A, dan C. Daunnya digunakan dalam salad, smoothie, dan masakan sehat.",
+        "perawatan": "Siram setiap hari, beri pupuk kompos dan NPK setiap 2 minggu, hindari serangan hama ulat.",
+        "iklim": "Sejuk, ideal di dataran tinggi dengan suhu 18–24°C.",
+        "media_tanam": "Tanah lempung berpasir, gembur, dan subur.",
+        "tinggi": "30–90 cm",
+        "umur_panen": "40–60 hari, panen daun luar secara bertahap."
+      },
+      "Long Beans": {
+        "nama_latin": "Vigna unguiculata subsp. sesquipedalis",
+        "deskripsi": "Kacang panjang adalah sayuran merambat dengan polong panjang, umum dikonsumsi sebagai lalapan atau tumisan.",
+        "perawatan": "Tanam di lahan terbuka, siram pagi dan sore, pasang lanjaran untuk merambat. Pupuk kandang diberikan saat tanam dan pupuk NPK setiap 2 minggu.",
+        "iklim": "Tropis, suhu ideal 25–30°C.",
+        "media_tanam": "Tanah gembur, subur, dan berdrainase baik.",
+        "tinggi": "Merambat hingga 2–3 meter",
+        "umur_panen": "45–60 hari setelah tanam, saat polong muda panjang dan masih lunak."
+      },
+      "Mango": {
+        "nama_latin": "Mangifera indica",
+        "deskripsi": "Mangga adalah tanaman buah tropis populer yang memiliki rasa manis dan kaya akan vitamin A dan C.",
+        "perawatan": "Siram secara teratur, pangkas cabang tidak produktif, beri pupuk kandang dan NPK 3–4 bulan sekali.",
+        "iklim": "Tropis hingga subtropis, suhu optimal 24–32°C.",
+        "media_tanam": "Tanah lempung berpasir, gembur dan dalam, pH 5,5–7,5.",
+        "tinggi": "10–40 meter (tergantung varietas)",
+        "umur_panen": "3–5 tahun setelah tanam. Buah matang dalam 90–120 hari setelah berbunga."
+      },
+      "Melon": {
+        "nama_latin": "Cucumis melo",
+        "deskripsi": "Melon adalah tanaman merambat dengan buah manis dan berair. Sering dikonsumsi sebagai pencuci mulut atau jus.",
+        "perawatan": "Siram dua kali sehari, beri pupuk kandang dan NPK, pasang rambatan, lakukan penyerbukan manual jika perlu.",
+        "iklim": "Tropis dan subtropis, suhu optimal 25–30°C.",
+        "media_tanam": "Tanah lempung berpasir, subur, pH 6–7,5, drainase baik.",
+        "tinggi": "Merambat hingga 2 meter",
+        "umur_panen": "60–75 hari setelah tanam, saat kulit berubah warna dan aromanya keluar."
+      },
+      "Orange": {
+        "nama_latin": "Citrus sinensis",
+        "deskripsi": "Jeruk adalah tanaman buah citrus yang kaya akan vitamin C. Buahnya dapat dikonsumsi langsung atau diolah menjadi minuman.",
+        "perawatan": "Siram rutin, beri pupuk kandang dan NPK 3 bulan sekali, pangkas cabang mati dan bentuk tajuk pohon.",
+        "iklim": "Tropis hingga subtropis, suhu ideal 25–30°C.",
+        "media_tanam": "Tanah gembur, berpasir atau lempung ringan, pH 5,5–6,5.",
+        "tinggi": "2–8 meter",
+        "umur_panen": "2,5–4 tahun setelah tanam. Panen saat buah berubah warna dan lunak saat ditekan ringan."
+      },
+      "Paddy": {
+        "nama_latin": "Oryza sativa",
+        "deskripsi": "Padi adalah tanaman utama penghasil beras yang menjadi makanan pokok mayoritas masyarakat Indonesia dan Asia.",
+        "perawatan": "Tanam di lahan basah (sawah), lakukan pengairan teratur, pemupukan berimbang (urea, SP-36, KCl), dan pengendalian hama terpadu.",
+        "iklim": "Tropis, curah hujan tinggi, suhu 24–32°C.",
+        "media_tanam": "Tanah sawah berlumpur dengan drainase baik.",
+        "tinggi": "90–120 cm",
+        "umur_panen": "90–120 hari tergantung varietas. Panen saat gabah mulai menguning 80–90%."
+      },
+      "Papaya": {
+        "nama_latin": "Carica papaya",
+        "deskripsi": "Pepaya adalah tanaman buah tropis dengan daging buah lembut dan manis, kaya enzim papain dan vitamin C.",
+        "perawatan": "Siram 2–3 hari sekali, beri pupuk organik dan NPK, jaga dari embun tepung dan ulat daun.",
+        "iklim": "Tropis, suhu ideal 25–35°C.",
+        "media_tanam": "Tanah lempung berpasir, gembur, subur, pH 6–6,5.",
+        "tinggi": "2–6 meter",
+        "umur_panen": "6–9 bulan setelah tanam. Buah dipanen saat berwarna kuning kehijauan."
+      },
+      "Peperchili": {
+        "nama_latin": "Capsicum frutescens",
+        "deskripsi": "Cabai rawit adalah tanaman sayur buah pedas yang digunakan sebagai bumbu masak. Memiliki kandungan vitamin C tinggi dan zat kapsaisin.",
+        "perawatan": "Siram 1–2 kali sehari, pupuk kandang dan NPK setiap 2 minggu, pangkas daun bawah dan cabang yang rusak.",
+        "iklim": "Tropis, suhu optimal 24–30°C.",
+        "media_tanam": "Tanah gembur, subur, drainase baik, pH 5,5–6,8.",
+        "tinggi": "50–90 cm",
+        "umur_panen": "70–85 hari setelah tanam. Panen saat buah berwarna merah cerah atau sesuai kebutuhan."
+      },
+      "Pineapple": {
+        "nama_latin": "Ananas comosus",
+        "deskripsi": "Nanas adalah tanaman buah tropis dengan rasa manis-asam yang khas. Sering dikonsumsi segar atau dijadikan selai, jus, dan bahan masakan.",
+        "perawatan": "Tanam di tempat terbuka, siram saat kering, beri pupuk kandang dan pupuk daun setiap bulan.",
+        "iklim": "Tropis, suhu ideal 24–30°C, tahan terhadap kekeringan.",
+        "media_tanam": "Tanah lempung berpasir, subur, pH 4,5–6,5.",
+        "tinggi": "90–120 cm",
+        "umur_panen": "12–18 bulan setelah tanam. Panen saat buah berubah kuning dan aromanya kuat."
+      },
+      "Pomelo": {
+        "nama_latin": "Citrus maxima",
+        "deskripsi": "Pomelo atau jeruk bali adalah buah citrus terbesar yang memiliki rasa manis segar sedikit asam. Kulitnya tebal dan buahnya bersegmen besar.",
+        "perawatan": "Siram 2–3 kali seminggu saat musim kemarau. Beri pupuk kandang setiap 3 bulan dan NPK saat tanaman mulai berbunga. Lakukan pemangkasan cabang yang sakit atau mati.",
+        "iklim": "Tropis dan subtropis, suhu 25–30°C, curah hujan sedang.",
+        "media_tanam": "Tanah lempung berpasir, gembur, subur, dan pH 5,5–6,5.",
+        "tinggi": "5–15 meter",
+        "umur_panen": "3–5 tahun setelah tanam. Buah dipanen saat kulit mulai menguning dan terasa berat."
+      },
+      "Shallot": {
+        "nama_latin": "Allium cepa var. aggregatum",
+        "deskripsi": "Bawang merah adalah tanaman umbi yang sering digunakan sebagai bumbu dasar masakan karena aromanya yang khas.",
+        "perawatan": "Siram pagi dan sore, beri pupuk dasar kompos dan pupuk NPK setiap 2 minggu. Pastikan cukup sinar matahari dan kontrol serangan hama ulat dan jamur.",
+        "iklim": "Tropis, suhu 25–32°C, curah hujan rendah–sedang.",
+        "media_tanam": "Tanah gembur, subur, drainase baik, pH 5,6–6,5.",
+        "tinggi": "30–50 cm",
+        "umur_panen": "60–70 hari setelah tanam. Panen saat daun mulai menguning dan rebah."
+      },
+      "Soybeans": {
+        "nama_latin": "Glycine max",
+        "deskripsi": "Kedelai adalah tanaman biji-bijian sumber protein nabati utama untuk tahu, tempe, dan produk olahan lainnya.",
+        "perawatan": "Siram secara teratur, beri pupuk dasar kompos dan pupuk KCl/Urea saat usia 3 minggu. Bersihkan gulma dan kontrol hama ulat dan wereng.",
+        "iklim": "Tropis hingga subtropis, suhu optimal 27–32°C.",
+        "media_tanam": "Tanah lempung berpasir, subur, pH 5,8–6,5.",
+        "tinggi": "40–100 cm",
+        "umur_panen": "75–100 hari setelah tanam. Panen saat polong menguning dan mengering."
+      },
+      "Spinach": {
+        "nama_latin": "Amaranthus spp.",
+        "deskripsi": "Bayam adalah sayuran daun hijau yang kaya zat besi dan mudah tumbuh dengan pertumbuhan cepat.",
+        "perawatan": "Siram 2 kali sehari, beri pupuk organik cair seminggu sekali. Tidak perlu pemangkasan. Cocok untuk ditanam dalam pot atau bedengan.",
+        "iklim": "Tropis, suhu 20–30°C.",
+        "media_tanam": "Tanah gembur, kaya humus, pH 6–7.",
+        "tinggi": "30–80 cm",
+        "umur_panen": "20–30 hari setelah tanam, saat tinggi tanaman ±25 cm."
+      },
+      "Sweet Potatoes": {
+        "nama_latin": "Ipomoea batatas",
+        "deskripsi": "Ubi jalar adalah tanaman umbi-umbian dengan rasa manis dan kaya karbohidrat. Dapat tumbuh di tanah marginal.",
+        "perawatan": "Tanam dari stek batang, siram secukupnya, beri pupuk organik dan NPK saat tanam dan saat usia 30 hari.",
+        "iklim": "Tropis, suhu optimal 21–27°C, tahan kekeringan.",
+        "media_tanam": "Tanah gembur, lempung berpasir, pH 5,5–6,5.",
+        "tinggi": "Merambat rendah, batang ±60 cm",
+        "umur_panen": "90–120 hari setelah tanam. Panen saat daun mulai menguning."
+      },
+      "Tobacco": {
+        "nama_latin": "Nicotiana tabacum",
+        "deskripsi": "Tembakau adalah tanaman industri utama untuk produksi rokok dan produk tembakau lainnya.",
+        "perawatan": "Siram rutin pagi dan sore, beri pupuk NPK dan dolomit. Lakukan pemangkasan tunas samping untuk kualitas daun.",
+        "iklim": "Tropis, suhu ideal 25–32°C, tidak cocok untuk daerah lembab tinggi.",
+        "media_tanam": "Tanah lempung ringan, drainase baik, pH 5,5–6,5.",
+        "tinggi": "1–2 meter",
+        "umur_panen": "100–120 hari. Panen daun bertahap dari bawah ke atas saat menguning dan cukup besar."
+      },
+      "Water Apple": {
+        "nama_latin": "Syzygium aqueum",
+        "deskripsi": "Jambu air adalah buah tropis yang memiliki daging renyah berair dan rasa manis segar. Cocok dikonsumsi langsung atau dibuat rujak.",
+        "perawatan": "Siram secara teratur, beri pupuk kandang dan NPK setiap 3 bulan. Lakukan pemangkasan pohon agar tidak terlalu rimbun.",
+        "iklim": "Tropis, suhu optimal 25–32°C.",
+        "media_tanam": "Tanah lempung berpasir, subur, pH 5,5–7.",
+        "tinggi": "3–10 meter",
+        "umur_panen": "2–3 tahun setelah tanam. Panen saat buah berwarna merah atau hijau cerah tergantung varietas."
+      },
+      "Watermelon": {
+        "nama_latin": "Citrullus lanatus",
+        "deskripsi": "Semangka adalah buah musiman yang besar, berair, dan manis. Cocok untuk dikonsumsi saat cuaca panas.",
+        "perawatan": "Siram dua kali sehari, beri pupuk kandang saat tanam dan NPK saat berbunga. Lakukan penyerbukan manual untuk hasil maksimal.",
+        "iklim": "Tropis–subtropis, suhu optimal 25–30°C.",
+        "media_tanam": "Tanah berpasir, gembur, drainase baik, pH 6–7,5.",
+        "tinggi": "Merambat, panjang batang hingga 3 meter",
+        "umur_panen": "65–85 hari setelah tanam. Panen saat kulit menguning di bagian bawah dan berbunyi nyaring saat diketuk."
+      }
+
+  }
+  
+
+
+
+   

@@ -79,3 +79,7 @@ $routes->get('/kebun/semua-kebun', 'Kebun::allkebun');
 //komentar
 $routes->post('/kebun/komentar', 'Kebun::Komentar');
 
+// --===================================|| IMAGE PROCESSING ||============================================--
+//Upload Image Processing
+$routes->get('/upload_gambar', 'Tanaman::form_deteksi');
+$routes->post('/tanaman/hasil', 'Tanaman::hasil');

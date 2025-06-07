@@ -237,7 +237,7 @@ class Tanaman extends BaseController
         } else {
             return view('tanaman/vegetable', [
                 'title' => 'Sayuran',
-                'plants' => array_slice($filteredPlants, 0, 30), 
+                'plants' => array_slice($filteredPlants, 0, 100), 
                 'totalData' => $totalData
             ]);
         }
@@ -716,5 +716,79 @@ public function ambildata()
 
         // Jika gagal menghapus tanaman, redirect kembali dengan pesan error
         return redirect()->back()->with('error', 'Gagal menghapus tanaman.');
+    }
+    //===================================================================================//
+    //============================= IMAGE PROCESSING ====================================//
+    //===================================================================================//
+    public function form_deteksi()
+    {
+        return view('tanaman/upload_gambar');
+    }
+
+    public function hasil()
+    {
+        $image = $this->request->getFile('gambar');
+
+        if ($image->isValid() && !$image->hasMoved()) {
+            $newName = $image->getRandomName();
+            $image->move(ROOTPATH . 'public/uploads', $newName);
+
+            $pythonFile = ROOTPATH . 'app/ThirdParty/PythonModel/predict.py';
+            $imagePath = ROOTPATH . 'public/uploads/' . $newName;
+
+            //pindahkeun kadieu
+            // $command = 'python3 ' . escapeshellarg($pythonFile) . ' ' . escapeshellarg($imagePath) . ' 2> ' . escapeshellarg(ROOTPATH . 'writable/logs/error.log');
+            $command = '/home/fl1tw4lk/miniconda3/envs/py310/bin/python3.10 ' . escapeshellarg($pythonFile) . ' ' . escapeshellarg($imagePath) . ' 2> ' . escapeshellarg(ROOTPATH . 'writable/logs/error.log');
+
+            $output = shell_exec($command);
+            $log = file_get_contents(ROOTPATH . 'writable/logs/error.log');
+            echo "<pre>$log</pre>"; 
+
+
+            if (!$output) {
+                return view('tanaman/hasil', [
+                    'gambar' => '/uploads/' . $newName,
+                    'label' => 'Tidak ada hasil',
+                    'deskripsi' => 'Script Python tidak memberikan output atau error terjadi.'
+                ]);
+            }
+
+            $result = json_decode($output, true);
+
+            if (!$result) {
+                $errorLogPath = ROOTPATH . 'writable/logs/error.log';
+                $errorLogContent = file_exists($errorLogPath) ? file_get_contents($errorLogPath) : 'File error.log tidak ditemukan.';
+
+                return view('tanaman/hasil', [
+                    'gambar' => '/uploads/' . $newName,
+                    'label' => 'Error',
+                    'deskripsi' => 'Output script Python bukan JSON. Output mentah:<br>' . nl2br(htmlspecialchars($output)) .
+                                '<br><br>Isi error.log:<br>' . nl2br(htmlspecialchars($errorLogContent))
+                ]);
+            }
+
+            // Jika deskripsi berupa array, ubah menjadi string
+            $deskripsi = $result['deskripsi'] ?? 'Tidak ada deskripsi';
+            if (is_array($deskripsi)) {
+                // Contoh format string: gabungkan semua key-value
+                $temp = '';
+                foreach ($deskripsi as $key => $val) {
+                    $temp .= ucfirst(str_replace('_', ' ', $key)) . ": " . $val . "\n\n";
+                }
+                $deskripsi = trim($temp);
+            }
+
+            return view('tanaman/hasil', [
+                'gambar' => '/uploads/' . $newName,
+                'label' => $result['label'] ?? 'Tidak ada label',
+                'deskripsi' => $deskripsi
+            ]);
+        } else {
+            return view('tanaman/hasil', [
+                'gambar' => null,
+                'label' => 'Error',
+                'deskripsi' => 'File gambar tidak valid atau gagal di-upload.'
+            ]);
+        }
     }
 }

@@ -1,6 +1,10 @@
 <?php echo $this->extend('_partials/template')?>
 <?php echo $this->section('isi')?>
-
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-success">
+        <?= session()->getFlashdata('error') ?>
+    </div>
+<?php endif; ?>
 <style>
     html {
         scroll-behavior: smooth;
@@ -155,6 +159,21 @@
             <p class="fs-5 fw-bold text-primary">Cari Tanaman Dan Buat Kebun Disini</p><br>
         </div>
         <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item d-flex h-100">
+                    <div class="service-img rounded">
+                        <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/service-6.jpg" alt="">
+                    </div>
+                    <div class="service-text rounded p-5">
+                        <div class="btn-square rounded-circle mx-auto mb-3">
+                            <img class="img-fluid" src="<?php echo base_url('tanaman/'); ?>img/icon/icon-7.png" alt="Icon">
+                        </div>
+                        <h4 class="mb-3">Deteksi Tanaman</h4>
+                        <p class="mb-4">Unggah Gambar Tanaman, dan sistem akan mengidentifikasi jenis tanamannya </p>
+                        <a class="btn btn-sm" href="upload_gambar"><i class="fa fa-plus text-primary me-2"></i>Deteksi Tanaman</a>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                 <div class="service-item d-flex h-100">
                     <div class="service-img rounded">
