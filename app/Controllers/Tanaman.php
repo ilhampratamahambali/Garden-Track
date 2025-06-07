@@ -237,7 +237,7 @@ class Tanaman extends BaseController
         } else {
             return view('tanaman/vegetable', [
                 'title' => 'Sayuran',
-                'plants' => array_slice($filteredPlants, 0, 100), 
+                'plants' => array_slice($filteredPlants, 0, 30), 
                 'totalData' => $totalData
             ]);
         }
