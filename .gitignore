@@ -45,9 +45,8 @@ $RECYCLE.BIN/
 .vagrant
 Vagrantfile
 
-vendor
-writable
-public
+writable/
+public/
 
 #-------------------------
 # Temporary Files
